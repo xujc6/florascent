@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#000}
+canvas{display:block}
+</style></head><body>
+<canvas id="c"></canvas>
+<video id="v" src="file:///C:/Users/123/Desktop/43099164021-1-192.mp4" muted playsinline preload="auto" style="display:none"></video>
+<script>
+const q = new URLSearchParams(location.search);
+const t0 = parseFloat(q.get('t0')||'0');
+const t1 = parseFloat(q.get('t1')||'10');
+const n  = parseInt(q.get('n')||'12',10);
+const cols = parseInt(q.get('cols')||'4',10);
+const cw = parseInt(q.get('cw')||'400',10);
+const v = document.getElementById('v');
+const c = document.getElementById('c');
+const ar = 720/1280;
+const ch = Math.round(cw*ar);
+const rows = Math.ceil(n/cols);
+c.width = cols*cw; c.height = rows*(ch+18);
+const g = c.getContext('2d');
+g.fillStyle='#000'; g.fillRect(0,0,c.width,c.height);
+
+function seek(t){
+  return new Promise(res=>{
+    v.currentTime = t;
+    const tick = ()=>{
+      if(v.readyState >= 2 && Math.abs(v.currentTime - t) < 0.35) res();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+(async ()=>{
+  if(!v.duration){ await new Promise(r=>v.addEventListener('loadedmetadata', r)); }
+  for(let i=0;i<n;i++){
+    const t = t0 + (t1-t0) * (n===1?0:i/(n-1));
+    await seek(Math.min(t, v.duration-0.05));
+    const col = i%cols, row = (i/cols)|0;
+    g.drawImage(v, col*cw, row*(ch+18), cw, ch);
+    g.fillStyle='#0f0'; g.font='12px monospace';
+    g.fillText('t='+t.toFixed(2), col*cw+4, row*(ch+18)+ch+13);
+  }
+  document.title = 'DONE';
+})();
+</script>
+</body></html>

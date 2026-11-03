@@ -1,0 +1,77 @@
+{
+ "Soldier_Ant": {
+  "sprite": "Soldier_Ant",
+  "body": "Soldier_Ant_body.png",
+  "bcx": 83.8,
+  "bcy": 83.7,
+  "bodyR": 26.3,
+  "W": 176,
+  "H": 166,
+  "wingL": "Soldier_Ant_wingL.png",
+  "wingR": "Soldier_Ant_wingR.png",
+  "wings": [
+   {
+    "a": 16.9,
+    "d": 24.2,
+    "cx": 107.0,
+    "cy": 90.7
+   },
+   {
+    "a": 73.3,
+    "d": 24.3,
+    "cx": 90.8,
+    "cy": 107.0
+   }
+  ]
+ },
+ "Diver_Soldier_Ant": {
+  "sprite": "Diver_Soldier_Ant",
+  "body": "Diver_Soldier_Ant_body.png",
+  "bcx": 48.3,
+  "bcy": 54.5,
+  "bodyR": 73.7,
+  "W": 173,
+  "H": 176,
+  "wingL": "Diver_Soldier_Ant_wingL.png",
+  "wingR": "Diver_Soldier_Ant_wingR.png",
+  "wings": [
+   {
+    "a": 30.4,
+    "d": 106.3,
+    "cx": 140.0,
+    "cy": 108.3
+   },
+   {
+    "a": 57.2,
+    "d": 105.3,
+    "cx": 105.3,
+    "cy": 143.0
+   }
+  ]
+ },
+ "Worm": {
+  "sprite": "Worm",
+  "body": "Worm_body.png",
+  "bcx": 87.6,
+  "bcy": 87.6,
+  "bodyR": 85.6,
+  "W": 176,
+  "H": 176,
+  "wingL": "Worm_wingL.png",
+  "wingR": "Worm_wingR.png",
+  "wings": [
+   {
+    "a": 143.8,
+    "d": 47.2,
+    "cx": 49.4,
+    "cy": 115.5
+   },
+   {
+    "a": -165.6,
+    "d": 53.4,
+    "cx": 35.9,
+    "cy": 74.3
+   }
+  ]
+ }
+}

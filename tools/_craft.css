@@ -1,0 +1,107 @@
+  /* ============ 合成台（按视频里 florr 的 Crafting 面板 1:1 复刻） ============
+     实测（1280×720 录屏）：面板 408×467，底色 #d3a068，标题居中白色粗体，
+     台面那张卡 52×54 在面板内 (114,95)，合成按钮 74×30 在 (274,111)，
+     下面两行提示文字居中、深棕色，再下面是 7 列 53px 的花瓣柜。 */
+  #craft { display:none; position:absolute; inset:0; z-index:32; }
+  #craft.on { display:block; }
+  #craft .cpanel {
+    position:absolute; left:76px; top:50%; width:420px; height:468px;
+    transform:translate(0,-50%);
+    transform-origin:2% 108%;          /* 从左下角那个 Craft 按钮的位置长出来 */
+    border-radius:14px; color:#fff;
+    background:#d3a068;
+    border:2px solid #bd8a52;
+    box-shadow:0 16px 44px rgba(0,0,0,.46), inset 0 2px 0 rgba(255,255,255,.22);
+    animation:cpop .22s cubic-bezier(.2,.9,.3,1.22) both;
+  }
+  @keyframes cpop { from { transform:translate(0,-50%) scale(.4); opacity:0 }
+                    to   { transform:translate(0,-50%) scale(1); opacity:1 } }
+  #craft.closing .cpanel { animation:cclose .14s ease-in both; }
+  @keyframes cclose { to { transform:translate(0,-50%) scale(.55); opacity:0 } }
+
+  /* 标题：没有单独标题栏，就是居中的白字 */
+  .cbar { position:relative; height:42px; display:flex; align-items:center; justify-content:center;
+    font-size:19px; font-weight:800; letter-spacing:1px; color:#fff;
+    text-shadow:0 1px 2px rgba(120,70,20,.45); }
+  #cclose { position:absolute; right:8px; top:8px; width:26px; height:26px; border-radius:7px;
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:#fff;
+    background:#b04a44; box-shadow:0 2px 0 #8b372f, inset 0 1px 0 rgba(255,255,255,.3); cursor:pointer; }
+  #cclose:hover { filter:brightness(1.08); }
+  #cclose:active { transform:translateY(1px); box-shadow:0 1px 0 #8b372f; }
+
+  /* 台面：就是面板本身那块空地方，没有额外的框 */
+  #ctable { position:relative; height:172px; }
+  #cstack { position:absolute; left:88px; top:68px; width:52px; height:52px; }
+  #cstack .cstk { position:absolute; left:0; top:0; width:52px; height:52px; border-radius:7px;
+    background-size:cover; background-position:center; opacity:0; }
+  #cstack .cstk.in { animation:cstkin .26s cubic-bezier(.2,.9,.28,1.4) both; }
+  @keyframes cstkin {
+    0%   { opacity:0; transform:scale(1.35) rotate(-18deg); }
+    65%  { opacity:1; transform:scale(.95) rotate(3deg); }
+    100% { opacity:1; transform:scale(1) rotate(0); }
+  }
+  /* 合成：转 10 圈（wiki：从 5 片合成时会转 9~10 圈） */
+  #cstack.busy { animation:cspin .92s cubic-bezier(.22,.62,.3,1); }
+  @keyframes cspin { from { transform:rotate(0) } to { transform:rotate(3600deg) } }
+  #cstack.boom { animation:cboom .42s cubic-bezier(.3,.9,.3,1) both; }
+  @keyframes cboom { 0%{transform:scale(1)} 40%{transform:scale(1.3); filter:brightness(2.1)}
+                     100%{transform:scale(.1); opacity:0} }
+  #cstack.fail { animation:cfail .44s ease-in both; }
+  @keyframes cfail { 0%{transform:translate(0,0)} 30%{transform:translate(-6px,2px) rotate(-9deg)}
+                     60%{transform:translate(6px,4px) rotate(8deg)} 100%{transform:translate(0,16px) rotate(0); opacity:0} }
+  #cstack .cn { position:absolute; right:-8px; top:-8px; padding:0 3px; font-size:15px; font-weight:800;
+    color:#fff; text-shadow:0 0 3px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    pointer-events:none; }
+  #cresult { position:absolute; left:88px; top:68px; width:52px; height:52px; border-radius:7px;
+    background-size:cover; background-position:center; opacity:0; pointer-events:none; }
+  #cresult.show { animation:cresult .42s cubic-bezier(.2,.9,.3,1.4) both; }
+  @keyframes cresult { 0%{opacity:0; transform:scale(.25)} 70%{opacity:1; transform:scale(1.12)} 100%{opacity:1; transform:scale(1)} }
+  #cresult.ring::after { content:''; position:absolute; left:50%; top:50%; width:52px; height:52px; border-radius:50%;
+    border:3px solid rgba(255,255,255,.95); animation:cring .5s ease-out both; }
+  @keyframes cring { from { opacity:.95; transform:translate(-50%,-50%) scale(.6) } to { opacity:0; transform:translate(-50%,-50%) scale(2.6) } }
+
+  /* 合成按钮（视频里灰 = 花瓣不够，够了会变绿） */
+  #cdo { position:absolute; right:52px; top:104px; width:74px; height:32px; border:none; border-radius:8px;
+    cursor:pointer; color:#fff; font-family:inherit;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0;
+    background:linear-gradient(180deg,#8d8d8d,#6f6f6f);
+    box-shadow:0 2px 0 #5a5a5a, inset 0 1px 0 rgba(255,255,255,.3);
+    transition:filter .1s; }
+  #cdo b { font-size:13px; font-weight:800; line-height:1.05; }
+  #cdo i { display:none; }
+  #cdo:hover:not(:disabled) { filter:brightness(1.07); }
+  #cdo:active:not(:disabled) { transform:translateY(1px); box-shadow:0 1px 0 #3d7a25; }
+  #cdo:not(:disabled) { background:linear-gradient(180deg,#7cc45a,#4f9a35); box-shadow:0 2px 0 #3d7a25, inset 0 1px 0 rgba(255,255,255,.35); }
+  #cdo:disabled { cursor:not-allowed; }
+  #crate { position:absolute; right:52px; top:140px; width:74px; text-align:center;
+    font-size:11px; font-weight:700; color:#6d4520; text-shadow:0 1px 0 rgba(255,255,255,.35); }
+
+  /* 两行提示 */
+  #chint { text-align:center; font-size:13.5px; line-height:1.5; color:#5f3c17; font-weight:700;
+    text-shadow:0 1px 0 rgba(255,255,255,.32); margin-top:-2px; }
+  #chint span { display:block; font-size:11.5px; font-weight:700; color:#6d4520; }
+
+  /* 花瓣柜：7 列，格子和底色只差一点点 */
+  #craftlist { position:absolute; left:12px; right:12px; top:262px; bottom:10px;
+    display:grid; grid-template-columns:repeat(7,1fr); gap:3px; align-content:start;
+    overflow-y:auto; overflow-x:hidden; padding-right:2px; }
+  #craftlist::-webkit-scrollbar { width:7px; }
+  #craftlist::-webkit-scrollbar-track { background:rgba(0,0,0,.06); border-radius:4px; }
+  #craftlist::-webkit-scrollbar-thumb { background:rgba(120,70,20,.42); border-radius:4px; }
+  .cslot { position:relative; aspect-ratio:1/1; border-radius:3px; cursor:pointer;
+    background:rgba(120,70,20,.14); box-shadow:inset 0 0 0 1px rgba(120,70,20,.16);
+    background-size:cover; background-position:center; background-repeat:no-repeat;
+    transition:transform .08s ease, filter .08s ease; }
+  .cslot.fill { background-color:transparent; box-shadow:0 1px 2px rgba(90,50,10,.35); }
+  .cslot.fill:hover { transform:translateY(-2px) scale(1.05); filter:brightness(1.08); z-index:2; }
+  .cslot.no { filter:grayscale(.5) brightness(.8); cursor:default; }
+  .cslot.no:hover { transform:none; filter:grayscale(.5) brightness(.8); }
+  .cslot .cn { position:absolute; right:-1px; top:-3px; padding:0 1px; font-size:13px; font-weight:800;
+    color:#fff; text-shadow:0 0 3px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    pointer-events:none; }
+  .cslot.sel { outline:2px solid #ffd54f; outline-offset:1px; z-index:3; }
+  #cfoot { display:none; }
+  /* 扔上台面的飞行卡片 */
+  .flyer { position:fixed; z-index:60; border-radius:6px; pointer-events:none;
+    background-size:cover; background-position:center;
+    box-shadow:0 5px 14px rgba(0,0,0,.35); will-change:transform,opacity; }

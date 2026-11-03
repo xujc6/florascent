@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#111;overflow:hidden}
+video{display:block}
+#info{position:fixed;left:0;bottom:0;color:#0f0;font:14px monospace;background:#000a;padding:4px}
+</style></head><body>
+<video id="v" src="file:///C:/Users/123/Desktop/43099164021-1-192.mp4" muted playsinline preload="auto"></video>
+<div id="info">loading</div>
+<script>
+const q = new URLSearchParams(location.search);
+const v = document.getElementById('v');
+const info = document.getElementById('info');
+const t = parseFloat(q.get('t') || '0');
+const w = parseInt(q.get('w') || '0', 10);
+v.addEventListener('loadedmetadata', ()=>{
+  if(w) v.width = w;
+  info.textContent = 'dur=' + v.duration.toFixed(3) + ' size=' + v.videoWidth + 'x' + v.videoHeight + ' t=' + t;
+  v.currentTime = t;
+});
+v.addEventListener('seeked', ()=>{ info.textContent += ' ready'; });
+</script>
+</body></html>

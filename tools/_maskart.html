@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;background:#0d0d0d;color:#ddd;font:11px/1.25 monospace;padding:8px}
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+  .box{width:300px}
+  pre{margin:2px 0;font-size:9px;line-height:9px;letter-spacing:0}
+  .name{color:#9cf;font-size:12px;margin-bottom:2px}
+</style></head><body><div id="out"></div>
+<script src="_mapdata_factory.js"></script>
+<script src="_mapdata.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const WHICH = q.get('m')||'sw';
+const MAP = WHICH==='fac' ? window.MAPDATA_FACTORY : window.MAPDATA;
+const TL  = WHICH==='fac' ? window.MAPTILES_FACTORY : window.MAPTILES;
+const TS  = WHICH==='fac' ? window.TSMAP_FACTORY : window.TSMAP;
+const SUB = 16;
+const cv = document.createElement('canvas'); cv.width=SUB; cv.height=SUB;
+const cx = cv.getContext('2d',{willReadFrequently:true});
+const loadImg = url => new Promise(r=>{ if(!url) return r(null); const i=new Image(); i.onload=()=>r(i); i.onerror=()=>r(null); i.src=url; });
+
+const VAR = new Set(['c','l','r','t','b','tl','tr','bl','br','tli','tri','bri','bli']);
+function fam(fn){ const p=String(fn||'').replace(/\.svg$/i,'').split('_');
+  while(p.length&&(VAR.has(p[p.length-1])||/^\d+$/.test(p[p.length-1])))p.pop(); return p.join('_'); }
+
+(async()=>{
+  const out = document.getElementById('out');
+  const used = new Set();
+  for(const L of MAP.layers){ const b=atob(L.b64); for(let i=0;i<b.length;i+=2){ const g=b.charCodeAt(i); if(g&&TS[g]) used.add(TS[g]); } }
+  const names = [...used].sort();
+  let html = '<h2>'+WHICH+'  地块 alpha 掩码（# = 阻挡）</h2><div class="row">';
+  const res = {};
+  for(const fn of names){
+    const im = await loadImg(TL[fn]);
+    if(!im){ html += '<div class="box"><div class="name">'+fn+'</div><pre>IMAGE MISSING</pre></div>'; continue; }
+    cx.clearRect(0,0,SUB,SUB); cx.drawImage(im,0,0,SUB,SUB);
+    let d; try{ d = cx.getImageData(0,0,SUB,SUB).data; }catch(e){ html+='<div class="box"><div class="name">'+fn+'</div><pre>TAINTED</pre></div>'; continue; }
+    let op=0, art='';
+    for(let y=0;y<SUB;y++){ let line=''; for(let x=0;x<SUB;x++){ const solid = d[(y*SUB+x)*4+3] > 80; if(solid)op++; line += solid?'#':'.'; } art += line+'\n'; }
+    res[fn]=op;
+    html += '<div class="box"><div class="name">'+fn+'  '+(Math.round(op/256*100))+'%</div><pre>'+art+'</pre></div>';
+  }
+  html += '</div>';
+  out.innerHTML = html;
+  document.title = 'READY '+WHICH+' '+Object.keys(res).length;
+})();
+</script></body></html>

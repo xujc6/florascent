@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+<script>if(location.protocol==='file:'){document.write('<script src="../assets_inline.js"><\/script>');}</script>
+<script src="../manifest.js"></script>
+<script src="../petals.js"></script>
+<script>
+// 诊断：一批花瓣的 sprite 抽取结果 + 失败阶段（给 Rose 这类卡片特别看）
+const q = new URLSearchParams(location.search);
+const names = (q.get('names')||'Basic,Rose,Stinger').split(',');
+window.addEventListener('load', ()=>setTimeout(run, 1200));
+function run(){
+  const out = [];
+  for(const nm of names){
+    const avail = MANIFEST.petals[nm] || [];
+    if(!avail.length){ out.push(nm+':NOCARD'); continue; }
+    const img = getPetalImage(nm, avail[0]);
+    const pth = petalImagePath(nm, avail[0]);
+    if(!(img.complete && img.naturalWidth)){
+      out.push(nm+':NOTLOADED complete='+img.complete+' nat='+img.naturalWidth+' path='+pth+' inline='+(!!(window.INLINE_IMG&&window.INLINE_IMG[pth]))+' src='+String(img.src).slice(0,40));
+      continue;
+    }
+    // 1) 直接跑抽取
+    let sp = null, err = '';
+    try { sp = buildPetalSprite(img); } catch(e){ err = e.name+':'+e.message; }
+    // 2) 复制关键指标
+    const W0 = img.naturalWidth, H0 = img.naturalHeight;
+    const cv = document.createElement('canvas'); cv.width=W0; cv.height=H0;
+    const g = cv.getContext('2d', {willReadFrequently:true});
+    g.drawImage(img,0,0);
+    let ringOpaque=0, ringTotal=0, d=null;
+    try{
+      d = g.getImageData(0,0,W0,H0).data;
+      for(let x=0;x<W0;x++) for(const y of [0,H0-1]){ ringTotal++; if(d[(y*W0+x)*4+3]>128) ringOpaque++; }
+      for(let y=0;y<H0;y++) for(const x of [0,W0-1]){ ringTotal++; if(d[(y*W0+x)*4+3]>128) ringOpaque++; }
+    }catch(e){ out.push(nm+':TAINT'); continue; }
+    out.push(nm + (sp ? ':ok w'+sp.w+' h'+sp.h+' size'+sp.size : ':NULL') +
+              ' ring'+ (ringOpaque/ringTotal).toFixed(2) + (err?(' ERR '+err):''));
+  }
+  document.title = 'SPRITES ' + out.join(' | ');
+}
+</script></body></html>

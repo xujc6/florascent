@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>scan</title></head><body>
+<video id="v" src="file:///C:/Users/123/Desktop/43099164021-1-192.mp4" muted playsinline preload="auto" style="display:none"></video>
+<script>
+const v = document.getElementById('v');
+const cv = document.createElement('canvas');
+const g = cv.getContext('2d');
+function seek(t){
+  return new Promise(res=>{
+    v.currentTime = t;
+    const tick = ()=>{ if(v.readyState>=2 && Math.abs(v.currentTime-t)<0.3) res(); else requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  });
+}
+(async ()=>{
+  await new Promise(r=>{ if(v.duration) r(); else v.addEventListener('loadedmetadata', r); });
+  cv.width = v.videoWidth; cv.height = v.videoHeight;
+  const hits = [];
+  for(let t=0; t<v.duration; t+=0.5){
+    await seek(t);
+    // 合成台面板：左侧中部，取 (200,300) 附近 20x20 平均色，判断是否偏棕 (211,160,104)
+    g.drawImage(v,0,0);
+    const d = g.getImageData(150,250,40,40).data;
+    let r=0,gg=0,b=0;
+    for(let i=0;i<d.length;i+=4){ r+=d[i]; gg+=d[i+1]; b+=d[i+2]; }
+    const n = d.length/4; r/=n; gg/=n; b/=n;
+    const brown = Math.abs(r-211)<34 && Math.abs(gg-160)<34 && Math.abs(b-104)<40;
+    if(brown) hits.push(t.toFixed(1));
+  }
+  document.title = 'HITS:' + hits.join(',');
+})();
+</script>
+</body></html>

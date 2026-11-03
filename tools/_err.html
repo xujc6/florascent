@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>ok</title>
+<script>
+window.__errs=[];
+window.addEventListener('error', e=>{ window.__errs.push((e.message||'')+' @'+(e.filename||'').split('/').pop()+':'+e.lineno); });
+window.addEventListener('unhandledrejection', e=>{ window.__errs.push('REJ '+(e.reason&&e.reason.message)); });
+setTimeout(()=>{
+  const t = window.__errs.length ? window.__errs.join(' | ') : 'NOERROR';
+  document.title = t + ' || map=' + (window.regionMapReady?1:0) + ' man=' + (window.MANIFEST?Object.keys(window.MANIFEST.petals||{}).length:'-');
+}, 4000);
+</script>
+<iframe src="index.html?auto=1&sim=10" style="width:900px;height:700px;border:0"></iframe>

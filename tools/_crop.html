@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#111}canvas{display:block;image-rendering:pixelated}
+</style></head><body><canvas id="c"></canvas><script>
+const q = new URLSearchParams(location.search);
+const src = q.get('src');
+const x = +q.get('x'), y = +q.get('y'), w = +q.get('w'), h = +q.get('h'), s = +(q.get('s')||1);
+const grid = q.get('grid') ? +q.get('grid') : 0;
+const img = new Image();
+img.onload = ()=>{
+  const c = document.getElementById('c');
+  c.width = Math.round(w*s); c.height = Math.round(h*s);
+  const g = c.getContext('2d');
+  g.imageSmoothingEnabled = false;
+  g.drawImage(img, x, y, w, h, 0, 0, c.width, c.height);
+  if(grid){
+    g.strokeStyle = 'rgba(255,0,0,.45)'; g.lineWidth = 1;
+    const step = grid*s;
+    for(let px=0; px<=c.width; px+=step){ g.beginPath(); g.moveTo(px,0); g.lineTo(px,c.height); g.stroke(); }
+    for(let py=0; py<=c.height; py+=step){ g.beginPath(); g.moveTo(0,py); g.lineTo(c.width,py); g.stroke(); }
+  }
+};
+img.src = src;
+</script></body></html>

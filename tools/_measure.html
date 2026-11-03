@@ -1,0 +1,96 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0}</style></head><body>
+<canvas id="c"></canvas>
+<script>
+const src = 'file:///C:/Users/123/.workbuddy/clipboard-images/clipboard-2026-10-26T12-01-42-557Z-41ca8a38.jpg';
+const img = new Image();
+img.onload = ()=>{
+  const c = document.getElementById('c');
+  c.width = img.width; c.height = img.height;
+  const x = c.getContext('2d');
+  x.drawImage(img,0,0);
+  const d = x.getImageData(0,0,c.width,c.height).data;
+  const W = c.width, H = c.height;
+  const at = (px,py)=>{ const i=(py*W+px)*4; return [d[i],d[i+1],d[i+2]]; };
+  const out = {W,H};
+
+  // ---- 1. flower face: yellow blob near centre ----
+  const cx = W/2, cy = H/2;
+  let bx0=1e9,bx1=-1,by0=1e9,by1=-1, n=0;
+  for(let py=cy-120; py<cy+120; py++){
+    for(let px=cx-120; px<cx+120; px++){
+      const [r,g,b]=at(px,py);
+      if(r-b>85 && r>195 && g>140 && g<250){
+        n++; if(px<bx0)bx0=px; if(px>bx1)bx1=px;
+        if(py<by0)by0=py; if(py>by1)by1=py;
+      }
+    }
+  }
+  out.face = {n, x0:bx0,x1:bx1,y0:by0,y1:by1, w:bx1-bx0+1, h:by1-by0+1};
+
+  // ---- 2. white petal dots around the flower ----
+  // scan ring 8..40 px from centre, count near-white pixels
+  let px0=1e9,px1=-1,py0=1e9,py1=-1, pn=0;
+  const dots = [];
+  for(let py=cy-60; py<cy+60; py++){
+    for(let px=cx-60; px<cx+60; px++){
+      const [r,g,b]=at(px,py);
+      const dd = Math.hypot(px-cx, py-cy);
+      if(dd < 9) continue;
+      if(r>243 && g>243 && b>243){
+        pn++;
+        if(px<px0)px0=px; if(px>px1)px1=px;
+        if(py<py0)py0=py; if(py>py1)py1=py;
+        dots.push([px,py]);
+      }
+    }
+  }
+  out.petalWhite = {n:pn, x0:px0,x1:px1,y0:py0,y1:py1};
+  // cluster dots into separate petals (simple flood)
+  const set = new Set(dots.map(([a,b])=>a+','+b));
+  const seen = new Set(); const clusters=[];
+  for(const [a,b] of dots){
+    const k=a+','+b; if(seen.has(k)) continue;
+    const st=[[a,b]]; seen.add(k); let cxn=0,cyn=0,cnt=0, ax0=1e9,ax1=-1,ay0=1e9,ay1=-1;
+    while(st.length){
+      const [u,v]=st.pop(); cnt++; cxn+=u; cyn+=v;
+      if(u<ax0)ax0=u; if(u>ax1)ax1=u; if(v<ay0)ay0=v; if(v>ay1)ay1=v;
+      for(const [du,dv] of [[1,0],[-1,0],[0,1],[0,-1]]){
+        const kk=(u+du)+','+(v+dv);
+        if(set.has(kk) && !seen.has(kk)){ seen.add(kk); st.push([u+du,v+dv]); }
+      }
+    }
+    if(cnt>=4) clusters.push({cnt, cx:+(cxn/cnt).toFixed(1), cy:+(cyn/cnt).toFixed(1), w:ax1-ax0+1, h:ay1-ay0+1,
+      r:+Math.hypot(cxn/cnt-cx, cyn/cnt-cy).toFixed(1)});
+  }
+  out.petals = clusters;
+
+  // ---- 3. inventory slots: find the row of cards near bottom ----
+  // card art is vivid (saturated) and sits on the sand bg
+  let sx0=1e9,sx1=-1,sy0=1e9,sy1=-1;
+  for(let py=H*0.85; py<H; py++){
+    for(let px=0; px<W; px++){
+      const [r,g,b]=at(px,py);
+      const mx=Math.max(r,g,b), mn=Math.min(r,g,b);
+      if(mx-mn>60){ if(px<sx0)sx0=px; if(px>sx1)sx1=px; if(py<sy0)sy0=py; if(py>sy1)sy1=py; }
+    }
+  }
+  out.slotRow = {x0:sx0,x1:sx1,y0:sy0,y1:sy1, h:sy1-sy0+1};
+  // individual slot pitch: scan one row through the middle of the slot band
+  const my = Math.round((sy0+sy1)/2);
+  const cols=[];
+  for(let px=0; px<W; px++){
+    const [r,g,b]=at(px,my);
+    const mx=Math.max(r,g,b), mn=Math.min(r,g,b);
+    cols.push(mx-mn>55 ? 1 : 0);
+  }
+  const runs=[]; let s=-1;
+  for(let i=0;i<=cols.length;i++){
+    if(cols[i] && s<0) s=i;
+    if((!cols[i]||i===cols.length) && s>=0){ runs.push([s,i-1,i-s]); s=-1; }
+  }
+  out.slotRuns = runs;
+  document.title = 'MEASURE ' + JSON.stringify(out);
+};
+img.src = src;
+</script>
+</body></html>

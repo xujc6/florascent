@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+// 把 assets/slot_frame.png（4096²、白底灰边）烘焙成小尺寸透明边框 + 稀有度染色版
+// 输出到 document.title，由 build 脚本抓下来写 assets/slot_frames.js
+const COLORS = {
+  '':      null,            // 原图灰边
+  'Common':'#cfd1cf', 'Unusual':'#5ad14c', 'Rare':'#42a5f5', 'Super':'#a86ef0',
+  'Epic':'#f5a623', 'Legendary':'#f5453b', 'Mythic':'#18d6c4', 'Ultra':'#ff5fd2'
+};
+const OUT = 128;
+const im = new Image();
+im.onload = ()=>{
+  const SW = im.naturalWidth, SH = im.naturalHeight;
+  // --- pass 1: 低分辨率定位边框外框 ---
+  const P = 256;
+  const p1 = document.createElement('canvas'); p1.width=P; p1.height=P;
+  const g1 = p1.getContext('2d', {willReadFrequently:true});
+  g1.drawImage(im, 0, 0, P, P);
+  const d1 = g1.getImageData(0,0,P,P).data;
+  const ink = (i)=> d1[i+3]>16 && !(d1[i]>244 && d1[i+1]>244 && d1[i+2]>244);
+  let x0=P,y0=P,x1=-1,y1=-1;
+  for(let y=0;y<P;y++) for(let x=0;x<P;x++){
+    const i=(y*P+x)*4;
+    if(ink(i)){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  }
+  const k = SW/P;
+  const sx = Math.max(0, (x0-1)*k), sy = Math.max(0, (y0-1)*k);
+  const sw = Math.min(SW-sx, (x1-x0+3)*k), sh = Math.min(SH-sy, (y1-y0+3)*k);
+
+  // --- pass 2: 裁切缩放 + 抠白 ---
+  const base = document.createElement('canvas'); base.width=OUT; base.height=OUT;
+  const gb = base.getContext('2d', {willReadFrequently:true});
+  gb.drawImage(im, sx, sy, sw, sh, 0, 0, OUT, OUT);
+  const id = gb.getImageData(0,0,OUT,OUT);
+  const p = id.data;
+  for(let i=0;i<p.length;i+=4){
+    if(p[i]>236 && p[i+1]>236 && p[i+2]>236) p[i+3]=0;   // 白底/白内芯 -> 透明
+  }
+  gb.putImageData(id,0,0);
+
+  const out = {};
+  for(const key in COLORS){
+    const col = COLORS[key];
+    if(!col){ out[key] = base.toDataURL('image/png'); continue; }
+    const c = document.createElement('canvas'); c.width=OUT; c.height=OUT;
+    const g = c.getContext('2d');
+    g.drawImage(base,0,0);
+    g.globalCompositeOperation='source-in';
+    g.fillStyle=col; g.fillRect(0,0,OUT,OUT);
+    out[key] = c.toDataURL('image/png');
+  }
+  document.title = 'FRAMES ' + JSON.stringify(out);
+};
+im.src = 'assets/slot_frame.png';
+</script></body></html>

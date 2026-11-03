@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+function test(src){
+  return new Promise(res=>{
+    const i = new Image();
+    i.onload = ()=>{
+      try{
+        const c = document.createElement('canvas'); c.width=8; c.height=8;
+        const g = c.getContext('2d'); g.drawImage(i,0,0,8,8);
+        const d = g.getImageData(0,0,4,4).data;
+        res('OK:'+d[3]);
+      }catch(e){ res('TAINT:'+e.name); }
+    };
+    i.onerror = ()=>res('LOADFAIL');
+    i.src = src;
+  });
+}
+(async()=>{
+  const out = {};
+  out.webp = await test('assets/Basic_(Common).webp');
+  out.svg  = await test('assets/maps_tiles/grass_c_0.svg');
+  out.png  = await test('assets/player.png');
+  out.proto = location.protocol;
+  document.title = 'TAINTTEST ' + JSON.stringify(out);
+})();
+</script></body></html>

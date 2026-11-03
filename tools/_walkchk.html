@@ -1,0 +1,132 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#111;color:#ddd;font:12px/1.5 monospace;white-space:pre}
+</style></head><body><pre id="out">loading...</pre>
+<script>
+const _q = new URLSearchParams(location.search);
+document.write('<script src="' + (_q.get('d') || '_mapdata') + '.js"><\/script>');
+</script>
+<script>
+const q = new URLSearchParams(location.search);
+const SUF = (q.get('d') || '_mapdata').replace('_mapdata', '').toUpperCase();
+const TILEMAP = window['MAPTILES' + SUF] || window.MAPTILES || {};
+const TSMAP   = window['TSMAP' + SUF] || window.TSMAP || {};
+const MDATA   = window['MAPDATA' + SUF] || window.MAPDATA || {};
+const WALK = new Set((q.get('walk') || 'grate').split(','));
+const SUB = 16, SUBP = SUB*SUB;
+const THRESH = +(q.get('th') || 0.35);
+const EDGE = q.get('edge') !== '0';       // 是否在临墙一侧收 1 子格
+const VAR = new Set(['c','l','r','t','b','tl','tr','bl','br','tli','tri','bri','bli']);
+const fam = g => { const fn = TSMAP[g]; if(!fn) return '';
+  const p = String(fn).replace(/\.svg$/i,'').split('_');
+  while(p.length && (VAR.has(p[p.length-1]) || /^\d+$/.test(p[p.length-1]))) p.pop();
+  return p.join('_'); };
+
+// 覆盖率：gid -> 0..1（用 canvas 真实解码 SVG）
+const cover = new Map();
+function coverOf(g){
+  if(cover.has(g)) return cover.get(g);
+  const src = TILEMAP[TSMAP[g]];
+  if(!src) return -1;
+  const im = new Image();
+  im.src = src;
+  cover.set(g, -2);                     // -2 = pending
+  im.onload = ()=>{ cover.set(g, alphaOf(im)); tick(); };
+  im.onerror = ()=>{ cover.set(g, -1); tick(); };
+  return -2;
+}
+function alphaOf(im){
+  const c = document.createElement('canvas'); c.width=SUB; c.height=SUB;
+  const g2 = c.getContext('2d'); g2.imageSmoothingEnabled=false;
+  g2.drawImage(im, 0,0,SUB,SUB);
+  const d = g2.getImageData(0,0,SUB,SUB).data;
+  let n=0; for(let i=0;i<SUBP;i++) if(d[i*4+3] > 80) n++;
+  return n/SUBP;
+}
+const OUT = document.getElementById('out');
+let running = false;
+function tick(){ if(!running){ running = true; setTimeout(run, 0); } }
+
+function run(){
+  running = false;
+  const W = MDATA.width, H = MDATA.height, nL = MDATA.layers.length;
+  const lay = MDATA.layers.map(L => { const b = atob(L.b64); const a = new Uint8Array(b.length/2);
+    for(let i=0;i<b.length;i+=2) a[i/2] = b.charCodeAt(i); return a; });
+  // 预热所有 gid 的覆盖率
+  let pending = 0;
+  for(let li=0; li<nL; li++) for(let k=0;k<W*H;k++){
+    const g = lay[li][k]; if(!g) continue;
+    if(coverOf(g) === -2) pending++;
+  }
+  if(pending){ OUT.textContent = 'decoding tiles... ' + cover.size + ' pending ' + pending; return; }
+
+  // pass1
+  const lvl = new Uint8Array(W*H), famArr = new Array(W*H).fill('');
+  const stat = {};
+  for(let k=0;k<W*H;k++){
+    for(let li=nL-1; li>=0; li--){
+      const g = lay[li][k]; if(!g) continue;
+      let c = cover.get(g); if(c === -2 || c === undefined) c = 0;
+      if(c < THRESH) continue;                    // 装饰碎块，忽略
+      const f = fam(g);
+      famArr[k] = f; lvl[k] = WALK.has(f) ? 1 : 0;
+      break;
+    }
+    if(!lvl[k]){
+      const f = famArr[k] || '(none)';
+      stat[f] = (stat[f]||0) + 1;
+    }
+  }
+  // pass2 连通（带收边）
+  const walkable = new Uint8Array(W*H);
+  const edgeBlk = new Uint8Array(W*H);
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+    const k = ty*W+tx;
+    if(!lvl[k]) continue;
+    // 四边是否临墙
+    const up = ty>0 ? lvl[k-W] : 0, dn = ty<H-1 ? lvl[k+W] : 0;
+    const lf = tx>0 ? lvl[k-1] : 0, rt = tx<W-1 ? lvl[k+1] : 0;
+    const edges = (!up) + (!dn) + (!lf) + (!rt);
+    walkable[k] = 1;
+    edgeBlk[k] = EDGE ? edges : 0;
+  }
+  // 连通块
+  const comp = new Int32Array(W*H).fill(-1);
+  let lab=0, best=0, bestL=0; const sizes=[];
+  for(let i=0;i<W*H;i++){
+    if(!walkable[i] || comp[i]>=0) continue;
+    lab++; let c=0; const q2=[i]; comp[i]=lab;
+    while(q2.length){ const k=q2.pop(); c++; const x=k%W, y=(k-x)/W;
+      if(x>0 && walkable[k-1] && comp[k-1]<0){ comp[k-1]=lab; q2.push(k-1); }
+      if(x<W-1 && walkable[k+1] && comp[k+1]<0){ comp[k+1]=lab; q2.push(k+1); }
+      if(y>0 && walkable[k-W] && comp[k-W]<0){ comp[k-W]=lab; q2.push(k-W); }
+      if(y<H-1 && walkable[k+W] && comp[k+W]<0){ comp[k+W]=lab; q2.push(k+W); }
+    }
+    sizes.push([lab,c]); if(c>best){ best=c; bestL=lab; }
+  }
+  const total = walkable.reduce((a,b)=>a+b,0);
+  let lines = [];
+  lines.push('map ' + W + 'x' + H + '  walk=[' + [...WALK].join(',') + ']  thresh=' + THRESH + '  edge=' + EDGE);
+  lines.push('可走格 ' + total + '/' + (W*H) + ' (' + (100*total/(W*H)).toFixed(1) + '%)');
+  lines.push('连通块 ' + lab + '  主区 ' + best + ' (' + (100*best/Math.max(1,total)).toFixed(1) + '%)  其余 ' + sizes.filter(s=>s[0]!==bestL).map(s=>s[1]).join(','));
+  // 每格可走子格数（收边后）
+  const perTile = SUBP - 0;
+  lines.push('格内可走子格: 无边 ' + perTile + '  收1边 ' + (perTile - SUB) + '  收4边 ' + (perTile - 4*SUB + 4));
+  lines.push('');
+  lines.push('阻挡格按家族:');
+  Object.entries(stat).sort((a,b)=>b[1]-a[1]).forEach(([f,c])=>lines.push('  ' + f.padEnd(18) + c));
+  lines.push('');
+  lines.push('gid 覆盖率:');
+  const seen = [];
+  for(let li=0; li<nL; li++) for(let k=0;k<W*H;k++){
+    const g = lay[li][k]; if(!g) continue;
+    if(seen.includes(g)) continue; seen.push(g);
+  }
+  seen.sort((a,b)=>a-b).forEach(g=>{
+    const c = cover.get(g);
+    lines.push('  ' + String(g).padStart(3) + '  ' + (TSMAP[g]||'').padEnd(24) + fam(g).padEnd(14) + (c*100).toFixed(0) + '%'
+      + (WALK.has(fam(g)) && c>=THRESH ? '  <== 可走' : ''));
+  });
+  OUT.textContent = lines.join('\n');
+  document.title = 'OK ' + total;
+}
+</script></body></html>

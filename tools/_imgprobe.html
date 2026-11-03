@@ -1,0 +1,13 @@
+<!DOCTYPE html><meta charset="utf-8">
+<body><script>
+const urls = ['assets/mobs_clean/Bee.png','assets/mobs_clean/Rock_(Mob).png',
+              'assets/mobs/Bee_(Common).webp','assets/player.png'];
+let out = [];
+let done = 0;
+urls.forEach(u=>{
+  const im = new Image();
+  im.onload = ()=>{ out.push(u+' OK '+im.naturalWidth); if(++done===urls.length) document.title='PROBE '+out.join(' | '); };
+  im.onerror= ()=>{ out.push(u+' FAIL'); if(++done===urls.length) document.title='PROBE '+out.join(' | '); };
+  im.src = u;
+});
+</script></body>

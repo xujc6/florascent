@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+body{background:#111;color:#eee;font:14px system-ui;margin:0;padding:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.cell{text-align:center}
+.cell img{width:200px;height:200px;image-rendering:pixelated;background:#222;border:1px solid #444}
+</style></head><body>
+<div class="row" id="r"></div>
+<script>
+const names=['sewage_c_0','grate_c_0','dirt_c_0','factory_floor_c_0','factory_wall_c_0','vent_l_0','water_c_0','grass_c_0'];
+const r=document.getElementById('r');
+for(const n of names){
+  const d=document.createElement('div'); d.className='cell';
+  const img=document.createElement('img'); img.src='../assets/maps_tiles/'+n+'.svg';
+  const t=document.createElement('div'); t.textContent=n;
+  d.appendChild(img); d.appendChild(t); r.appendChild(d);
+}
+</script></body></html>

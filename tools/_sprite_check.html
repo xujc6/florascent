@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+<script>if(location.protocol==='file:'){document.write('<script src="../assets_inline.js"><\/script>');}</script>
+<script src="../manifest.js"></script>
+<script src="../petals.js"></script>
+<script>
+// 诊断：Basic 花瓣的 sprite 尺寸，以及走的是哪种抽取分支
+window.addEventListener('load', ()=>{
+  const out = {proto: location.protocol, inline: !!window.INLINE_IMG};
+  const avail = MANIFEST.petals['Basic'];
+  out.avail = avail;
+  const src = petalImagePath('Basic', avail && avail[0]);
+  out.src = src.length > 80 ? src.slice(0,60)+'…('+src.length+')' : src;
+  out.inlined = !!(window.INLINE_IMG && window.INLINE_IMG[src]);
+  const img = getPetalImage('Basic', avail && avail[0]);
+  const go = ()=>{
+    out.natural = img.naturalWidth + 'x' + img.naturalHeight;
+    // 手动跑一次抽取，报告 w/h/size
+    let res = 'null';
+    try{
+      const sp = buildPetalSprite(img);
+      if(sp) res = {w:sp.w, h:sp.h, size:sp.size};
+      else res = 'null(taint?)';
+    }catch(e){ res = 'ERR:'+e.name; }
+    out.sprite = res;
+    const sp2 = petalSprite('Basic','Common');
+    out.cached = sp2 ? {w:sp2.w,h:sp2.h,size:sp2.size} : null;
+    out.bad = !!PSPRITE_BAD['Basic'];
+    document.title = 'SPRITE ' + JSON.stringify(out);
+  };
+  if(img.complete && img.naturalWidth) go(); else img.onload = go, img.onerror = ()=>{ out.natural='ERRL'; document.title='SPRITE '+JSON.stringify(out); };
+});
+</script></body></html>

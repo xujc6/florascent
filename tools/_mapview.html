@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;background:#111;color:#ddd;font:13px/1.4 monospace}
+  #wrap{padding:10px}
+  canvas{display:block;image-rendering:pixelated}
+  h2{font-size:14px;margin:12px 0 4px}
+</style></head><body>
+<div id="wrap"><div id="out"></div></div>
+<script>
+const q = new URLSearchParams(location.search);
+const MAP = q.get('map') || 'sewers';
+const CELL = parseInt(q.get('cell') || '0', 10);   // 0 = 自动
+
+// 当前 game.js 里的判定（改这里就能对照新规则）
+const SOLID = new Set(['dirt','water','sewage','castle','organic_wall','factory_wall',
+                       'bush','coral','scliff','hut','pyramid_wall']);
+const VAR = new Set(['c','l','r','t','b','tl','tr','bl','br','tli','tri','bri','bli']);
+
+function fam(fn){
+  const parts = String(fn).replace(/\.svg$/i,'').split('_');
+  while(parts.length && (VAR.has(parts[parts.length-1]) || /^\d+$/.test(parts[parts.length-1]))) parts.pop();
+  return parts.join('_');
+}
+const load = (src)=>new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+
+(async ()=>{
+  await load('../assets/maps_tmj/tileset.js');
+  await load('../assets/maps_tmj/'+MAP+'.js');
+  const T = window.TILESET_DATA.map;
+  const M = (window.MAPS_DATA||{})[MAP];
+  const out = document.getElementById('out');
+
+  const imgCache = {};
+  const getImg = (fn)=>new Promise(res=>{
+    if(imgCache[fn]) return res(imgCache[fn]);
+    const im = new Image();
+    im.onload = ()=>{ imgCache[fn]=im; res(im); };
+    im.onerror = ()=>{ imgCache[fn]=null; res(null); };
+    im.src = '../assets/maps_tiles/'+fn;
+  });
+
+  const W=M.width, H=M.height;
+  const cell = CELL || Math.max(2, Math.floor(1100/Math.max(W,H)));
+  const cvs = document.createElement('canvas');
+  cvs.width = W*cell; cvs.height = H*cell;
+  const g = cvs.getContext('2d');
+  g.imageSmoothingEnabled = false;
+
+  const layers = M.layers.map(L=>({name:L.name, b: atob(L.b64)}));
+  // 预加载
+  const need = new Set();
+  for(const L of layers) for(let i=0;i<L.b.length;i+=2){ const gd=L.b.charCodeAt(i); if(gd && T[gd]) need.add(T[gd]); }
+  await Promise.all([...need].map(getImg));
+
+  // 逐层画
+  for(const L of layers){
+    for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+      const gd = L.b.charCodeAt((ty*W+tx)*2);
+      if(!gd) continue;
+      const im = imgCache[T[gd]];
+      if(im) g.drawImage(im, tx*cell, ty*cell, cell, cell);
+    }
+  }
+
+  // 顶层 gid -> 家族，叠红
+  g.save();
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+    const o=(ty*W+tx)*2; let gd=0;
+    for(let li=layers.length-1; li>=0; li--){ const v=layers[li].b.charCodeAt(o); if(v){gd=v;break;} }
+    if(!gd) continue;
+    const f = fam(T[gd]||'');
+    if(SOLID.has(f)){ g.fillStyle='rgba(255,40,40,0.42)'; g.fillRect(tx*cell,ty*cell,cell,cell); }
+    else { g.fillStyle='rgba(40,255,120,0.10)'; g.fillRect(tx*cell,ty*cell,cell,cell); }
+  }
+  g.restore();
+
+  const h = document.createElement('h2');
+  h.textContent = MAP+'  '+W+'x'+H+'  cell='+cell+'  红=当前判为墙  绿=可走';
+  out.appendChild(h);
+  out.appendChild(cvs);
+
+  // 图层名
+  const p = document.createElement('div');
+  p.textContent = 'layers: ' + layers.map(l=>l.name).join(' -> ');
+  out.appendChild(p);
+  document.title = 'READY '+MAP+' '+cvs.width+'x'+cvs.height;
+})();
+</script>
+</body></html>

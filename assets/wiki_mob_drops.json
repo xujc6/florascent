@@ -1,0 +1,6279 @@
+{
+  "source": "https://florrio.wiki.gg/",
+  "mobs": {
+    "ant_hole": {
+      "page": "Ant Hole",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Common",
+              "chance": 0.539,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Unusual",
+              "chance": 0.133,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Soil]] 59.8%; Unusual [[Soil]] 16.4%; Common [[Shovel]] 53.9%; Unusual [[Shovel]] 13.3%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Common",
+              "chance": 0.5529999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Unusual",
+              "chance": 0.436,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Soil]] 48.5%; Unusual [[Soil]] 51.2%; Common [[Shovel]] 55.3%; Unusual [[Shovel]] 43.6%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Common",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Unusual",
+              "chance": 0.862,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Rare",
+              "chance": 0.135,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Soil]] 83.4%; Rare [[Soil]] 16.5%; Common [[Shovel]] 0.3%; Unusual [[Shovel]] 86.2%; Rare [[Shovel]] 13.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Unusual",
+              "chance": 0.114,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Rare",
+              "chance": 0.7859999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Epic",
+              "chance": 0.1,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Soil]] 6.7%; Rare [[Soil]] 81.0%; Epic [[Soil]] 12.3%; Unusual [[Shovel]] 11.4%; Rare [[Shovel]] 78.6%; Epic [[Shovel]] 10.0%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Rare",
+              "chance": 0.122,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Epic",
+              "chance": 0.8370000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Legendary",
+              "chance": 0.040999999999999995,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Soil]] 7.2%; Epic [[Soil]] 87.7%; Legendary [[Soil]] 5.0%; Rare [[Shovel]] 12.2%; Epic [[Shovel]] 83.7%; Legendary [[Shovel]] 4.1%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Epic",
+              "chance": 0.126,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Legendary",
+              "chance": 0.867,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Mythic",
+              "chance": 0.006,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Soil]] 7.5%; Legendary [[Soil]] 91.7%; Mythic [[Soil]] 0.8%; Epic [[Shovel]] 12.6%; Legendary [[Shovel]] 86.7%; Mythic [[Shovel]] 0.6%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Legendary",
+              "chance": 0.289,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Mythic",
+              "chance": 0.7070000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Ultra",
+              "chance": 0.004,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Soil]] 21.2%; Mythic [[Soil]] 78.3%; Ultra [[Soil]] 0.5%; Legendary [[Shovel]] 28.9%; Mythic [[Shovel]] 70.7%; Ultra [[Shovel]] 0.4%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Mythic",
+              "chance": 0.43799999999999994,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Ultra",
+              "chance": 0.562,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Soil]] 35.6%; Ultra [[Soil]] 64.4%; Mythic [[Shovel]] 43.8%; Ultra [[Shovel]] 56.2%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Soil",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Soil",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Mythic",
+              "chance": 0.43799999999999994,
+              "condition": null
+            },
+            {
+              "petal": "Shovel",
+              "rarity": "Ultra",
+              "chance": 0.562,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Soil]] 35.6%; Ultra [[Soil]] 64.4%; Mythic [[Shovel]] 43.8%; Ultra [[Shovel]] 56.2%"
+        }
+      }
+    },
+    "baby_ant": {
+      "page": "Baby Ant",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Common",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Unusual",
+              "chance": 0.306,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Common [[Rice]] 66.2%; Unusual [[Rice]] 30.6%; Common [[Light]] 59.8%; Unusual [[Light]] 16.4%; Unusual [[Leaf]] 10.1%; Unusual [[Magic Leaf]] 10.1% (with Ultra+ Mana Orb)"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Common",
+              "chance": 0.23199999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Unusual",
+              "chance": 0.768,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Common [[Rice]] 23.2%; Unusual [[Rice]] 76.8%; Common [[Light]] 48.5%; Unusual [[Light]] 51.2%; Unusual [[Leaf]] 34.8%; Unusual [[Magic Leaf]] 34.8% (with Ultra+ Mana Orb)"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Unusual",
+              "chance": 0.6970000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Rare",
+              "chance": 0.303,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Unusual [[Rice]] 69.7%; Rare [[Rice]] 30.3%; Unusual [[Light]] 83.4%; Rare [[Light]] 16.5%; Unusual [[Leaf]] 88.3%; Unusual [[Magic Leaf]] 88.3% (with Ultra+ Mana Orb); Rare [[Leaf]] 10.3%; Rare [[Magic Leaf]] 10.3% (with Ultra+ Mana Orb)"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Rare",
+              "chance": 0.764,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Epic",
+              "chance": 0.231,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Rare [[Rice]] 76.4%; Epic [[Rice]] 23.1%; Unusual [[Light]] 6.7%; Rare [[Light]] 81.0%; Epic [[Light]] 12.3%; Unusual [[Leaf]] 19.7%; Unusual [[Magic Leaf]] 19.7% (with Ultra+ Mana Orb); Rare [[Leaf]] 72.7%; Rare [[Magic Leaf]] 72.7% (with Ultra+ Mana Orb); Epic [[Leaf]] 7.6%; Epic [[Magic Leaf]] 7.6% (with Ultra+ Mana Orb)"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Rare",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Epic",
+              "chance": 0.897,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Legendary",
+              "chance": 0.098,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Rare [[Rice]] 0.5%; Epic [[Rice]] 89.7%; Legendary [[Rice]] 9.8%; Rare [[Light]] 7.2%; Epic [[Light]] 87.7%; Legendary [[Light]] 5.0%; Rare [[Leaf]] 20.7%; Rare [[Magic Leaf]] 20.7% (with Ultra+ Mana Orb); Epic [[Leaf]] 76.3%; Epic [[Magic Leaf]] 76.3% (with Ultra+ Mana Orb); Legendary [[Leaf]] 3.1%; Legendary [[Magic Leaf]] 3.1% (with Ultra+ Mana Orb)"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Epic",
+              "chance": 0.006,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Legendary",
+              "chance": 0.9790000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Mythic",
+              "chance": 0.015,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Epic [[Rice]] 0.6%; Legendary [[Rice]] 97.9%; Mythic [[Rice]] 1.5%; Epic [[Light]] 7.5%; Legendary [[Light]] 91.7%; Mythic [[Light]] 0.8%; Epic [[Leaf]] 21.2%; Epic [[Magic Leaf]] 21.2% (with Ultra+ Mana Orb); Legendary [[Leaf]] 78.3%; Legendary [[Magic Leaf]] 78.3% (with Ultra+ Mana Orb); Mythic [[Leaf]] 0.5%; Mythic [[Magic Leaf]] 0.5% (with Ultra+ Mana Orb)"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Legendary",
+              "chance": 0.045,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Mythic",
+              "chance": 0.945,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Ultra",
+              "chance": 0.01,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Legendary [[Rice]] 4.5%; Mythic [[Rice]] 94.5%; Ultra [[Rice]] 1.0%; Legendary [[Light]] 21.2%; Mythic [[Light]] 78.3%; Ultra [[Light]] 0.5%; Legendary [[Leaf]] 39.4%; Legendary [[Magic Leaf]] 39.4% (with Ultra+ Mana Orb); Mythic [[Leaf]] 60.3%; Mythic [[Magic Leaf]] 60.3% (with Ultra+ Mana Orb); Ultra [[Leaf]] 0.3%; Ultra [[Magic Leaf]] 0.3% (with Ultra+ Mana Orb)"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Mythic",
+              "chance": 0.127,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Ultra",
+              "chance": 0.873,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Rice]] 12.7%; Ultra [[Rice]] 87.3%; Mythic [[Light]] 35.6%; Ultra [[Light]] 64.4%; Mythic [[Leaf]] 53.8%; Mythic [[Magic Leaf]] 53.8% (with Ultra+ Mana Orb); Ultra [[Leaf]] 46.2%; Ultra [[Magic Leaf]] 46.2% (with Ultra+ Mana Orb)"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Rice",
+              "rarity": "Mythic",
+              "chance": 0.127,
+              "condition": null
+            },
+            {
+              "petal": "Rice",
+              "rarity": "Ultra",
+              "chance": 0.873,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Rice]] 12.7%; Ultra [[Rice]] 87.3%; Mythic [[Light]] 35.6%; Ultra [[Light]] 64.4%; Mythic [[Leaf]] 53.8%; Mythic [[Magic Leaf]] 53.8% (with Ultra+ Mana Orb); Ultra [[Leaf]] 46.2%; Ultra [[Magic Leaf]] 46.2% (with Ultra+ Mana Orb)"
+        }
+      }
+    },
+    "worker_ant": {
+      "page": "Worker Ant",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Common",
+              "chance": 0.455,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 10.1%; Unusual [[Magic Leaf]] 10.1% (with Ultra+ Mana Orb); Common [[Corn]] 45.5%; Unusual [[Corn]] 10.1%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Common",
+              "chance": 0.613,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 34.8%; Unusual [[Magic Leaf]] 34.8% (with Ultra+ Mana Orb); Common [[Corn]] 61.3%; Unusual [[Corn]] 34.8%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Common",
+              "chance": 0.013999999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 88.3%; Unusual [[Magic Leaf]] 88.3% (with Ultra+ Mana Orb); Rare [[Leaf]] 10.3%; Rare [[Magic Leaf]] 10.3% (with Ultra+ Mana Orb); Common [[Corn]] 1.4%; Unusual [[Corn]] 88.3%; Rare [[Corn]] 10.3%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 19.7%; Unusual [[Magic Leaf]] 19.7% (with Ultra+ Mana Orb); Rare [[Leaf]] 72.7%; Rare [[Magic Leaf]] 72.7% (with Ultra+ Mana Orb); Epic [[Leaf]] 7.6%; Epic [[Magic Leaf]] 7.6% (with Ultra+ Mana Orb); Unusual [[Corn]] 19.7%; Rare [[Corn]] 72.7%; Epic [[Corn]] 7.6%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Leaf]] 20.7%; Rare [[Magic Leaf]] 20.7% (with Ultra+ Mana Orb); Epic [[Leaf]] 76.3%; Epic [[Magic Leaf]] 76.3% (with Ultra+ Mana Orb); Legendary [[Leaf]] 3.1%; Legendary [[Magic Leaf]] 3.1% (with Ultra+ Mana Orb); Rare [[Corn]] 20.7%; Epic [[Corn]] 76.3%; Legendary [[Corn]] 3.1%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Leaf]] 21.2%; Epic [[Magic Leaf]] 21.2% (with Ultra+ Mana Orb); Legendary [[Leaf]] 78.3%; Legendary [[Magic Leaf]] 78.3% (with Ultra+ Mana Orb); Mythic [[Leaf]] 0.5%; Mythic [[Magic Leaf]] 0.5% (with Ultra+ Mana Orb); Epic [[Corn]] 21.2%; Legendary [[Corn]] 78.3%; Mythic [[Corn]] 0.5%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Leaf]] 39.4%; Legendary [[Magic Leaf]] 39.4% (with Ultra+ Mana Orb); Mythic [[Leaf]] 60.3%; Mythic [[Magic Leaf]] 60.3% (with Ultra+ Mana Orb); Ultra [[Leaf]] 0.3%; Ultra [[Magic Leaf]] 0.3% (with Ultra+ Mana Orb); Legendary [[Corn]] 39.4%; Mythic [[Corn]] 60.3%; Ultra [[Corn]] 0.3%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Leaf]] 53.8%; Mythic [[Magic Leaf]] 53.8% (with Ultra+ Mana Orb); Ultra [[Leaf]] 46.2%; Ultra [[Magic Leaf]] 46.2% (with Ultra+ Mana Orb); Mythic [[Corn]] 53.8%; Ultra [[Corn]] 46.2%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Corn",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Leaf]] 53.8%; Mythic [[Magic Leaf]] 53.8% (with Ultra+ Mana Orb); Ultra [[Leaf]] 46.2%; Ultra [[Magic Leaf]] 46.2% (with Ultra+ Mana Orb); Mythic [[Corn]] 53.8%; Ultra [[Corn]] 46.2%"
+        }
+      }
+    },
+    "soldier_ant": {
+      "page": "Soldier Ant",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Common",
+              "chance": 0.638,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Unusual",
+              "chance": 0.19399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Glass]] 63.8%; Unusual [[Glass]] 19.4%; Common [[Clover]] 59.8%; Unusual [[Clover]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Common",
+              "chance": 0.42,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Unusual",
+              "chance": 0.579,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Glass]] 42.0%; Unusual [[Glass]] 57.9%; Common [[Clover]] 48.5%; Unusual [[Clover]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Unusual",
+              "chance": 0.805,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Rare",
+              "chance": 0.195,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Glass]] 80.5%; Rare [[Glass]] 19.5%; Unusual [[Clover]] 83.4%; Rare [[Clover]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Unusual",
+              "chance": 0.039,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Rare",
+              "chance": 0.815,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Epic",
+              "chance": 0.146,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Glass]] 3.9%; Rare [[Glass]] 81.5%; Epic [[Glass]] 14.6%; Unusual [[Clover]] 6.7%; Rare [[Clover]] 81.0%; Epic [[Clover]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Rare",
+              "chance": 0.043,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Epic",
+              "chance": 0.897,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Legendary",
+              "chance": 0.06,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Glass]] 4.3%; Epic [[Glass]] 89.7%; Legendary [[Glass]] 6.0%; Rare [[Clover]] 7.2%; Epic [[Clover]] 87.7%; Legendary [[Clover]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Epic",
+              "chance": 0.045,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Legendary",
+              "chance": 0.946,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Mythic",
+              "chance": 0.009000000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Glass]] 4.5%; Legendary [[Glass]] 94.6%; Mythic [[Glass]] 0.9%; Epic [[Clover]] 7.5%; Legendary [[Clover]] 91.7%; Mythic [[Clover]] 0.8%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Legendary",
+              "chance": 0.155,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Mythic",
+              "chance": 0.838,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Ultra",
+              "chance": 0.006,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Glass]] 15.5%; Mythic [[Glass]] 83.8%; Ultra [[Glass]] 0.6%; Legendary [[Clover]] 21.2%; Mythic [[Clover]] 78.3%; Ultra [[Clover]] 0.5%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Mythic",
+              "chance": 0.29,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Ultra",
+              "chance": 0.71,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Glass]] 29.0%; Ultra [[Glass]] 71.0%; Mythic [[Clover]] 35.6%; Ultra [[Clover]] 64.4%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Glass",
+              "rarity": "Mythic",
+              "chance": 0.29,
+              "condition": null
+            },
+            {
+              "petal": "Glass",
+              "rarity": "Ultra",
+              "chance": 0.71,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Clover",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Glass]] 29.0%; Ultra [[Glass]] 71.0%; Mythic [[Clover]] 35.6%; Ultra [[Clover]] 64.4%"
+        }
+      }
+    },
+    "queen_ant": {
+      "page": "Queen Ant",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Common",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Unusual",
+              "chance": 0.306,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Ant Egg]] 66.2%; Unusual [[Ant Egg]] 30.6%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Common",
+              "chance": 0.23199999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Unusual",
+              "chance": 0.768,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Ant Egg]] 23.2%; Unusual [[Ant Egg]] 76.8%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Unusual",
+              "chance": 0.6970000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Rare",
+              "chance": 0.303,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Ant Egg]] 69.7%; Rare [[Ant Egg]] 30.3%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Rare",
+              "chance": 0.764,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Epic",
+              "chance": 0.231,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Ant Egg]] 76.4%; Epic [[Ant Egg]] 23.1%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Rare",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Epic",
+              "chance": 0.897,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Legendary",
+              "chance": 0.098,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Ant Egg]] 0.5%; Epic [[Ant Egg]] 89.7%; Legendary [[Ant Egg]] 9.8%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Epic",
+              "chance": 0.006,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Legendary",
+              "chance": 0.9790000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Mythic",
+              "chance": 0.015,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Mythic",
+              "chance": 0.009000000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Ant Egg]] 0.6%; Legendary [[Ant Egg]] 97.9%; Mythic [[Ant Egg]] 1.5%; Mythic [[Basil]] 0.9%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Legendary",
+              "chance": 0.045,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Mythic",
+              "chance": 0.945,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Ultra",
+              "chance": 0.01,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Mythic",
+              "chance": 0.838,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Ultra",
+              "chance": 0.006,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Ant Egg]] 4.5%; Mythic [[Ant Egg]] 94.5%; Ultra [[Ant Egg]] 1.0%; Mythic [[Basil]] 83.8%; Ultra [[Basil]] 0.6%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Mythic",
+              "chance": 0.127,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Ultra",
+              "chance": 0.873,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Mythic",
+              "chance": 0.29,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Ultra",
+              "chance": 0.71,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Ant Egg]] 12.7%; Ultra [[Ant Egg]] 87.3%; Mythic [[Basil]] 29.0%; Ultra [[Basil]] 71.0%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Mythic",
+              "chance": 0.127,
+              "condition": null
+            },
+            {
+              "petal": "Ant_Egg",
+              "rarity": "Ultra",
+              "chance": 0.873,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Mythic",
+              "chance": 0.29,
+              "condition": null
+            },
+            {
+              "petal": "Basil",
+              "rarity": "Ultra",
+              "chance": 0.71,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Ant Egg]] 12.7%; Ultra [[Ant Egg]] 87.3%; Mythic [[Basil]] 29.0%; Ultra [[Basil]] 71.0%"
+        }
+      }
+    },
+    "bee": {
+      "page": "Bee",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Unusual",
+              "chance": 0.069,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Stinger]] 59.8%; Common [[Magic Stinger]] 59.8% (with Ultra+ Mana Orb); Unusual [[Stinger]] 16.4%; Unusual [[Magic Stinger]] 16.4% (with Ultra+ Mana Orb); Unusual [[Pollen]] 6.9%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Unusual",
+              "chance": 0.247,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Stinger]] 48.5%; Common [[Magic Stinger]] 48.5% (with Ultra+ Mana Orb); Unusual [[Stinger]] 51.2%; Unusual [[Magic Stinger]] 51.2% (with Ultra+ Mana Orb); Unusual [[Pollen]] 24.7%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Rare",
+              "chance": 0.07,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Unusual",
+              "chance": 0.872,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Rare",
+              "chance": 0.07,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Stinger]] 83.4%; Unusual [[Magic Stinger]] 83.4% (with Ultra+ Mana Orb); Rare [[Stinger]] 16.5%; Rare [[Magic Stinger]] 16.5% (with Ultra+ Mana Orb); Rare [[Honey]] 7.0%; Unusual [[Pollen]] 87.2%; Rare [[Pollen]] 7.0%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Rare",
+              "chance": 0.61,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Epic",
+              "chance": 0.051,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Unusual",
+              "chance": 0.33799999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Rare",
+              "chance": 0.61,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Epic",
+              "chance": 0.051,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Stinger]] 6.7%; Unusual [[Magic Stinger]] 6.7% (with Ultra+ Mana Orb); Rare [[Stinger]] 81.0%; Rare [[Magic Stinger]] 81.0% (with Ultra+ Mana Orb); Epic [[Stinger]] 12.3%; Epic [[Magic Stinger]] 12.3% (with Ultra+ Mana Orb); Rare [[Honey]] 61.0%; Epic [[Honey]] 5.1%; Unusual [[Pollen]] 33.8%; Rare [[Pollen]] 61.0%; Epic [[Pollen]] 5.1%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Rare",
+              "chance": 0.349,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Epic",
+              "chance": 0.63,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Legendary",
+              "chance": 0.02,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Rare",
+              "chance": 0.349,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Epic",
+              "chance": 0.63,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Legendary",
+              "chance": 0.02,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Stinger]] 7.2%; Rare [[Magic Stinger]] 7.2% (with Ultra+ Mana Orb); Epic [[Stinger]] 87.7%; Epic [[Magic Stinger]] 87.7% (with Ultra+ Mana Orb); Legendary [[Stinger]] 5.0%; Legendary [[Magic Stinger]] 5.0% (with Ultra+ Mana Orb); Rare [[Honey]] 34.9%; Epic [[Honey]] 63.0%; Legendary [[Honey]] 2.0%; Rare [[Pollen]] 34.9%; Epic [[Pollen]] 63.0%; Legendary [[Pollen]] 2.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Epic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Legendary",
+              "chance": 0.6409999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Mythic",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Epic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Legendary",
+              "chance": 0.6409999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Mythic",
+              "chance": 0.003,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Stinger]] 7.5%; Epic [[Magic Stinger]] 7.5% (with Ultra+ Mana Orb); Legendary [[Stinger]] 91.7%; Legendary [[Magic Stinger]] 91.7% (with Ultra+ Mana Orb); Mythic [[Stinger]] 0.8%; Mythic [[Magic Stinger]] 0.8% (with Ultra+ Mana Orb); Epic [[Honey]] 35.6%; Legendary [[Honey]] 64.1%; Mythic [[Honey]] 0.3%; Epic [[Pollen]] 35.6%; Legendary [[Pollen]] 64.1%; Mythic [[Pollen]] 0.3%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Legendary",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Mythic",
+              "chance": 0.46,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Ultra",
+              "chance": 0.002,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Legendary",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Mythic",
+              "chance": 0.46,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Ultra",
+              "chance": 0.002,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Stinger]] 21.2%; Legendary [[Magic Stinger]] 21.2% (with Ultra+ Mana Orb); Mythic [[Stinger]] 78.3%; Mythic [[Magic Stinger]] 78.3% (with Ultra+ Mana Orb); Ultra [[Stinger]] 0.5%; Ultra [[Magic Stinger]] 0.5% (with Ultra+ Mana Orb); Legendary [[Honey]] 53.8%; Mythic [[Honey]] 46.0%; Ultra [[Honey]] 0.2%; Legendary [[Pollen]] 53.8%; Mythic [[Pollen]] 46.0%; Ultra [[Pollen]] 0.2%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Mythic",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Ultra",
+              "chance": 0.33799999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Mythic",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Ultra",
+              "chance": 0.33799999999999997,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Stinger]] 35.6%; Mythic [[Magic Stinger]] 35.6% (with Ultra+ Mana Orb); Ultra [[Stinger]] 64.4%; Ultra [[Magic Stinger]] 64.4% (with Ultra+ Mana Orb); Mythic [[Honey]] 66.2%; Ultra [[Honey]] 33.8%; Mythic [[Pollen]] 66.2%; Ultra [[Pollen]] 33.8%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Stinger",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Stinger",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Stinger",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Mythic",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Honey",
+              "rarity": "Ultra",
+              "chance": 0.33799999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Mythic",
+              "chance": 0.662,
+              "condition": null
+            },
+            {
+              "petal": "Pollen",
+              "rarity": "Ultra",
+              "chance": 0.33799999999999997,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Stinger]] 35.6%; Mythic [[Magic Stinger]] 35.6% (with Ultra+ Mana Orb); Ultra [[Stinger]] 64.4%; Ultra [[Magic Stinger]] 64.4% (with Ultra+ Mana Orb); Mythic [[Honey]] 66.2%; Ultra [[Honey]] 33.8%; Mythic [[Pollen]] 66.2%; Ultra [[Pollen]] 33.8%"
+        }
+      }
+    },
+    "dandelion": {
+      "page": "Dandelion",
+      "drops": {}
+    },
+    "ladybug": {
+      "page": "Ladybug",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Common [[Light]] 59.8%; Unusual [[Light]] 16.4%; Common [[Rose]] 59.8%; Common [[Mana Orb]] 59.8% (with Ultra+ Mana Orb); Unusual [[Rose]] 16.4%; Unusual [[Mana Orb]] 16.4% (with Ultra+ Mana Orb)"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Common [[Light]] 48.5%; Unusual [[Light]] 51.2%; Common [[Rose]] 48.5%; Common [[Mana Orb]] 48.5% (with Ultra+ Mana Orb); Unusual [[Rose]] 51.2%; Unusual [[Mana Orb]] 51.2% (with Ultra+ Mana Orb)"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Unusual [[Light]] 83.4%; Rare [[Light]] 16.5%; Unusual [[Rose]] 83.4%; Unusual [[Mana Orb]] 83.4% (with Ultra+ Mana Orb); Rare [[Rose]] 16.5%; Rare [[Mana Orb]] 16.5% (with Ultra+ Mana Orb)"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Unusual [[Light]] 6.7%; Rare [[Light]] 81.0%; Epic [[Light]] 12.3%; Unusual [[Rose]] 6.7%; Unusual [[Mana Orb]] 6.7% (with Ultra+ Mana Orb); Rare [[Rose]] 81.0%; Rare [[Mana Orb]] 81.0% (with Ultra+ Mana Orb); Epic [[Rose]] 12.3%; Epic [[Mana Orb]] 12.3% (with Ultra+ Mana Orb)"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Rare [[Light]] 7.2%; Epic [[Light]] 87.7%; Legendary [[Light]] 5.0%; Rare [[Rose]] 7.2%; Rare [[Mana Orb]] 7.2% (with Ultra+ Mana Orb); Epic [[Rose]] 87.7%; Epic [[Mana Orb]] 87.7% (with Ultra+ Mana Orb); Legendary [[Rose]] 5.0%; Legendary [[Mana Orb]] 5.0% (with Ultra+ Mana Orb)"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Epic [[Light]] 7.5%; Legendary [[Light]] 91.7%; Mythic [[Light]] 0.8%; Epic [[Rose]] 7.5%; Epic [[Mana Orb]] 7.5% (with Ultra+ Mana Orb); Legendary [[Rose]] 91.7%; Legendary [[Mana Orb]] 91.7% (with Ultra+ Mana Orb); Mythic [[Rose]] 0.8%; Mythic [[Mana Orb]] 0.8% (with Ultra+ Mana Orb)"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Legendary [[Light]] 21.2%; Mythic [[Light]] 78.3%; Ultra [[Light]] 0.5%; Legendary [[Rose]] 21.2%; Legendary [[Mana Orb]] 21.2% (with Ultra+ Mana Orb); Mythic [[Rose]] 78.3%; Mythic [[Mana Orb]] 78.3% (with Ultra+ Mana Orb); Ultra [[Rose]] 0.5%; Ultra [[Mana Orb]] 0.5% (with Ultra+ Mana Orb)"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Light]] 35.6%; Ultra [[Light]] 64.4%; Mythic [[Rose]] 35.6%; Mythic [[Mana Orb]] 35.6% (with Ultra+ Mana Orb); Ultra [[Rose]] 64.4%; Ultra [[Mana Orb]] 64.4% (with Ultra+ Mana Orb)"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Light",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Light",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Rose",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Mana_Orb",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Light]] 35.6%; Ultra [[Light]] 64.4%; Mythic [[Rose]] 35.6%; Mythic [[Mana Orb]] 35.6% (with Ultra+ Mana Orb); Ultra [[Rose]] 64.4%; Ultra [[Mana Orb]] 64.4% (with Ultra+ Mana Orb)"
+        }
+      }
+    },
+    "rock": {
+      "page": "Rock (Mob)",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Common",
+              "chance": 0.455,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Rock]] 45.5%; Unusual [[Rock]] 10.1%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Common",
+              "chance": 0.613,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Rock]] 61.3%; Unusual [[Rock]] 34.8%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Common",
+              "chance": 0.013999999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Rare",
+              "chance": 0.035,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Rock]] 1.4%; Unusual [[Rock]] 88.3%; Rare [[Rock]] 10.3%; Rare [[Heavy]] 3.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Rare",
+              "chance": 0.392,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Epic",
+              "chance": 0.026000000000000002,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Rock]] 19.7%; Rare [[Rock]] 72.7%; Epic [[Rock]] 7.6%; Rare [[Heavy]] 39.2%; Epic [[Heavy]] 2.6%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Rare",
+              "chance": 0.591,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Epic",
+              "chance": 0.39899999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Legendary",
+              "chance": 0.01,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Rock]] 20.7%; Epic [[Rock]] 76.3%; Legendary [[Rock]] 3.1%; Rare [[Heavy]] 59.1%; Epic [[Heavy]] 39.9%; Legendary [[Heavy]] 1.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Epic",
+              "chance": 0.596,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Legendary",
+              "chance": 0.402,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Mythic",
+              "chance": 0.002,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Rock]] 21.2%; Legendary [[Rock]] 78.3%; Mythic [[Rock]] 0.5%; Epic [[Heavy]] 59.6%; Legendary [[Heavy]] 40.2%; Mythic [[Heavy]] 0.2%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Legendary",
+              "chance": 0.733,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Mythic",
+              "chance": 0.266,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Ultra",
+              "chance": 0.001,
+              "condition": null
+            },
+            {
+              "petal": "Moon_Rock",
+              "rarity": "Ultra",
+              "chance": 0.0001,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Rock]] 39.4%; Mythic [[Rock]] 60.3%; Ultra [[Rock]] 0.3%; Legendary [[Heavy]] 73.3%; Mythic [[Heavy]] 26.6%; Ultra [[Heavy]] 0.1%; Ultra [[Moon Rock]] 0.01%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Mythic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Ultra",
+              "chance": 0.187,
+              "condition": null
+            },
+            {
+              "petal": "Moon_Rock",
+              "rarity": "Ultra",
+              "chance": 0.02,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Rock]] 53.8%; Ultra [[Rock]] 46.2%; Mythic [[Heavy]] 81.3%; Ultra [[Heavy]] 18.7%; Ultra [[Moon Rock]] 2.0%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Rock",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Rock",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Mythic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Heavy",
+              "rarity": "Ultra",
+              "chance": 0.187,
+              "condition": null
+            },
+            {
+              "petal": "Moon_Rock",
+              "rarity": "Ultra",
+              "chance": 0.02,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Rock]] 53.8%; Ultra [[Rock]] 46.2%; Mythic [[Heavy]] 81.3%; Ultra [[Heavy]] 18.7%; Ultra [[Moon Rock]] 2.0%"
+        }
+      }
+    },
+    "spider": {
+      "page": "Spider",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Faster]] 59.8%; Unusual [[Faster]] 16.4%; Unusual [[Web]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Faster]] 48.5%; Unusual [[Faster]] 51.2%; Unusual [[Web]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Faster]] 83.4%; Rare [[Faster]] 16.5%; Unusual [[Web]] 83.4%; Rare [[Web]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Faster]] 6.7%; Rare [[Faster]] 81.0%; Epic [[Faster]] 12.3%; Unusual [[Web]] 6.7%; Rare [[Web]] 81.0%; Epic [[Web]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Faster]] 7.2%; Epic [[Faster]] 87.7%; Legendary [[Faster]] 5.0%; Rare [[Web]] 7.2%; Epic [[Web]] 87.7%; Legendary [[Web]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.0003,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.0003,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Epic [[Faster]] 7.5%; Legendary [[Faster]] 91.7%; Mythic [[Faster]] 0.8%; Epic [[Web]] 7.5%; Legendary [[Web]] 91.7%; Mythic [[Web]] 0.8%; Mythic [[Third Eye]] 0.03%; Mythic [[Magic Eye]] 0.03% (with Ultra+ Mana Orb)"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.06,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.06,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.0002,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.0002,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Legendary [[Faster]] 21.2%; Mythic [[Faster]] 78.3%; Ultra [[Faster]] 0.5%; Legendary [[Web]] 21.2%; Mythic [[Web]] 78.3%; Ultra [[Web]] 0.5%; Mythic [[Third Eye]] 6.0%; Mythic [[Magic Eye]] 6.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 0.02%; Ultra [[Magic Eye]] 0.02% (with Ultra+ Mana Orb)"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%; Mythic [[Web]] 35.6%; Ultra [[Web]] 64.4%; Mythic [[Third Eye]] 96.0%; Mythic [[Magic Eye]] 96.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 4.0%; Ultra [[Magic Eye]] 4.0% (with Ultra+ Mana Orb)"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%; Mythic [[Web]] 35.6%; Ultra [[Web]] 64.4%; Mythic [[Third Eye]] 96.0%; Mythic [[Magic Eye]] 96.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 4.0%; Ultra [[Magic Eye]] 4.0% (with Ultra+ Mana Orb)"
+        }
+      }
+    },
+    "ant_egg": {
+      "page": "Ant Egg",
+      "drops": {}
+    },
+    "garbage": {
+      "page": "Garbage",
+      "drops": {}
+    },
+    "silverfish": {
+      "page": "Silverfish",
+      "drops": {}
+    },
+    "spider_sewer": {
+      "page": "Spider",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Faster]] 59.8%; Unusual [[Faster]] 16.4%; Unusual [[Web]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Faster]] 48.5%; Unusual [[Faster]] 51.2%; Unusual [[Web]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Faster]] 83.4%; Rare [[Faster]] 16.5%; Unusual [[Web]] 83.4%; Rare [[Web]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Faster]] 6.7%; Rare [[Faster]] 81.0%; Epic [[Faster]] 12.3%; Unusual [[Web]] 6.7%; Rare [[Web]] 81.0%; Epic [[Web]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Faster]] 7.2%; Epic [[Faster]] 87.7%; Legendary [[Faster]] 5.0%; Rare [[Web]] 7.2%; Epic [[Web]] 87.7%; Legendary [[Web]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.0003,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.0003,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Epic [[Faster]] 7.5%; Legendary [[Faster]] 91.7%; Mythic [[Faster]] 0.8%; Epic [[Web]] 7.5%; Legendary [[Web]] 91.7%; Mythic [[Web]] 0.8%; Mythic [[Third Eye]] 0.03%; Mythic [[Magic Eye]] 0.03% (with Ultra+ Mana Orb)"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.06,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.06,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.0002,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.0002,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Legendary [[Faster]] 21.2%; Mythic [[Faster]] 78.3%; Ultra [[Faster]] 0.5%; Legendary [[Web]] 21.2%; Mythic [[Web]] 78.3%; Ultra [[Web]] 0.5%; Mythic [[Third Eye]] 6.0%; Mythic [[Magic Eye]] 6.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 0.02%; Ultra [[Magic Eye]] 0.02% (with Ultra+ Mana Orb)"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%; Mythic [[Web]] 35.6%; Ultra [[Web]] 64.4%; Mythic [[Third Eye]] 96.0%; Mythic [[Magic Eye]] 96.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 4.0%; Ultra [[Magic Eye]] 4.0% (with Ultra+ Mana Orb)"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Web",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Mythic",
+              "chance": 0.96,
+              "condition": "with Ultra+ Mana Orb"
+            },
+            {
+              "petal": "Third_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Eye",
+              "rarity": "Ultra",
+              "chance": 0.04,
+              "condition": "with Ultra+ Mana Orb"
+            }
+          ],
+          "raw": "Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%; Mythic [[Web]] 35.6%; Ultra [[Web]] 64.4%; Mythic [[Third Eye]] 96.0%; Mythic [[Magic Eye]] 96.0% (with Ultra+ Mana Orb); Ultra [[Third Eye]] 4.0%; Ultra [[Magic Eye]] 4.0% (with Ultra+ Mana Orb)"
+        }
+      }
+    },
+    "leafbug": {
+      "page": "Leafbug",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 16.4%; Unusual [[Magic Leaf]] 16.4%; (while equipping Ultra+ [[Magic Orb]]) Common [[Root]] 59.8%; Unusual [[Root]] 16.4%;"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 51.2%; Unusual [[Magic Leaf]] 51.2%; (while equipping Ultra+ [[Magic Orb]]) Common [[Root]] 48.5%; Unusual [[Root]] 51.2%;"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 83.4%; Unusual [[Magic Leaf]] 83.4%; (while equipping Ultra+ [[Magic Orb]]) Rare [[Leaf]] 16.5%; Rare [[Magic Leaf]] 16.5%; (while equipping Ultra+ [[Magic Orb]]) Unusual [[Root]] 83.4%; Rare [[Root]] 16.5%;"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Leaf]] 6.7%; Unusual [[Magic Leaf]] 6.7%; (while equipping Ultra+ [[Magic Orb]]) Rare [[Leaf]] 81.0%; Rare [[Magic Leaf]] 81.0%; (while equipping Ultra+ [[Magic Orb]]) Epic [[Leaf]] 12.3%; Epic [[Magic Leaf]] 12.3%; (while equipping Ultra+ [[Magic Orb]]) Unusual [[Root]] 6.7%; Rare [[Root]] 81.0%; Epic [[Root]] 12.3%;"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Leaf]] 7.2%; Rare [[Magic Leaf]] 7.2%; (while equipping Ultra+ [[Magic Orb]]) Epic [[Leaf]] 87.7%; Epic [[Magic Leaf]] 87.7%; (while equipping Ultra+ [[Magic Orb]]) Legendary [[Leaf]] 5.0%; Legendary [[Magic Leaf]] 5.0%; (while equipping Ultra+ [[Magic Orb]]) Rare [[Root]] 7.2%; Epic [[Root]] 87.7%; Legendary [[Root]] 5.0%;"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Leaf]] 7.5%; Epic [[Magic Leaf]] 7.5%; (while equipping Ultra+ [[Magic Orb]]) Legendary [[Leaf]] 91.7%; Legendary [[Magic Leaf]] 91.7%; (while equipping Ultra+ [[Magic Orb]]) Mythic [[Leaf]] 0.8%; Mythic [[Magic Leaf]] 0.8%; (while equipping Ultra+ [[Magic Orb]]) Epic [[Root]] 7.5%; Legendary [[Root]] 91.7%; Mythic [[Root]] 0.8%;"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Leaf]] 21.2%; Legendary [[Magic Leaf]] 21.2%; (while equipping Ultra+ [[Magic Orb]]) Mythic [[Leaf]] 78.3%; Mythic [[Magic Leaf]] 78.3%; (while equipping Ultra+ [[Magic Orb]]) Ultra [[Leaf]] 0.5%; Ultra [[Magic Leaf]] 0.5%; (while equipping Ultra+ [[Magic Orb]]) Legendary [[Root]] 21.2%; Mythic [[Root]] 78.3%; Ultra [[Root]] 0.5%;"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Leaf]] 35.6%; Mythic [[Magic Leaf]] 35.6%; (while equipping Ultra+ [[Magic Orb]]) Ultra [[Leaf]] 64.4%; Ultra [[Magic Leaf]] 64.4%; (while equipping Ultra+ [[Magic Orb]]) Mythic [[Root]] 35.6%; Ultra [[Root]] 64.4%;"
+        },
+        "Eternal": {
+          "entries": [],
+          "raw": "Not listed"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Leaf",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Magic_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Leaf]] 35.6%; Mythic [[Magic Leaf]] 35.6%; (while equipping Ultra+ [[Magic Orb]]) Ultra [[Leaf]] 64.4%; Ultra [[Magic Leaf]] 64.4%; (while equipping Ultra+ [[Magic Orb]]) Mythic [[Root]] 35.6%; Ultra [[Root]] 64.4%;"
+        }
+      }
+    },
+    "golden_leafbug": {
+      "page": "Shiny Leafbug",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Common",
+              "chance": 0.46799999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.532,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Root]] 46.8%; Unusual [[Root]] 53.2%;"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Common",
+              "chance": 0.048,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.9520000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Root]] 4.8%; Unusual [[Root]] 95.2%;"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Unusual",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Rare",
+              "chance": 0.515,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Root]] 48.5%; Rare [[Root]] 51.5%;"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Rare",
+              "chance": 0.591,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Epic",
+              "chance": 0.409,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Root]] 59.1%; Epic [[Root]] 40.9%;"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Epic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Legendary",
+              "chance": 0.187,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Root]] 81.3%; Legendary [[Root]] 18.7%;"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Legendary",
+              "chance": 0.9690000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.031,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Root]] 96.9%; Mythic [[Root]] 3.1%;"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.978,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.02,
+              "condition": null
+            },
+            {
+              "petal": "Golden_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Root]] 97.8%; Ultra [[Root]] 2.0%; Ultra [[Golden Leaf]] 0.5%;"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Golden_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Root]] 1.6%; Ultra [[Root]] 98.4%; Ultra [[Golden Leaf]] 64.4%;"
+        },
+        "Eternal": {
+          "entries": [],
+          "raw": "Not listed"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Root",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Root",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Golden_Leaf",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Root]] 1.6%; Ultra [[Root]] 98.4%; Ultra [[Golden Leaf]] 64.4%;"
+        }
+      }
+    },
+    "termite_mound": {
+      "page": "Termite Mound",
+      "drops": {}
+    },
+    "baby_termite": {
+      "page": "Baby Termite",
+      "drops": {}
+    },
+    "worker_termite": {
+      "page": "Worker Termite",
+      "drops": {}
+    },
+    "soldier_termite": {
+      "page": "Soldier Termite",
+      "drops": {}
+    },
+    "termite_overmind": {
+      "page": "Termite Overmind",
+      "drops": {}
+    },
+    "scorpion": {
+      "page": "Scorpion",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Iris]] 16.4%; Unusual [[Pincer]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Iris]] 51.2%; Unusual [[Pincer]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Iris]] 83.4%; Rare [[Iris]] 16.5%; Unusual [[Pincer]] 83.4%; Rare [[Pincer]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Iris]] 6.7%; Rare [[Iris]] 81.0%; Epic [[Iris]] 12.3%; Unusual [[Pincer]] 6.7%; Rare [[Pincer]] 81.0%; Epic [[Pincer]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Iris]] 7.2%; Epic [[Iris]] 87.7%; Legendary [[Iris]] 5.0%; Rare [[Pincer]] 7.2%; Epic [[Pincer]] 87.7%; Legendary [[Pincer]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Iris]] 7.5%; Legendary [[Iris]] 91.7%; Mythic [[Iris]] 0.8%; Epic [[Pincer]] 7.5%; Legendary [[Pincer]] 91.7%; Mythic [[Pincer]] 0.8%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Iris]] 21.2%; Mythic [[Iris]] 78.3%; Ultra [[Iris]] 0.5%; Legendary [[Pincer]] 21.2%; Mythic [[Pincer]] 78.3%; Ultra [[Pincer]] 0.5%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Iris]] 35.6%; Ultra [[Iris]] 64.4%; Mythic [[Pincer]] 35.6%; Ultra [[Pincer]] 64.4%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Iris",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Iris",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Pincer",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Iris]] 35.6%; Ultra [[Iris]] 64.4%; Mythic [[Pincer]] 35.6%; Ultra [[Pincer]] 64.4%"
+        }
+      }
+    },
+    "cactus": {
+      "page": "Cactus",
+      "drops": {}
+    },
+    "trader": {
+      "page": "Trader",
+      "drops": {}
+    },
+    "bubble": {
+      "page": "Bubble (Mob)",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Common",
+              "chance": 0.46799999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Unusual",
+              "chance": 0.532,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Air]] 46.8%; Unusual [[Air]] 53.2%; Common [[Bubble]] 59.8%; Unusual [[Bubble]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Common",
+              "chance": 0.048,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Unusual",
+              "chance": 0.9520000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Air]] 4.8%; Unusual [[Air]] 95.2%; Common [[Bubble]] 48.5%; Unusual [[Bubble]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Unusual",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Rare",
+              "chance": 0.515,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Air]] 48.5%; Rare [[Air]] 51.5%; Unusual [[Bubble]] 83.4%; Rare [[Bubble]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Rare",
+              "chance": 0.591,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Epic",
+              "chance": 0.409,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Air]] 59.1%; Epic [[Air]] 40.9%; Unusual [[Bubble]] 6.7%; Rare [[Bubble]] 81.0%; Epic [[Bubble]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Epic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Legendary",
+              "chance": 0.187,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Air]] 81.3%; Legendary [[Air]] 18.7%; Rare [[Bubble]] 7.2%; Epic [[Bubble]] 87.7%; Legendary [[Bubble]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Legendary",
+              "chance": 0.9690000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Mythic",
+              "chance": 0.031,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Air]] 96.9%; Mythic [[Air]] 3.1%; Epic [[Bubble]] 7.5%; Legendary [[Bubble]] 91.7%; Mythic [[Bubble]] 0.8%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Mythic",
+              "chance": 0.978,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Ultra",
+              "chance": 0.02,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Air]] 97.8%; Ultra [[Air]] 2.0%; Legendary [[Bubble]] 21.2%; Mythic [[Bubble]] 78.3%; Ultra [[Bubble]] 0.5%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Air]] 1.6%; Ultra [[Air]] 98.4%; Mythic [[Bubble]] 35.6%; Ultra [[Bubble]] 64.4%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Air",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Air",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Bubble",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Air]] 1.6%; Ultra [[Air]] 98.4%; Mythic [[Bubble]] 35.6%; Ultra [[Bubble]] 64.4%"
+        }
+      }
+    },
+    "crab": {
+      "page": "Crab",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Common",
+              "chance": 0.191,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Unusual",
+              "chance": 0.035,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Claw]] 59.8%; Unusual [[Claw]] 16.4%; Common [[Sand]] 19.1%; Unusual [[Sand]] 3.5%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Common",
+              "chance": 0.51,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Unusual",
+              "chance": 0.132,
+              "condition": null
+            }
+          ],
+          "raw": "Common [[Claw]] 48.5%; Unusual [[Claw]] 51.2%; Common [[Sand]] 51.0%; Unusual [[Sand]] 13.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Common",
+              "chance": 0.243,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Unusual",
+              "chance": 0.722,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Rare",
+              "chance": 0.035,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Claw]] 83.4%; Rare [[Claw]] 16.5%; Common [[Sand]] 24.3%; Unusual [[Sand]] 72.2%; Rare [[Sand]] 3.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Unusual",
+              "chance": 0.5820000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Rare",
+              "chance": 0.392,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Epic",
+              "chance": 0.026000000000000002,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Claw]] 6.7%; Rare [[Claw]] 81.0%; Epic [[Claw]] 12.3%; Unusual [[Sand]] 58.2%; Rare [[Sand]] 39.2%; Epic [[Sand]] 2.6%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Rare",
+              "chance": 0.591,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Epic",
+              "chance": 0.39899999999999997,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Legendary",
+              "chance": 0.01,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Claw]] 7.2%; Epic [[Claw]] 87.7%; Legendary [[Claw]] 5.0%; Rare [[Sand]] 59.1%; Epic [[Sand]] 39.9%; Legendary [[Sand]] 1.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Epic",
+              "chance": 0.596,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Legendary",
+              "chance": 0.402,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Mythic",
+              "chance": 0.002,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Claw]] 7.5%; Legendary [[Claw]] 91.7%; Mythic [[Claw]] 0.8%; Epic [[Sand]] 59.6%; Legendary [[Sand]] 40.2%; Mythic [[Sand]] 0.2%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Legendary",
+              "chance": 0.733,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Mythic",
+              "chance": 0.266,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Ultra",
+              "chance": 0.001,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Claw]] 21.2%; Mythic [[Claw]] 78.3%; Ultra [[Claw]] 0.5%; Legendary [[Sand]] 73.3%; Mythic [[Sand]] 26.6%; Ultra [[Sand]] 0.1%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Mythic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Ultra",
+              "chance": 0.187,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Claw]] 35.6%; Ultra [[Claw]] 64.4%; Mythic [[Sand]] 81.3%; Ultra [[Sand]] 18.7%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Claw",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Claw",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Mythic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Sand",
+              "rarity": "Ultra",
+              "chance": 0.187,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Claw]] 35.6%; Ultra [[Claw]] 64.4%; Mythic [[Sand]] 81.3%; Ultra [[Sand]] 18.7%"
+        }
+      }
+    },
+    "jellyfish": {
+      "page": "Jellyfish",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Unusual",
+              "chance": 0.10099999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Lightning]] 10.1%; Common [[Jelly]] 59.8%; Unusual [[Jelly]] 16.4%"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Unusual",
+              "chance": 0.348,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Lightning]] 34.8%; Common [[Jelly]] 48.5%; Unusual [[Jelly]] 51.2%"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Unusual",
+              "chance": 0.883,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Rare",
+              "chance": 0.10300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Lightning]] 88.3%; Rare [[Lightning]] 10.3%; Unusual [[Jelly]] 83.4%; Rare [[Jelly]] 16.5%"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Unusual",
+              "chance": 0.19699999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Rare",
+              "chance": 0.727,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Epic",
+              "chance": 0.076,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Lightning]] 19.7%; Rare [[Lightning]] 72.7%; Epic [[Lightning]] 7.6%; Unusual [[Jelly]] 6.7%; Rare [[Jelly]] 81.0%; Epic [[Jelly]] 12.3%"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Rare",
+              "chance": 0.207,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Epic",
+              "chance": 0.763,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Legendary",
+              "chance": 0.031,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Lightning]] 20.7%; Epic [[Lightning]] 76.3%; Legendary [[Lightning]] 3.1%; Rare [[Jelly]] 7.2%; Epic [[Jelly]] 87.7%; Legendary [[Jelly]] 5.0%"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Epic",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Legendary",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Mythic",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Lightning]] 21.2%; Legendary [[Lightning]] 78.3%; Mythic [[Lightning]] 0.5%; Epic [[Jelly]] 7.5%; Legendary [[Jelly]] 91.7%; Mythic [[Jelly]] 0.8%"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Legendary",
+              "chance": 0.39399999999999996,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Mythic",
+              "chance": 0.603,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Ultra",
+              "chance": 0.003,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Legendary",
+              "chance": 0.856,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Mythic",
+              "chance": 0.14300000000000002,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Ultra",
+              "chance": 0.0005,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Lightning]] 39.4%; Mythic [[Lightning]] 60.3%; Ultra [[Lightning]] 0.3%; Legendary [[Jelly]] 85.6%; Mythic [[Jelly]] 14.3%; Ultra [[Jelly]] 0.05%"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Mythic",
+              "chance": 0.773,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Ultra",
+              "chance": 0.22699999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Lightning]] 53.8%; Ultra [[Lightning]] 46.2%; Mythic [[Jelly]] 77.3%; Ultra [[Jelly]] 22.7%"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Lightning",
+              "rarity": "Mythic",
+              "chance": 0.5379999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Lightning",
+              "rarity": "Ultra",
+              "chance": 0.462,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Mythic",
+              "chance": 0.773,
+              "condition": null
+            },
+            {
+              "petal": "Jelly",
+              "rarity": "Ultra",
+              "chance": 0.22699999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Lightning]] 53.8%; Ultra [[Lightning]] 46.2%; Mythic [[Jelly]] 77.3%; Ultra [[Jelly]] 22.7%"
+        }
+      }
+    },
+    "leech": {
+      "page": "Leech",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.598,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.16399999999999998,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Fang]] 16.4%; Common [[Faster]] 59.8%; Unusual [[Faster]] 16.4%;"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Common",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.512,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Fang]] 51.2%; Common [[Faster]] 48.5%; Unusual [[Faster]] 51.2%;"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.8340000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.165,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Fang]] 83.4%; Rare [[Fang]] 16.5%; Unusual [[Faster]] 83.4%; Rare [[Faster]] 16.5%;"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Unusual",
+              "chance": 0.067,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.81,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.12300000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Fang]] 6.7%; Rare [[Fang]] 81.0%; Epic [[Fang]] 12.3%; Unusual [[Faster]] 6.7%; Rare [[Faster]] 81.0%; Epic [[Faster]] 12.3%;"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Rare",
+              "chance": 0.07200000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.877,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.05,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Fang]] 7.2%; Epic [[Fang]] 87.7%; Legendary [[Fang]] 5.0%; Rare [[Faster]] 7.2%; Epic [[Faster]] 87.7%; Legendary [[Faster]] 5.0%;"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Epic",
+              "chance": 0.075,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.917,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.008,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Fang]] 7.5%; Legendary [[Fang]] 91.7%; Mythic [[Fang]] 0.8%; Epic [[Faster]] 7.5%; Legendary [[Faster]] 91.7%; Mythic [[Faster]] 0.8%;"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Legendary",
+              "chance": 0.212,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.7829999999999999,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.005,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Fang]] 21.2%; Mythic [[Fang]] 78.3%; Ultra [[Fang]] 0.5%; Legendary [[Faster]] 21.2%; Mythic [[Faster]] 78.3%; Ultra [[Faster]] 0.5%;"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Fang]] 35.6%; Ultra [[Fang]] 64.4%; Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%;"
+        },
+        "Eternal": {
+          "entries": [],
+          "raw": "Not listed"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Fang",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Fang",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Mythic",
+              "chance": 0.35600000000000004,
+              "condition": null
+            },
+            {
+              "petal": "Faster",
+              "rarity": "Ultra",
+              "chance": 0.644,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Fang]] 35.6%; Ultra [[Fang]] 64.4%; Mythic [[Faster]] 35.6%; Ultra [[Faster]] 64.4%;"
+        }
+      }
+    },
+    "shell": {
+      "page": "Shell",
+      "drops": {}
+    },
+    "sponge": {
+      "page": "Sponge",
+      "drops": {}
+    },
+    "starfish": {
+      "page": "Starfish",
+      "drops": {}
+    },
+    "oracle": {
+      "page": "Oracle",
+      "drops": {}
+    },
+    "mecha_wasp": {
+      "page": "Mecha Wasp",
+      "drops": {}
+    },
+    "mecha_crab": {
+      "page": "Mecha Crab",
+      "drops": {}
+    },
+    "mecha_spider": {
+      "page": "Mecha Spider",
+      "drops": {}
+    },
+    "barrel": {
+      "page": "Barrel",
+      "drops": {}
+    },
+    "assembler": {
+      "page": "Assembler",
+      "drops": {}
+    },
+    "termite_egg": {
+      "page": "Termite Egg",
+      "drops": {}
+    },
+    "ghost": {
+      "page": "Ghost",
+      "drops": {
+        "Common": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Unusual",
+              "chance": 0.532,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Basic]] 53.2%;"
+        },
+        "Unusual": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Unusual",
+              "chance": 0.9520000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Basic]] 95.2%;"
+        },
+        "Rare": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Unusual",
+              "chance": 0.485,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Rare",
+              "chance": 0.515,
+              "condition": null
+            }
+          ],
+          "raw": "Unusual [[Basic]] 48.5%; Rare [[Basic]] 51.5%;"
+        },
+        "Epic": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Rare",
+              "chance": 0.591,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Epic",
+              "chance": 0.409,
+              "condition": null
+            }
+          ],
+          "raw": "Rare [[Basic]] 59.1%; Epic [[Basic]] 40.9%;"
+        },
+        "Legendary": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Epic",
+              "chance": 0.813,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Legendary",
+              "chance": 0.187,
+              "condition": null
+            }
+          ],
+          "raw": "Epic [[Basic]] 81.3%; Legendary [[Basic]] 18.7%;"
+        },
+        "Mythic": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Legendary",
+              "chance": 0.9690000000000001,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Mythic",
+              "chance": 0.031,
+              "condition": null
+            }
+          ],
+          "raw": "Legendary [[Basic]] 96.9%; Mythic [[Basic]] 3.1%;"
+        },
+        "Ultra": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Mythic",
+              "chance": 0.978,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Ultra",
+              "chance": 0.02,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Basic]] 97.8%; Ultra [[Basic]] 2.0%;"
+        },
+        "Super": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Basic]] 1.6%; Ultra [[Basic]] 98.4%;"
+        },
+        "Eternal": {
+          "entries": [],
+          "raw": "Not listed"
+        },
+        "Unique": {
+          "entries": [
+            {
+              "petal": "Basic",
+              "rarity": "Mythic",
+              "chance": 0.016,
+              "condition": null
+            },
+            {
+              "petal": "Basic",
+              "rarity": "Ultra",
+              "chance": 0.9840000000000001,
+              "condition": null
+            }
+          ],
+          "raw": "Mythic [[Basic]] 1.6%; Ultra [[Basic]] 98.4%;"
+        }
+      }
+    },
+    "tomb": {
+      "page": "Tomb",
+      "drops": {}
+    },
+    "crystal_mob": {
+      "page": "Crystal",
+      "drops": {}
+    }
+  },
+  "missing": {
+    "bumble_bee": "The page you specified doesn't exist.",
+    "centipede": "The page you specified doesn't exist.",
+    "evil_centipede": "The page you specified doesn't exist.",
+    "digger": "The page you specified doesn't exist.",
+    "hornet": "The page you specified doesn't exist.",
+    "fly": "The page you specified doesn't exist.",
+    "moth": "The page you specified doesn't exist.",
+    "roach": "The page you specified doesn't exist.",
+    "bush": "The page you specified doesn't exist.",
+    "wasp": "The page you specified doesn't exist.",
+    "mantis": "The page you specified doesn't exist.",
+    "firefly": "The page you specified doesn't exist.",
+    "magic_firefly": "The page you specified doesn't exist.",
+    "ladybug_jungle": "The page you specified doesn't exist.",
+    "beetle": "The page you specified doesn't exist.",
+    "desert_centipede": "The page you specified doesn't exist.",
+    "shiny_ladybug": "The page you specified doesn't exist.",
+    "sandstorm": "The page you specified doesn't exist.",
+    "fire_ant_burrow": "The page you specified doesn't exist.",
+    "soldier_fire_ant": "The page you specified doesn't exist.",
+    "nazar_beetle": "The page you specified doesn't exist.",
+    "mummy_beetle": "The page you specified doesn't exist.",
+    "scallop": "The page you specified doesn't exist.",
+    "diver_soldier_ant": "The page you specified doesn't exist.",
+    "mecha_flower": "The page you specified doesn't exist.",
+    "baby_fire_ant": "The page you specified doesn't exist.",
+    "worker_fire_ant": "The page you specified doesn't exist.",
+    "queen_fire_ant": "The page you specified doesn't exist.",
+    "fire_ant_egg": "The page you specified doesn't exist.",
+    "worm": "The page you specified doesn't exist.",
+    "hel_beetle": "The page you specified doesn't exist.",
+    "hel_wasp": "The page you specified doesn't exist.",
+    "hel_centipede": "The page you specified doesn't exist.",
+    "hel_spider": "The page you specified doesn't exist.",
+    "gambler": "The page you specified doesn't exist.",
+    "pharaoh_beetle": "The page you specified doesn't exist.",
+    "titan": "The page you specified doesn't exist.",
+    "square_mob": "The page you specified doesn't exist."
+  }
+}

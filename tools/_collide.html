@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;background:#0b0b0b;color:#dcdcdc;font:12px/1.5 monospace;padding:8px}
+  table{border-collapse:collapse;margin:4px 0 10px}
+  td,th{border:1px solid #333;padding:1px 8px}
+  th{background:#181818;color:#8cf}
+  canvas{display:block;image-rendering:pixelated;margin-top:6px}
+  .k{color:#8cf}
+</style></head><body><div id="out"></div>
+<script src="_mapdata_factory.js"></script>
+<script src="_mapdata.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const WHICH = q.get('m') || 'sw';
+const MAP = WHICH==='fac' ? window.MAPDATA_FACTORY : window.MAPDATA;
+const TL  = WHICH==='fac' ? window.MAPTILES_FACTORY : window.MAPTILES;
+const TS  = WHICH==='fac' ? window.TSMAP_FACTORY : window.TSMAP;
+
+const SUB = 16, SUBP = SUB*SUB, TILE = 128;
+const SOLID_FAMILIES = new Set(['dirt','water','sewage','castle','organic_wall','factory_wall',
+                                'bush','coral','scliff','hut','pyramid_wall']);
+// mode=swap：下水道把 grate 当墙、sewage 当地面（用户说法）
+const SOLID_SWAP = new Set(['dirt','water','grate','castle','organic_wall','factory_wall',
+                            'bush','coral','scliff','hut','pyramid_wall']);
+let SOLIDSET = SOLID_FAMILIES;
+const VAR = new Set(['c','l','r','t','b','tl','tr','bl','br','tli','tri','bri','bli']);
+function fam(fn){ const p=String(fn||'').replace(/\.svg$/i,'').split('_');
+  while(p.length&&(VAR.has(p[p.length-1])||/^\d+$/.test(p[p.length-1])))p.pop(); return p.join('_'); }
+const solidGid = g => g ? SOLIDSET.has(fam(TS[g])) : false;
+
+const cv = document.createElement('canvas'); cv.width=SUB; cv.height=SUB;
+const cx = cv.getContext('2d',{willReadFrequently:true});
+const loadImg = url => new Promise(r=>{ if(!url) return r(null); const i=new Image(); i.onload=()=>r(i); i.onerror=()=>r(null); i.src=url; });
+const SUBMASK = {};
+function subMask(gid, fn, img){
+  if(SUBMASK[gid]) return SUBMASK[gid];
+  if(!img){ const v={m:null,u:1}; SUBMASK[gid]=v; return v; }
+  cx.clearRect(0,0,SUB,SUB); cx.drawImage(img,0,0,SUB,SUB);
+  const d = cx.getImageData(0,0,SUB,SUB).data;
+  const m = new Uint8Array(SUBP); let op=0;
+  for(let i=0;i<SUBP;i++){ if(d[i*4+3]>80){ m[i]=1; op++; } }
+  const v = {m, u: op===SUBP?1:(op===0?0:-1)};
+  SUBMASK[gid]=v; return v;
+}
+const MODE = q.get('mode') || 'new';   // new | old（顶层地块决定，透明即放行）| swap
+if(MODE==='swap') SOLIDSET = SOLID_SWAP;
+if(q.get('extra')) SOLIDSET = new Set([...SOLIDSET, ...q.get('extra').split(',')]);
+if(q.get('minus')){ const mi=new Set(q.get('minus').split(',')); SOLIDSET = new Set([...SOLIDSET].filter(f=>!mi.has(f))); }
+
+(async ()=>{
+  const out = document.getElementById('out');
+  const W = MAP.width, H = MAP.height;
+  const layers = MAP.layers.map(L=>atob(L.b64));
+  const nL = layers.length;
+
+  // 图片
+  const imgs = {};
+  const used = new Set();
+  for(const L of layers) for(let i=0;i<L.length;i+=2){ const g=L.charCodeAt(i); if(g&&TS[g]) used.add(g); }
+  for(const g of used){ imgs[g] = await loadImg(TL[TS[g]]); }
+
+  // 掩码 + 碰撞
+  const fine = new Uint8Array(W*SUB*H*SUB);
+  const coarse = new Uint8Array(W*H);
+  const tmp = new Uint8Array(SUBP);
+  const gidStack = [];
+  for(let ty=0; ty<H; ty++) for(let tx=0; tx<W; tx++){
+    const o = (ty*W+tx)*2;
+    gidStack.length = 0;
+    for(let li=nL-1; li>=0; li--){ const g=layers[li].charCodeAt(o); if(g) gidStack.push(g); }
+    tmp.fill(0);
+    if(gidStack.length){
+      const top = gidStack[0];
+      if(solidGid(top)){
+        const info = subMask(top, TS[top], imgs[top]);
+        if(info.u===1) tmp.fill(1);
+        else if(info.u!==0){
+          for(let s=0;s<SUBP;s++) if(info.m[s]) tmp[s]=1;
+          if(MODE!=='old'){
+            for(let si=1; si<gidStack.length; si++){
+              const g2 = gidStack[si];
+              if(!solidGid(g2)) break;
+              const i2 = subMask(g2, TS[g2], imgs[g2]);
+              if(i2.u===1){ tmp.fill(1); break; }
+            }
+          }
+        }
+      }
+    }
+    let blocked=0;
+    for(let s=0;s<SUBP;s++) if(tmp[s]) blocked++;
+    coarse[ty*W+tx] = blocked > SUBP*0.5 ? 1 : 0;
+    const base=(ty*SUB)*(W*SUB)+tx*SUB;
+    for(let oy=0;oy<SUB;oy++) for(let ox=0;ox<SUB;ox++) fine[base+oy*(W*SUB)+ox]=tmp[oy*SUB+ox];
+  }
+
+  // 连通域（可走粗格）
+  const comp = new Int32Array(W*H); let nComp=0, mainSize=0, mainLabel=0;
+  const stack=[]; const sizes=[];
+  for(let i=0;i<W*H;i++){
+    if(coarse[i]||comp[i]) continue;
+    nComp++; comp[i]=nComp; stack.length=0; stack.push(i); let cnt=0;
+    while(stack.length){
+      const k=stack.pop(); cnt++;
+      const x=k%W, y=(k-x)/W;
+      if(x>0&&!coarse[k-1]&&!comp[k-1]){comp[k-1]=nComp;stack.push(k-1);}
+      if(x<W-1&&!coarse[k+1]&&!comp[k+1]){comp[k+1]=nComp;stack.push(k+1);}
+      if(y>0&&!coarse[k-W]&&!comp[k-W]){comp[k-W]=nComp;stack.push(k-W);}
+      if(y<H-1&&!coarse[k+W]&&!comp[k+W]){comp[k+W]=nComp;stack.push(k+W);}
+    }
+    sizes[nComp]=cnt;
+    if(cnt>mainSize){ mainSize=cnt; mainLabel=nComp; }
+  }
+  let solidN=0; for(let i=0;i<W*H;i++) if(coarse[i]) solidN++;
+
+  // ---- 画面 vs 碰撞 的一致性检查 ----
+  // visSolid：某个子格上「肉眼看到的最上层不透明地块」属于墙家族吗
+  let mA=0, mB=0;                 // A=看不见的墙  B=穿墙
+  const mism = new Uint8Array(W*SUB*H*SUB);
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+    const gs=[]; const o=(ty*W+tx)*2;
+    for(let li=nL-1;li>=0;li--){ const g=layers[li].charCodeAt(o); if(g) gs.push(g); }
+    const infoFor = gs.map(g=>({g, i:subMask(g,TS[g],imgs[g])}));
+    const base2=(ty*SUB)*(W*SUB)+tx*SUB;
+    for(let sy=0;sy<SUB;sy++) for(let sx=0;sx<SUB;sx++){
+      const s=sy*SUB+sx;
+      let vis = -1;                       // -1 = 什么都看不到
+      for(const it of infoFor){ if(it.i.m && it.i.m[s]){ vis = solidGid(it.g)?1:0; break; } }
+      const col = fine[base2+sy*(W*SUB)+sx];
+      if(col && vis===0){ mA++; mism[base2+sy*(W*SUB)+sx]=1; }
+      else if(!col && vis===1){ mB++; mism[base2+sy*(W*SUB)+sx]=2; }
+    }
+  }
+
+  // 各家族统计
+  const famStat={};
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){ const o=(ty*W+tx)*2; let g=0;
+    for(let li=nL-1;li>=0;li--){const v=layers[li].charCodeAt(o); if(v){g=v;break;}}
+    if(!g) continue; const f=fam(TS[g])||('?'+g);
+    famStat[f]=famStat[f]||[0,0]; famStat[f][coarse[ty*W+tx]?0:1]++;
+  }
+
+  out.innerHTML =
+    '<div><span class="k">map</span> '+WHICH+' '+W+'x'+H+'  <span class="k">mode</span> '+MODE+
+    '  <span class="k">粗糙阻挡</span> '+solidN+'/'+(W*H)+' ('+(100*solidN/(W*H)).toFixed(1)+'%)'+
+    '  <span class="k">连通块</span> '+nComp+'  <span class="k">主区</span> '+mainSize+
+    ' ('+(100*mainSize/Math.max(1,W*H-solidN)).toFixed(1)+'% of free)</div>'
+    +'<div><span class="k">看不见的墙</span> '+mA+' 子格   <span class="k">穿墙</span> '+mB+' 子格'+
+    '   (总子格 '+(W*SUB*H*SUB)+')</div>'
+    +'<table><tr><th>family</th><th>blocked</th><th>walk</th></tr>'+
+     Object.entries(famStat).sort((a,b)=>(b[1][0]+b[1][1])-(a[1][0]+a[1][1]))
+       .map(([f,[b,w]])=>'<tr><td>'+f+'</td><td>'+b+'</td><td>'+w+'</td></tr>').join('')+'</table>';
+
+  // 画：底图（或家族色块）+ 阻挡红叠
+  const cr = (q.get('crop')||'').split(',').map(v=>parseInt(v,10));   // x0,y0,w,h
+  const hasCrop = cr.length===4 && !isNaN(cr[0]);
+  const cx0 = hasCrop?cr[0]:0, cy0 = hasCrop?cr[1]:0;
+  const cw = hasCrop?cr[2]:W, chh = hasCrop?cr[3]:H;
+  const cell = hasCrop ? (parseInt(q.get('cell')||'0',10) || 32) : (W>100?6:8);
+  const base = document.createElement('canvas'); base.width=cw*cell; base.height=chh*cell;
+  const gb = base.getContext('2d'); gb.imageSmoothingEnabled=false;
+  const FAMCOL = {'factory_floor':'#cfd6cc','factory_wall':'#c94a4a','vent':'#4a90c9',
+                  'grate':'#e08a3c','dirt':'#8a5a2b','sewage':'#8a9a3a'};
+  if(q.get('famcolor')){
+    for(let ty=cy0;ty<cy0+chh;ty++) for(let tx=cx0;tx<cx0+cw;tx++){
+      const o=(ty*W+tx)*2; let g=0;
+      for(let li=nL-1;li>=0;li--){ const v=layers[li].charCodeAt(o); if(v){g=v;break;} }
+      const f = g ? fam(TS[g]) : '';
+      gb.fillStyle = FAMCOL[f] || '#555';
+      gb.fillRect((tx-cx0)*cell,(ty-cy0)*cell,cell,cell);
+    }
+  } else {
+    for(let li=0; li<nL; li++){
+      const L=layers[li];
+      for(let ty=cy0;ty<cy0+chh;ty++) for(let tx=cx0;tx<cx0+cw;tx++){
+        const gd=L.charCodeAt((ty*W+tx)*2); if(!gd) continue;
+        const im=imgs[gd]; if(im) gb.drawImage(im, (tx-cx0)*cell, (ty-cy0)*cell, cell, cell);
+      }
+    }
+  }
+  if(!q.get('nomask')){
+    const g2 = base.getContext('2d');
+    const px = cell/SUB;
+    for(let ty=cy0;ty<cy0+chh;ty++) for(let tx=cx0;tx<cx0+cw;tx++){
+      if(!coarse[ty*W+tx]) continue;
+      const base2=(ty*SUB)*(W*SUB)+tx*SUB;
+      for(let sy=0;sy<SUB;sy++) for(let sx=0;sx<SUB;sx++){
+        if(fine[base2+sy*(W*SUB)+sx]){ g2.fillStyle='rgba(255,40,40,0.5)'; g2.fillRect((tx-cx0)*cell+sx*px, (ty-cy0)*cell+sy*px, px, px); }
+      }
+    }
+  }
+  if(hasCrop){   // 网格线
+    gb.strokeStyle='rgba(0,180,255,0.35)'; gb.lineWidth=1;
+    for(let i=0;i<=cw;i++){ gb.beginPath(); gb.moveTo(i*cell+.5,0); gb.lineTo(i*cell+.5,chh*cell); gb.stroke(); }
+    for(let i=0;i<=chh;i++){ gb.beginPath(); gb.moveTo(0,i*cell+.5); gb.lineTo(cw*cell,i*cell+.5); gb.stroke(); }
+  }
+  out.appendChild(base);
+  document.title = 'READY '+WHICH+' '+MODE+' solid='+solidN+' comps='+nComp+' main='+mainSize;
+})();
+</script></body></html>

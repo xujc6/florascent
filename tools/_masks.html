@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;background:#0d0d0d;color:#ddd;font:12px/1.45 monospace}
+  #wrap{padding:10px 12px}
+  table{border-collapse:collapse;margin:6px 0 12px}
+  td,th{border:1px solid #333;padding:2px 7px;text-align:left}
+  th{background:#1b1b1b;color:#9cf}
+  .warn{color:#ff6b6b;font-weight:bold}
+  canvas{display:block;image-rendering:pixelated;margin:6px 0}
+  h2{font-size:13px;margin:14px 0 4px;color:#9cf}
+</style></head><body><div id="wrap"></div>
+<script src="_mapdata_factory.js"></script>
+<script src="_mapdata.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const WHICH = q.get('m')==='fac' ? 'f' : 's';
+const DATA = (WHICH==='f') ? window.MAPDATA_FACTORY : null;   // 见下方 hint
+const wrap = document.getElementById('wrap');
+function h(t){ const d=document.createElement('div'); d.className='h'; d.innerHTML=t; wrap.appendChild(d); return d; }
+
+const SUB = 16, TILE = 128;
+const VAR = new Set(['c','l','r','t','b','tl','tr','bl','br','tli','tri','bri','bli']);
+function fam(fn){
+  const parts = String(fn||'').replace(/\.svg$/i,'').split('_');
+  while(parts.length && (VAR.has(parts[parts.length-1]) || /^\d+$/.test(parts[parts.length-1]))) parts.pop();
+  return parts.join('_');
+}
+const cv = document.createElement('canvas'); cv.width=SUB; cv.height=SUB;
+const cx = cv.getContext('2d', {willReadFrequently:true});
+
+function loadImg(url){ return new Promise(res=>{ if(!url) return res(null); const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null); im.src=url; }); }
+
+function maskOf(im){
+  if(!im) return null;
+  cx.setTransform(1,0,0,1,0,0); cx.clearRect(0,0,SUB,SUB);
+  cx.drawImage(im, 0,0,SUB,SUB);
+  let d;
+  try { d = cx.getImageData(0,0,SUB,SUB).data; } catch(e){ return {err:'TAINTED'}; }
+  const m = new Uint8Array(SUB*SUB); let op=0;
+  for(let i=0;i<SUB*SUB;i++){ if(d[i*4+3] > 80){ m[i]=1; op++; } }
+  return {m, op, full: op===SUB*SUB, none: op===0};
+}
+
+(async ()=>{
+  const TM = window.TSMAP;
+  const M  = (WHICH==='f') ? window.MAPDATA_FACTORY : window.MAPDATA;
+  if(!M){ h('<div class="warn">无地图数据</div>'); return; }
+  const used = new Set();
+  for(const L of M.layers){ const b = atob(L.b64); for(let i=0;i<b.length;i+=2){ const g=b.charCodeAt(i); if(g&&TM[g]) used.add(TM[g]); } }
+  const imgs = {};
+  await Promise.all([...used].map(async fn=>{ imgs[fn] = await loadImg(window.MAPTILES[fn]); }));
+
+  // ---- 每张地块的 alpha 覆盖率 ----
+  let rows = '';
+  const masks = {};
+  for(const fn of [...used].sort()){
+    const im = imgs[fn];
+    if(!im){ rows += '<tr><td>'+fn+'</td><td class="warn">图片缺失</td></tr>'; continue; }
+    // 用高分辨率采样再降到 16x16，和游戏一致（游戏是直接 16x16 drawImage）
+    const mk = maskOf(im);
+    masks[fn] = mk;
+    if(!mk || mk.err){ rows += '<tr><td>'+fn+'</td><td class="warn">'+(mk&&mk.err)+'</td></tr>'; continue; }
+    const pct = Math.round(mk.op/(SUB*SUB)*100);
+    const cls = (pct>0 && pct<100 && fam(fn)!=='') ? '' : '';
+    rows += '<tr><td>'+fn+'</td><td>'+pct+'%</td><td>'+(mk.full?'FULL':(mk.none?'EMPTY':'PARTIAL'))+'</td><td>'+fam(fn)+'</td></tr>';
+  }
+  h('<h2>1. 每张地块在 16x16 采样下的不透明覆盖率（游戏读 alpha>80 判墙）</h2>'
+    +'<table><tr><th>file</th><th>opaque%</th><th>类型</th><th>family</th></tr>'+rows+'</table>');
+
+  // ---- 全图渲染 + 按顶层家族的 alpha 掩码叠加 ----
+  const W=M.width,H=M.height;
+  const SOLID = new Set(['dirt','water','sewage','castle','organic_wall','factory_wall','bush','coral','scliff','hut','pyramid_wall']);
+  const cell = 4;   // 4px per tile
+  const c1 = document.createElement('canvas'); c1.width=W*cell; c1.height=H*cell;
+  const g1 = c1.getContext('2d'); g1.imageSmoothingEnabled=false;
+  for(const L of M.layers){
+    const b = atob(L.b64);
+    for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+      const gd = b.charCodeAt((ty*W+tx)*2); if(!gd) continue;
+      const im = imgs[TM[gd]]; if(im) g1.drawImage(im, tx*cell, ty*cell, cell, cell);
+    }
+  }
+  // 顶层
+  const layers = M.layers.map(L=>atob(L.b64));
+  const topG = new Array(W*H).fill(0);
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+    const o=(ty*W+tx)*2; let gd=0;
+    for(let li=layers.length-1;li>=0;li--){ const v=layers[li].charCodeAt(o); if(v){gd=v;break;} }
+    topG[ty*W+tx]=gd;
+  }
+  // 统计：按顶层 gid 的 alpha 覆盖率决定该格 0/50/100% 阻挡，画成红色
+  const c2 = document.createElement('canvas'); c2.width=W*cell; c2.height=H*cell;
+  const g2 = c2.getContext('2d');
+  g2.drawImage(c1,0,0);
+  let statBlock=0, statFree=0, statHole=0;
+  for(let ty=0;ty<H;ty++) for(let tx=0;tx<W;tx++){
+    const gd = topG[ty*W+tx]; if(!gd) continue;
+    const fn = TM[gd]; const f = fam(fn);
+    if(!SOLID.has(f)) { statFree++; continue; }
+    const mk = masks[fn];
+    if(!mk || mk.err || mk.full){ g2.fillStyle='rgba(255,45,45,0.75)'; g2.fillRect(tx*cell,ty*cell,cell,cell); statBlock++; continue; }
+    if(mk.none){ statHole++; continue; }
+    // 部分透明：按 16x16 逐格画
+    const px = cell/SUB;
+    let any=0;
+    for(let sy=0;sy<SUB;sy++) for(let sx=0;sx<SUB;sx++){
+      if(mk.m[sy*SUB+sx]){ any++; g2.fillStyle='rgba(255,45,45,0.75)'; g2.fillRect(tx*cell+sx*px, ty*cell+sy*px, px, px); }
+    }
+    if(any) statBlock++; else statHole++;
+  }
+  h('<h2>2. 全图 + 当前判定（红=阻挡，半格按 alpha 掩码；空=墙族但透明）</h2>'
+    +'<div>阻挡格 '+statBlock+' / 可走格 '+statFree+' / 墙族但全透明 '+statHole+'</div>');
+  wrap.appendChild(c2);
+
+  document.title = 'READY '+WHICH+' '+statBlock+'/'+statFree+'/'+statHole;
+})();
+</script>
+</body></html>

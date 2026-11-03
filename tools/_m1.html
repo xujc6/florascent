@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#111;color:#ddd;font:13px/1.35 monospace}
+.row{display:flex;gap:18px;padding:10px;align-items:flex-start}
+.box{white-space:pre;letter-spacing:1px}
+h4{margin:0 0 4px;color:#9cf;font:12px monospace}
+</style></head><body><div class="row" id="out"></div>
+<script>
+const _q0 = new URLSearchParams(location.search);
+document.write('<script src="' + (_q0.get('d') || '_mapdata') + '.js"><\/script>');
+</script>
+<script>
+const q = new URLSearchParams(location.search);
+const SUF = (q.get('d') || '_mapdata').replace('_mapdata', '').toUpperCase();
+const TILEMAP = window['MAPTILES' + SUF] || window.MAPTILES || {};
+const SUB = 16, SUBP = SUB*SUB;
+const names = (q.get('n') || 'grate_c_0,sewage_c_0,dirt_c_0').split(',');
+const out = document.getElementById('out');
+function maskOf(fn){
+  const src = TILEMAP[fn] || TILEMAP[fn + '.svg'];
+  if(!src) return Promise.resolve(null);
+  return new Promise(res=>{
+    const im = new Image();
+    im.onload = ()=>{
+      const c = document.createElement('canvas'); c.width=SUB; c.height=SUB;
+      const g = c.getContext('2d');
+      g.imageSmoothingEnabled = false;
+      g.drawImage(im, 0,0, SUB,SUB);
+      const d = g.getImageData(0,0,SUB,SUB).data;
+      const m = [];
+      let op = 0;
+      for(let i=0;i<SUBP;i++){ const v = d[i*4+3] > 80 ? 1 : 0; m.push(v); if(v) op++; }
+      res({m, pct: Math.round(op/SUBP*100)});
+    };
+    im.onerror = ()=>res(null);
+    im.src = src;
+  });
+}
+(async ()=>{
+  for(const fn of names){
+    const r = await maskOf(fn);
+    const div = document.createElement('div'); div.className='box';
+    if(!r){ div.innerHTML = '<h4>'+fn+' (missing)</h4>'; out.appendChild(div); continue; }
+    let txt = '';
+    for(let y=0;y<SUB;y++){
+      let line='';
+      for(let x=0;x<SUB;x++) line += r.m[y*SUB+x] ? '#' : '.';
+      txt += line + '\n';
+    }
+    div.innerHTML = '<h4>'+fn+'  opaque '+r.pct+'%</h4><pre style="margin:0">'+txt+'</pre>';
+    out.appendChild(div);
+  }
+  document.title = 'done';
+})();
+</script></body></html>

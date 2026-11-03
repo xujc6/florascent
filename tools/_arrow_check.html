@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+// 量原版截图中「移动箭头」的尺寸：灰色像素（低饱和、非沙地色）
+const img = new Image();
+img.onload = ()=>{
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const g = c.getContext('2d');
+  g.drawImage(img,0,0);
+  const W=c.width, H=c.height;
+  const d = g.getImageData(0,0,W,H).data;
+  const cx = Math.round(W/2), cy = Math.round(H/2);
+  let x0=1e9,y0=1e9,x1=-1,y1=-1,n=0;
+  const pts=[];
+  for(let y=cy-160; y<cy+160; y++){
+    for(let x=cx-160; x<cx+160; x++){
+      const i=(y*W+x)*4, r=d[i], gg=d[i+1], b=d[i+2];
+      const mx=Math.max(r,gg,b), mn=Math.min(r,gg,b);
+      const dx=x-cx, dy=y-cy;
+      if(Math.hypot(dx,dy) < 60) continue;          // 跳过小花本体/花瓣
+      if(mx-mn<16 && r>70 && r<205){                 // 中性灰
+        n++; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y;
+        pts.push([x,y]);
+      }
+    }
+  }
+  // 距离小花的最近/最远像素 => 箭头起点/终点
+  let dmin=1e9,dmax=-1;
+  for(const [x,y] of pts){ const dd=Math.hypot(x-cx,y-cy); if(dd<dmin)dmin=dd; if(dd>dmax)dmax=dd; }
+  document.title = 'ARROW '+JSON.stringify({n,x0,y0,x1,y1,w:x1-x0+1,h:y1-y0+1,dmin:+dmin.toFixed(1),dmax:+dmax.toFixed(1),cx,cy});
+};
+img.src = 'file:///C:/Users/123/.workbuddy/clipboard-images/clipboard-2026-10-26T12-01-42-557Z-41ca8a38.jpg';
+</script></body></html>

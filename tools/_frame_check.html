@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+const img = new Image();
+img.onload = ()=>{
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const g = c.getContext('2d');
+  g.drawImage(img,0,0);
+  const d = g.getImageData(0,0,c.width,c.height).data;
+  const W=c.width,H=c.height;
+  const isInk=(x,y)=>{ const i=(y*W+x)*4; return d[i+3]>16 && !(d[i]>244&&d[i+1]>244&&d[i+2]>244); };
+  let x0=W,y0=H,x1=-1,y1=-1;
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(isInk(x,y)){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  // border thickness: scan the middle row inward from the frame's left edge
+  const my = (y0+y1)>>1;
+  let t=0; for(let x=x0; x<=x1; x++){ if(isInk(x,my)) t++; else break; }
+  const out = {W,H,x0,y0,x1,y1,w:x1-x0+1,h:y1-y0+1,border:t, pct:+(100*t/(x1-x0+1)).toFixed(2)};
+  document.title = 'FRAME ' + JSON.stringify(out) + ' SAMPLE ' + JSON.stringify([d[(my*W+x0)*4],d[(my*W+x0)*4+1],d[(my*W+x0)*4+2]]);
+};
+img.src = 'assets/slot_frame.png';
+</script></body></html>
