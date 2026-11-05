@@ -5734,46 +5734,88 @@ function buyTalent(treeId, r){
   buildTalentsUI(); renderInventory(); updateHUD();
 }
 function buildTalentsUI(){
-  if(!elTalentList) return;
-  elTp.textContent = tpAvailable()+' / '+tpTotal();
-  elTalentList.innerHTML='';
-  TALENTS.forEach(t=>{
-    const card=document.createElement('div'); card.className='tcard';
-    // icon (highest owned, else first tier's icon)
-    let ownedIdx=-1;
-    t.tiers.forEach((ti,i)=>{ if(player.talents.has(t.id+':'+ti.r)) ownedIdx=i; });
-    const iconName = t.icon + '_(' + (ownedIdx>=0? t.tiers[ownedIdx].r : t.tiers[0].r) + ')';
-    const img=document.createElement('img'); img.className='ticon'; img.src='assets/talents/'+iconName+'.webp';
-    img.onerror=function(){ this.style.background='rgba(255,255,255,0.12)'; this.removeAttribute('src'); };
-    const head=document.createElement('div'); head.className='thead';
-    const htitle=document.createElement('div'); htitle.className='ttitle'; htitle.textContent=t.name;
-    const hdesc=document.createElement('div'); hdesc.className='tdesc'; hdesc.textContent=t.desc;
-    head.appendChild(htitle); head.appendChild(hdesc);
-    const tiers=document.createElement('div'); tiers.className='ttiers';
-    t.tiers.forEach((ti)=>{
-      const node=document.createElement('div');
-      const owned=player.talents.has(t.id+':'+(ti.key||ti.r));
-      const buyable=canBuyTalent(t.id,(ti.key||ti.r),player.talents) && tpAvailable()>=ti.cost;
-      node.className='tnode '+ti.r.toLowerCase()+(owned?' owned':(buyable?' buy':' lock'));
-      node.title=t.name+' ('+ti.r+') — '+ti.cost+' TP';
-      const c=document.createElement('span'); c.className='tc'; c.textContent = owned?'OK':(ti.cost);
-      node.appendChild(c);
-      if(buyable) node.addEventListener('click',()=>buyTalent(t.id,(ti.key||ti.r)));
-      tiers.appendChild(node);
+  const wrap = document.getElementById('talentNodes');
+  const svg  = document.getElementById('talentLinks');
+  if(!wrap || !svg) return;
+  const tpc = document.getElementById('tpcount');
+  if(tpc) tpc.textContent = tpAvailable();
+  const fmt = v => { v = Math.round(v||0); return v >= 10000 ? (v/1000).toFixed(1).replace('.0','')+'k' : String(v); };
+  const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
+  const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
+  wrap.innerHTML = ''; svg.innerHTML = '';
+  const W = wrap.clientWidth || window.innerWidth || 960;
+  const H = wrap.clientHeight || window.innerHeight || 620;
+  const cx = W/2, cy = H/2;
+  svg.setAttribute('viewBox', '0 0 '+W+' '+H);
+  // 稀有度配色（照原版天赋节点）
+  const RAR_COL = {Common:'#7fbf5a',Unusual:'#d6bd45',Rare:'#4a5fd0',Epic:'#8b3fd0',
+    Legendary:'#c0392b',Mythic:'#3fb8bd',Ultra:'#d0477f',Super:'#5ec46a',Eternal:'#cfcfcf',Unique:'#555555'};
+  const base = Math.min(W, H);
+  const R0 = base * 0.25, STEP = base * 0.115;
+  TALENTS.forEach((t, ti)=>{
+    const ang = (ti / TALENTS.length) * Math.PI * 2 - Math.PI/2;
+    // 只显示已点亮的档位 + 紧接的下一档（原版也是只露出可走的路径）
+    const ownedIdx = t.tiers.map((ti2,i)=> player.talents.has(t.id+':'+(ti2.key||ti2.r)) ? i : -1).filter(i=>i>=0);
+    const maxOwned = ownedIdx.length ? Math.max(...ownedIdx) : -1;
+    const show = [];
+    if(maxOwned < 0) show.push(0);
+    else { for(let i=0;i<=maxOwned;i++) show.push(i); if(maxOwned+1 < t.tiers.length) show.push(maxOwned+1); }
+    let prevR = 0;
+    show.forEach((idx)=>{
+      const tier = t.tiers[idx];
+      const key = tier.key || tier.r;
+      const owned = player.talents.has(t.id + ':' + key);
+      const buyable = canBuyTalent(t.id, key, player.talents) && tpAvailable() >= tier.cost;
+      const r  = R0 + idx * STEP;
+      const x  = cx + Math.cos(ang) * r, y = cy + Math.sin(ang) * r;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx + Math.cos(ang) * prevR);
+      line.setAttribute('y1', cy + Math.sin(ang) * prevR);
+      line.setAttribute('x2', x); line.setAttribute('y2', y);
+      line.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.42)');
+      line.setAttribute('stroke-width', '8');
+      line.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(line);
+      const node = document.createElement('div');
+      node.className = 'tnode' + (owned ? ' owned' : (buyable ? ' buy' : ' lock'));
+      node.style.left = x + 'px'; node.style.top = y + 'px';
+      if(owned) node.style.background = RAR_COL[tier.r] || '#6e6e6e';
+      node.title = t.name + ' (' + tier.r + ') — ' + tier.cost + ' TP';
+      const img = document.createElement('img');
+      img.src = 'assets/talents/' + t.icon + '_(' + tier.r + ').webp';
+      img.onerror = function(){ this.style.display = 'none'; };
+      node.appendChild(img);
+      if(!owned){
+        const p = document.createElement('span');
+        p.className = 'tprice'; p.textContent = tier.cost;
+        node.appendChild(p);
+      }
+      if(buyable) node.addEventListener('click', ()=>{ buyTalent(t.id, key); });
+      wrap.appendChild(node);
+      prevR = r;
     });
-    card.appendChild(img); card.appendChild(head); card.appendChild(tiers);
-    elTalentList.appendChild(card);
   });
 }
-function toggleTalents(){ if(!elTalents) return; const open=elTalents.style.display==='block';
-  if(open){ elTalents.style.display='none'; return; }
-  const cp = document.getElementById('craft');
-  if(cp) cp.style.display = 'none';
-  const mp = document.getElementById('mobs');
-  if(mp) mp.style.display = 'none';
-  elTalents.style.display='block'; buildTalentsUI(); }
+function toggleTalents(){
+  if(!elTalents) return;
+  const open = elTalents.classList.contains('show');
+  if(open){ elTalents.classList.remove('show'); return; }
+  const cp = document.getElementById('craft'); if(cp) cp.style.display = 'none';
+  const mp = document.getElementById('mobs');  if(mp) mp.style.display = 'none';
+  const iv = document.getElementById('inventory'); if(iv) iv.style.display = 'none';
+  elTalents.classList.add('show');
+  buildTalentsUI();
+}
 document.getElementById('talentBtn').addEventListener('click', toggleTalents);
 document.getElementById('tclose').addEventListener('click', toggleTalents);
+const elTReset = document.getElementById('treset');
+if(elTReset) elTReset.addEventListener('click', ()=>{
+  player.talents = new Set();
+  player.tpSpent = 0;
+  applyTalents(); recompute();
+  if(typeof syncSummons === 'function') syncSummons();
+  buildTalentsUI();
+});
 window.addEventListener('keydown', e=>{ if((e.key==='x'||e.key==='X') && state===STATE.PLAY) toggleTalents(); });   // 原版 X 打开天赋
 
 // ---------- 合成（先用按钮占位，等正式的合成 UI） ----------
