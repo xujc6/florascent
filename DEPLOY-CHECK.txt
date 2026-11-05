@@ -1,0 +1,14 @@
+Florascent deployment check
+===========================
+
+Build marker: 20261105-1051
+
+This file is not used by the game. It exists only to verify that a
+push to the main branch triggers an automatic Vercel deployment.
+
+If this file is reachable at
+https://florascent.vercel.app/DEPLOY-CHECK.txt
+then the latest commit has been deployed successfully.
+
+To re-verify later: change the marker above, commit and push.
+The new marker should appear online within about a minute.
