@@ -4108,33 +4108,32 @@ function drawMapTiles(m, ctx2, camX, camY, view, offX, offY, tileSize){
   }
 }
 
-// 世界边界外：土块填充（取代原来的 reg.bg 纯色，拉远视角时不再出现绿色块）
-let _dirtPat = null;
-function dirtPattern(){
-  if(_dirtPat) return _dirtPat;
-  const c = document.createElement('canvas'); c.width = c.height = 128;
-  const g = c.getContext('2d');
-  g.fillStyle = '#3f2a15'; g.fillRect(0,0,128,128);
-  const shades = ['#6b4a2a','#634526','#715031','#5d3f22'];
-  for(let y=0;y<4;y++) for(let x=0;x<4;x++){
-    g.fillStyle = shades[(x*5+y*3)%4];
-    g.fillRect(x*32+1, y*32+1, 30, 30);
-    g.fillStyle = 'rgba(255,255,255,0.06)';
-    g.fillRect(x*32+1, y*32+1, 30, 4);
-    g.fillStyle = 'rgba(0,0,0,0.20)';
-    g.fillRect(x*32+1, y*32+27, 30, 4);
+// 世界边界外：直接平铺地图边界自身的 dirt 贴图（原版 tileset gid 25 = dirt_c_0.svg）
+let _borderPat = null, _borderPatIm = null;
+function borderWallImage(){
+  // 边界墙就是地图的 dirt 图层，中心块 dirt_c_0；依次回退到其它 dirt 变体
+  for(const g of [25, 28, 29, 22, 23, 24]){
+    const im = getTileImage(g);
+    if(im && im.complete && im.naturalWidth) return im;
   }
-  g.fillStyle = 'rgba(0,0,0,0.25)';
-  for(let i=0;i<26;i++){ g.fillRect((i*37)%128, (i*53)%128, 2, 2); }
-  _dirtPat = ctx.createPattern(c, 'repeat');
-  return _dirtPat;
+  return null;
 }
 function drawDirtBackground(){
+  const im = borderWallImage();
+  if(!im){ ctx.fillStyle = '#69462e'; ctx.fillRect(0,0,W,H); return; }   // dirt_c_0 底色
   const vw = W/VIEW, vh = H/VIEW;
   ctx.save();
   ctx.translate(W/2, H/2); ctx.scale(VIEW, VIEW); ctx.translate(-cam.x, -cam.y);
-  ctx.fillStyle = dirtPattern();
-  ctx.fillRect(cam.x - vw/2 - 256, cam.y - vh/2 - 256, vw + 512, vh + 512);
+  if(!_borderPat || _borderPatIm !== im){
+    _borderPatIm = im;
+    _borderPat = ctx.createPattern(im, 'repeat');
+    if(_borderPat && _borderPat.setTransform){
+      const s = TILE / (im.naturalWidth || 256);   // 与地图地块同尺寸平铺
+      _borderPat.setTransform(new DOMMatrix([s, 0, 0, s, 0, 0]));
+    }
+  }
+  ctx.fillStyle = _borderPat || '#69462e';
+  ctx.fillRect(cam.x - vw/2 - 512, cam.y - vh/2 - 512, vw + 1024, vh + 1024);
   ctx.restore();
 }
 
