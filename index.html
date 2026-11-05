@@ -562,8 +562,8 @@
   .legend span { display:flex; align-items:center; gap:5px; }
   .dot { width:12px; height:12px; border-radius:3px; display:inline-block; }
 
-  /* ---------- 原作首页复刻 ---------- */
-  #menu { background:#6cae4b; justify-content:center; overflow:hidden; }
+  /* ---------- 原作首页复刻（按原版截图校准）---------- */
+  #menu { background:#4e9e4a; justify-content:center; overflow:hidden; }
   /* 背景 = assets/maps 里选中群系的地块图平铺，并向右下角无限滚动（原作就是这个效果）。
      位移刚好等于一个地块边长 → 循环时严丝合缝，永远滚不完也不会出界。 */
   #menuBg { position:absolute; inset:-30% -30% -30% -30%; pointer-events:none;
@@ -580,39 +580,46 @@
     from { transform:translate3d(0,0,0) rotate(var(--r0,0deg)); }
     to   { transform:translate3d(var(--dx,140vh),var(--dy,140vh),0) rotate(var(--r1,360deg)); }
   }
-  #menuIcons { position:absolute; top:12px; left:12px; display:flex; gap:6px; }
-  .micobtn { width:30px; height:30px; border-radius:6px; background:rgba(255,255,255,.72);
-    display:flex; align-items:center; justify-content:center; font-size:15px; color:#4a6b2c;
-    border:2px solid rgba(0,0,0,.16); }
+  /* 左上角 5 个圆形图标（原版：齿轮/账号/更新/能量/社群） */
+  #menuIcons { position:absolute; top:10px; left:10px; display:flex; gap:5px; z-index:3; }
+  .micobtn { width:27px; height:27px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.32); }
+  .micobtn svg { width:14px; height:14px; }
+  .micobtn.m-set  { background:#d8dde0; }
+  .micobtn.m-user { background:#8f6fd0; }
+  .micobtn.m-flag { background:#e8c94a; }
+  .micobtn.m-batt { background:#4f8ed6; }
+  .micobtn.m-chat { background:#f2f4f6; }
+  /* 右下角圆形功能按钮 */
+  #menuDock { position:absolute; right:12px; top:64%; display:flex; flex-direction:column;
+    gap:10px; z-index:3; }
+  .mdock { width:34px; height:34px; border-radius:50%; background:rgba(28,28,28,.55);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,.35); }
+  .mdock svg { width:17px; height:17px; }
   #menuCenter { position:relative; display:flex; flex-direction:column; align-items:center; z-index:2; }
-  #logo { font-size:clamp(46px, 8.2vw, 88px); font-weight:700; letter-spacing:0px; line-height:1;
-    color:#fff; -webkit-text-stroke:9px #3f6b23; paint-order:stroke fill;
-    text-shadow:0 4px 0 rgba(0,0,0,.10); margin:0 0 34px; }
-  #menuRow { display:flex; align-items:center; gap:14px; margin-bottom:22px; }
-  #nameInput { padding:8px 14px; border-radius:6px; border:none; font-size:19px; font-weight:700;
-    width:auto; min-width:150px; max-width:230px; text-align:right; margin:0; outline:none;
-    background:transparent; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,.35); }
+  #logo { font-size:clamp(46px, 7.6vw, 82px); font-weight:700; letter-spacing:0; line-height:1;
+    color:#fff; -webkit-text-stroke:7px #000; paint-order:stroke fill; margin:0 0 26px; }
+  #menuRow { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  #nameInput { padding:6px 10px; border-radius:4px; border:none; font-size:20px; font-weight:700;
+    width:auto; min-width:140px; max-width:240px; text-align:right; margin:0; outline:none;
+    background:transparent; color:#fff; }
   #nameInput::placeholder { color:rgba(255,255,255,.6); }
-  .ready { display:flex; align-items:center; gap:8px; padding:8px 18px; border-radius:6px;
-    border:2px solid rgba(0,0,0,.18); background:#8ec84a; color:#fff; font-size:21px; font-weight:700;
-    cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.18); }
-  .ready:hover { background:#9bd857; }
-  .ready:active { transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
-  .ready .tri { font-size:14px; }
-  #regionPick { display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 88px)); gap:7px; justify-content:center; max-width:320px; margin:0 auto; }
+  .ready { display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:4px;
+    border:none; background:#5cb85c; color:#fff; font-size:21px; font-weight:700;
+    cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.22); }
+  .ready:hover { background:#68c468; }
+  .ready:active { transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.22); }
+  .ready .tri { font-size:13px; }
+  /* 区域选择：原版 3+2 排布，小方块按钮 */
+  #regionPick { display:flex; flex-wrap:wrap; justify-content:center; gap:5px;
+    width:172px; margin:0 auto; }
   #regionPick .rp { transition:transform .08s, filter .1s; }
   #regionPick .rp:hover { filter:brightness(1.08); transform:translateY(-1px); }
-  .rp { padding:6px 0; border-radius:5px; border:2px solid rgba(0,0,0,.16); cursor:pointer;
-    font-size:12.5px; font-weight:700; color:#3a3a3a; background:#cfe0c2;
-    box-shadow:0 2px 0 rgba(0,0,0,.12); }
-  .rp[data-r="0"] { background:#8ec84a; color:#2c4a12; }
-  .rp[data-r="3"] { background:#e8d5a6; }
-  .rp[data-r="4"] { background:#8fc7e8; }
-  .rp[data-r="2"] { background:#6fbf5a; color:#123a08; }
-  .rp[data-r="7"] { background:#8e5049; color:#fff; }
-  .rp.on { outline:3px solid #fff; outline-offset:1px; }
-  #menuFoot { position:absolute; bottom:12px; left:0; right:0; text-align:center;
-    font-size:11px; color:rgba(255,255,255,.72); letter-spacing:.4px; }
+  .rp { flex:0 0 52px; padding:4px 0; border-radius:3px; border:none; cursor:pointer;
+    font-size:11px; font-weight:700; color:#fff; box-shadow:0 2px 0 rgba(0,0,0,.20); }
+  .rp.on { outline:2px solid #fff; outline-offset:1px; }
+  #menuFoot { position:absolute; bottom:10px; left:0; right:0; text-align:center;
+    font-size:11px; color:rgba(255,255,255,.8); letter-spacing:.3px; }
   /* 击杀提示（右上角小字滚动条） */
   #killfeed { position:absolute; top:54px; right:12px; width:236px; display:flex; flex-direction:column;
     gap:5px; align-items:flex-end; pointer-events:none; z-index:13; }
@@ -702,10 +709,15 @@
   <div id="menuBg"></div>
   <div id="menuPetals"></div>
   <div id="menuIcons">
-    <div class="micobtn" title="Settings"><svg viewBox="0 0 16 16" width="15" height="15"><circle cx="8" cy="8" r="5.4" fill="none" stroke="#4a6b2c" stroke-width="2.3"/><circle cx="8" cy="8" r="1.7" fill="#4a6b2c"/></svg></div>
-    <div class="micobtn" title="Team"><svg viewBox="0 0 16 16" width="15" height="15"><circle cx="5.6" cy="6.2" r="2.6" fill="#4a6b2c"/><circle cx="10.9" cy="7.4" r="2.1" fill="#6b8c4a"/></svg></div>
-    <div class="micobtn" title="Cards"><svg viewBox="0 0 16 16" width="15" height="15"><rect x="2.4" y="4.2" width="7.2" height="9" rx="1.6" fill="none" stroke="#4a6b2c" stroke-width="2"/><rect x="6.2" y="2.6" width="7.2" height="9" rx="1.6" fill="none" stroke="#6b8c4a" stroke-width="2"/></svg></div>
-    <div class="micobtn" title="Chat"><svg viewBox="0 0 16 16" width="15" height="15"><rect x="2" y="3" width="12" height="8.4" rx="2.4" fill="none" stroke="#4a6b2c" stroke-width="2"/><path d="M5.2 11.4 L5.2 14 L8.4 11.4 Z" fill="#4a6b2c"/></svg></div>
+    <div class="micobtn m-set" title="Settings"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.6" fill="none" stroke="#5a6068" stroke-width="2.4"/><circle cx="8" cy="8" r="1.5" fill="#5a6068"/></svg></div>
+    <div class="micobtn m-user" title="Account"><svg viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.8" fill="#fff"/><path d="M2.8 14c0-2.9 2.3-4.6 5.2-4.6s5.2 1.7 5.2 4.6z" fill="#fff"/></svg></div>
+    <div class="micobtn m-flag" title="Updates"><svg viewBox="0 0 16 16"><path d="M4.4 2.2v11.6M4.8 3.2h7l-1.9 2.4 1.9 2.4h-7z" fill="#fff" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+    <div class="micobtn m-batt" title="Energy"><svg viewBox="0 0 16 16"><rect x="2.4" y="5" width="9.4" height="6" rx="1.2" fill="#fff"/><rect x="12.4" y="6.8" width="1.6" height="2.4" rx="0.6" fill="#fff"/></svg></div>
+    <div class="micobtn m-chat" title="Community"><svg viewBox="0 0 16 16"><circle cx="5.4" cy="6.4" r="2.6" fill="#8a9099"/><circle cx="10.8" cy="7.6" r="2.1" fill="#a8aeb6"/></svg></div>
+  </div>
+  <div id="menuDock">
+    <div class="mdock" title="Shop"><svg viewBox="0 0 16 16"><rect x="2.2" y="5.2" width="11.6" height="8.6" rx="1.4" fill="#fff"/><path d="M5.4 5.2V3.6a2.6 2.6 0 0 1 5.2 0" fill="none" stroke="#fff" stroke-width="1.6"/></svg></div>
+    <div class="mdock" title="Collection"><svg viewBox="0 0 16 16"><rect x="2.4" y="2.4" width="5" height="5" rx="1" fill="#fff"/><rect x="8.6" y="2.4" width="5" height="5" rx="1" fill="#fff"/><rect x="2.4" y="8.6" width="5" height="5" rx="1" fill="#fff"/><rect x="8.6" y="8.6" width="5" height="5" rx="1" fill="#fff"/></svg></div>
   </div>
   <div id="menuCenter">
     <h1 id="logo">florr.io</h1>
@@ -715,7 +727,7 @@
     </div>
     <div id="regionPick"><!-- 由 game.js 按 REGIONS 动态生成 --></div>
   </div>
-  <div id="menuFoot">© 2026 · fan-made tribute to florr.io</div>
+  <div id="menuFoot">© 2025 M28 Games</div>
   <button id="newGameBtn" title="清除存档并重新开始">New Game</button>
 </div>
 

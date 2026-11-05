@@ -7817,18 +7817,24 @@ buildMenuBg();
   const pick = document.getElementById('regionPick');
   if(!pick || typeof REGIONS === 'undefined') return;
   pick.innerHTML = '';
-  REGIONS.forEach((r,i)=>{
+  // 原版首页只列 5 个基础区域（3+2 排布），其余区域仍可通过游戏内传送门进入；
+  // 按钮配色取自原版截图，不改 regions.js 的地图底色。
+  const MENU_RP = [['garden','#7ec850'],['desert','#d8c9a0'],['ocean','#5b8dd9'],
+                   ['jungle','#4a8a3a'],['hel','#8b4040']];
+  MENU_RP.forEach(([id, col])=>{
+    const i = REGIONS.findIndex(r=>r.id===id);
+    if(i < 0) return;
+    const r = REGIONS[i];
     const b = document.createElement('button');
-    b.className = 'rp' + (i === 0 ? ' on' : '');
+    b.className = 'rp' + (i === startRegion ? ' on' : '');
     b.dataset.r = i;
     b.textContent = r.name;
-    b.style.background = r.bg2 || r.bg;
-    b.style.color = '#fff';
+    b.style.background = col;
     b.addEventListener('click', ()=>{
       pick.querySelectorAll('.rp').forEach(x=>x.classList.remove('on'));
       b.classList.add('on');
       startRegion = i;
-      setMenuBg(i);        // 背景跟着换群系地块图
+      setMenuBg(i);
     });
     pick.appendChild(b);
   });
