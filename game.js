@@ -935,23 +935,25 @@ const SUMMON_IMG = new Image(); SUMMON_IMG.src = SUMMON_ART;
 const SUMMON_R = 14;
 
 function syncSummons(){
-  const want = player.summonerLevel || 0;
+  const want = (player.summonerLevel||0) > 0 ? 1 : 0;   // 原版：提升召唤物生命而非数量
   while(summons.filter(s=>!s.dead).length > want){
     const idx = summons.findIndex(s=>!s.dead);
     summons.splice(idx,1);
   }
   while(summons.filter(s=>!s.dead).length < want){
-    const mult = 1 + (player.summonerLevel-1)*0.35;
+    const lvl = player.summonerLevel || 0;
+    const hpMult = player.summonHpMult || 1;      // 原版 Summoner：召唤物最大生命 110% → 259.4%
+    const dmgMult = 1 + (lvl-1)*0.35;
     summons.push({
       x:player.x, y:player.y, ang:Math.random()*6.28,
-      hp: 90*mult*(1+player.level*0.05), maxHp: 90*mult*(1+player.level*0.05),
-      dmg: 16*mult, atkCd:0, hitFlash:0, dead:false, respawn:0, wob:Math.random()*6.28
+      hp: 90*hpMult*(1+player.level*0.05), maxHp: 90*hpMult*(1+player.level*0.05),
+      dmg: 16*dmgMult, atkCd:0, hitFlash:0, dead:false, respawn:0, wob:Math.random()*6.28
     });
   }
 }
 
 function updateSummons(dt){
-  const want = player.summonerLevel || 0;
+  const want = (player.summonerLevel||0) > 0 ? 1 : 0;   // 原版：提升召唤物生命而非数量
   const alive = summons.filter(s=>!s.dead);
   if(alive.length !== want) syncSummons();
   const n = Math.max(alive.length,1);
@@ -1642,7 +1644,7 @@ function recompute(){
   // 体伤：基础值 × 等级成长 × Sharp Edges 天赋倍率
   player.bodyDmg = bodyDmg * player.bodyDmgMult;
   // Clover：幸运（掉落率 / 稀有度上浮）
-  player.luck = (player.baseLuck||0) + luckP;
+  player.luck = (player.baseLuck||0) + luckP + (player.talentLuck||0);
   if(player.hp>maxHp) player.hp=maxHp;
   applyView();
 }
@@ -4106,8 +4108,38 @@ function drawMapTiles(m, ctx2, camX, camY, view, offX, offY, tileSize){
   }
 }
 
+// 世界边界外：土块填充（取代原来的 reg.bg 纯色，拉远视角时不再出现绿色块）
+let _dirtPat = null;
+function dirtPattern(){
+  if(_dirtPat) return _dirtPat;
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  g.fillStyle = '#3f2a15'; g.fillRect(0,0,128,128);
+  const shades = ['#6b4a2a','#634526','#715031','#5d3f22'];
+  for(let y=0;y<4;y++) for(let x=0;x<4;x++){
+    g.fillStyle = shades[(x*5+y*3)%4];
+    g.fillRect(x*32+1, y*32+1, 30, 30);
+    g.fillStyle = 'rgba(255,255,255,0.06)';
+    g.fillRect(x*32+1, y*32+1, 30, 4);
+    g.fillStyle = 'rgba(0,0,0,0.20)';
+    g.fillRect(x*32+1, y*32+27, 30, 4);
+  }
+  g.fillStyle = 'rgba(0,0,0,0.25)';
+  for(let i=0;i<26;i++){ g.fillRect((i*37)%128, (i*53)%128, 2, 2); }
+  _dirtPat = ctx.createPattern(c, 'repeat');
+  return _dirtPat;
+}
+function drawDirtBackground(){
+  const vw = W/VIEW, vh = H/VIEW;
+  ctx.save();
+  ctx.translate(W/2, H/2); ctx.scale(VIEW, VIEW); ctx.translate(-cam.x, -cam.y);
+  ctx.fillStyle = dirtPattern();
+  ctx.fillRect(cam.x - vw/2 - 256, cam.y - vh/2 - 256, vw + 512, vh + 512);
+  ctx.restore();
+}
+
 function drawTilemap(reg){
-  ctx.fillStyle = reg.bg; ctx.fillRect(0,0,W,H);
+  drawDirtBackground();
   const m = regionMap;
   const ts = TILE*VIEW;
   const halfW = W/2/VIEW, halfH = H/2/VIEW;
@@ -5721,13 +5753,13 @@ function buildTalentsUI(){
     const tiers=document.createElement('div'); tiers.className='ttiers';
     t.tiers.forEach((ti)=>{
       const node=document.createElement('div');
-      const owned=player.talents.has(t.id+':'+ti.r);
-      const buyable=canBuyTalent(t.id,ti.r,player.talents) && tpAvailable()>=ti.cost;
+      const owned=player.talents.has(t.id+':'+(ti.key||ti.r));
+      const buyable=canBuyTalent(t.id,(ti.key||ti.r),player.talents) && tpAvailable()>=ti.cost;
       node.className='tnode '+ti.r.toLowerCase()+(owned?' owned':(buyable?' buy':' lock'));
       node.title=t.name+' ('+ti.r+') — '+ti.cost+' TP';
       const c=document.createElement('span'); c.className='tc'; c.textContent = owned?'OK':(ti.cost);
       node.appendChild(c);
-      if(buyable) node.addEventListener('click',()=>buyTalent(t.id,ti.r));
+      if(buyable) node.addEventListener('click',()=>buyTalent(t.id,(ti.key||ti.r)));
       tiers.appendChild(node);
     });
     card.appendChild(img); card.appendChild(head); card.appendChild(tiers);
@@ -5743,7 +5775,7 @@ function toggleTalents(){ if(!elTalents) return; const open=elTalents.style.disp
   elTalents.style.display='block'; buildTalentsUI(); }
 document.getElementById('talentBtn').addEventListener('click', toggleTalents);
 document.getElementById('tclose').addEventListener('click', toggleTalents);
-window.addEventListener('keydown', e=>{ if((e.key==='t'||e.key==='T') && state===STATE.PLAY) toggleTalents(); });
+window.addEventListener('keydown', e=>{ if((e.key==='x'||e.key==='X') && state===STATE.PLAY) toggleTalents(); });   // 原版 X 打开天赋
 
 // ---------- 合成（先用按钮占位，等正式的合成 UI） ----------
 // 5 片同名同稀有度 → 1 片下一级；成功率照原版：
@@ -6679,7 +6711,7 @@ function buildMobdexUI(){
   if(elMobInfo){
     elMobInfo.innerHTML = keys.length
       ? '<b>'+keys.length+'</b> kinds · <b>'+total+'</b> kills recorded · press <b>N</b> to close'
-      : 'Nothing here yet — kill some mobs and their cards appear. Press <b>M</b> to close.';
+      : 'Nothing here yet — kill some mobs and their cards appear. Click <b>×</b> to close.';
   }
   elMobList.innerHTML = '';
   for(const key of keys){
@@ -6734,7 +6766,7 @@ function toggleMobdex(){
 }
 document.getElementById('mobsBtn').addEventListener('click', toggleMobdex);
 document.getElementById('mclose').addEventListener('click', toggleMobdex);
-// M = 放大/还原小地图（图鉴挪到 N）
+// M = 放大/还原小地图；生物图鉴只通过左上角按钮打开，无快捷键
 function toggleMinimapBig(){
   if(!mmCanvas) return;
   const big = !mmCanvas.classList.contains('big');
@@ -6747,7 +6779,6 @@ function toggleMinimapBig(){
 window.addEventListener('keydown', e=>{
   if(state!==STATE.PLAY) return;
   if(e.key==='m'||e.key==='M'){ toggleMinimapBig(); }
-  else if(e.key==='n'||e.key==='N'){ toggleMobdex(); }
 });
 
 // ---------- Inventory panel：自己收集到的卡片 ----------
@@ -7821,7 +7852,7 @@ function saveGame(){
       reachAdd:player.reachAdd, talentMagnet:player.talentMagnet, bodyDmgMult:player.bodyDmgMult, luck:player.luck,
       poisonMult:player.poisonMult, poisonDurMult:player.poisonDurMult,
       duplicatorLevel:player.duplicatorLevel, secondChance:player.secondChance, bodyToxicity:player.bodyToxicity,
-      backpack:player.backpack, equipped:eq, alt:al, region:startRegion
+      backpack:player.backpack, equipped:eq, alt:al, region:currentRegion
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(s));
   }catch(e){ /* 存档失败不影响游戏 */ }
@@ -7902,14 +7933,15 @@ function showDead(){
     'You reached level '+player.level+' - '+player.backpack.length+' petals in your bag.';
   dead.style.display='flex';
 }
-document.getElementById('startBtn').addEventListener('click', startGame);
+// 注意：不能直接传 startGame，否则浏览器会把 MouseEvent 当作 forceNew 传入，导致永远跳过读档
+document.getElementById('startBtn').addEventListener('click', ()=>startGame(false));
 document.getElementById('restartBtn').addEventListener('click', ()=>{ respawnAtCheckpoint(); });
 // New Game：清存档并强制重开（保留框里昵称作为新角色名）
 const _ng = document.getElementById('newGameBtn');
 if(_ng) _ng.addEventListener('click', ()=>{ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} startGame(true); });
 // 关页/切后台时存档；并监听失焦（移动端切后台不会触发 beforeunload）
-window.addEventListener('beforeunload', saveGame);
-document.addEventListener('visibilitychange', ()=>{ if(document.hidden) saveGame(); });
+window.addEventListener('beforeunload', ()=>{ if(state===STATE.PLAY || state===STATE.DEAD) saveGame(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden && (state===STATE.PLAY || state===STATE.DEAD)) saveGame(); });
 window.addEventListener('contextmenu', e=>{ if(state===STATE.PLAY) e.preventDefault(); });
 
 // ---------- load manifest then go ----------
