@@ -5733,6 +5733,8 @@ function buyTalent(treeId, r){
   while(player.equipped.length<maxSlots()) player.equipped.push(null);
   buildTalentsUI(); renderInventory(); updateHUD();
 }
+// 天赋树旋转角度（拖拽/滚轮更新）
+let talentRotation = 0;
 function buildTalentsUI(){
   const wrap = document.getElementById('talentNodes');
   const svg  = document.getElementById('talentLinks');
@@ -5743,20 +5745,21 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = wrap.clientWidth || window.innerWidth || 960;
-  const H = wrap.clientHeight || window.innerHeight || 620;
-  // 原版：花朵在底部中央，树向上 180° 扇形展开（非 360° 全圆）
-  const cx = W/2, cy = H - 120;    // 花朵中心：底部中央偏上（留出统计+Reset空间）
+  // 面板固定尺寸 375×375（CSS 定义），树在面板内渲染
+  const W = 375, H = 375;
+  // 花朵在面板底部中央，树向上 180° 扇形展开
+  const cx = W/2, cy = H - 55;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
-  // 稀有度配色（照原版天赋节点）
+  // 稀有度配色：已购买=亮色，未购买=暗色（原版未购买节点也有稀有度色）
   const RAR_COL = {Common:'#7fbf5a',Unusual:'#d6bd45',Rare:'#4a5fd0',Epic:'#8b3fd0',
     Legendary:'#c0392b',Mythic:'#3fb8bd',Ultra:'#d0477f',Super:'#5ec46a',Eternal:'#cfcfcf',Unique:'#555555'};
+  const RAR_DIM = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#462068',
+    Legendary:'#601c16',Mythic:'#1f5c5e',Ultra:'#682340',Super:'#2e6235',Eternal:'#666666',Unique:'#2a2a2a'};
   const base = Math.min(W, H);
-  const R0 = base * 0.14, STEP = base * 0.10;
+  const R0 = base * 0.16, STEP = base * 0.11;
   TALENTS.forEach((t, ti)=>{
-    // 180° 向上展开：角度从 π（正左）到 2π（正右），经过 1.5π（正上）
-    const ang = Math.PI + (ti / TALENTS.length) * Math.PI;
-    // 只显示已点亮的档位 + 紧接的下一档（原版也是只露出可走的路径）
+    // 180° 向上展开 + 全局旋转偏移（拖拽可旋转整棵树）
+    const ang = Math.PI + (ti / TALENTS.length) * Math.PI + talentRotation;
     const ownedIdx = t.tiers.map((ti2,i)=> player.talents.has(t.id+':'+(ti2.key||ti2.r)) ? i : -1).filter(i=>i>=0);
     const maxOwned = ownedIdx.length ? Math.max(...ownedIdx) : -1;
     const show = [];
@@ -5775,14 +5778,15 @@ function buildTalentsUI(){
       line.setAttribute('y1', cy + Math.sin(ang) * prevR);
       line.setAttribute('x2', x); line.setAttribute('y2', y);
       line.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.42)');
-      line.setAttribute('stroke-width', '8');
+      line.setAttribute('stroke-width', '5');
       line.setAttribute('stroke-linecap', 'round');
-      line.setAttribute('stroke-dasharray', '7,5');   // 原版虚线连接
+      line.setAttribute('stroke-dasharray', '5,3');
       svg.appendChild(line);
       const node = document.createElement('div');
       node.className = 'tnode' + (owned ? ' owned' : (buyable ? ' buy' : ' lock'));
       node.style.left = x + 'px'; node.style.top = y + 'px';
-      if(owned) node.style.background = RAR_COL[tier.r] || '#6e6e6e';
+      // 未购买也显示稀有度色（暗版），购买后亮色
+      node.style.background = owned ? (RAR_COL[tier.r] || '#6e6e6e') : (RAR_DIM[tier.r] || '#3a3a3a');
       node.title = t.name + ' (' + tier.r + ') — ' + tier.cost + ' TP';
       const img = document.createElement('img');
       img.src = 'assets/talents/' + t.icon + '_(' + tier.r + ').webp';
@@ -5793,12 +5797,36 @@ function buildTalentsUI(){
         p.className = 'tprice'; p.textContent = tier.cost;
         node.appendChild(p);
       }
-      if(buyable) node.addEventListener('click', ()=>{ buyTalent(t.id, key); });
+      if(buyable) node.addEventListener('click', (e)=>{ e.stopPropagation(); buyTalent(t.id, key); });
       wrap.appendChild(node);
       prevR = r;
     });
   });
 }
+// 天赋树旋转：拖拽或滚轮旋转整棵树
+(function(){
+  const tree = document.getElementById('talentTree');
+  if(!tree || tree.dataset.rotInit) return;
+  tree.dataset.rotInit = '1';
+  let dragging = false, lastX = 0;
+  tree.addEventListener('mousedown', (e)=>{
+    if(e.target.closest('.tnode')) return;   // 点节点不触发旋转
+    dragging = true; lastX = e.clientX;
+    tree.classList.add('rotating');
+  });
+  window.addEventListener('mousemove', (e)=>{
+    if(!dragging) return;
+    talentRotation += (e.clientX - lastX) * 0.012;
+    lastX = e.clientX;
+    buildTalentsUI();
+  });
+  window.addEventListener('mouseup', ()=>{ if(dragging){ dragging=false; tree.classList.remove('rotating'); } });
+  tree.addEventListener('wheel', (e)=>{
+    e.preventDefault();
+    talentRotation += e.deltaY > 0 ? 0.1 : -0.1;
+    buildTalentsUI();
+  }, {passive:false});
+})();
 function toggleTalents(){
   if(!elTalents) return;
   const open = elTalents.classList.contains('show');
