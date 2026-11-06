@@ -210,9 +210,58 @@
   /* 右上角留给小地图，按钮往左让一格，别压在小地图上 */
   #topbtns { position:absolute; top:12px; right:190px; display:flex; gap:6px; pointer-events:auto; z-index:6; }
   #regions-legacy { top:52px; right:12px; max-width:42vw; }
-  #talents, #mobs, #inventory { display:none; position:absolute; top:0; right:0; width:min(460px,94vw); height:100%;
+  #mobs, #inventory { display:none; position:absolute; top:0; right:0; width:min(460px,94vw); height:100%;
     overflow-y:auto; background:#0d140a; color:#fff; padding:16px 16px 40px; z-index:30;
     box-shadow:-8px 0 28px rgba(0,0,0,.55); }
+  /* ===== Talents：与 index.html 一致（左下角浮动面板 + 底部花朵树 + HOLD 加点）===== */
+  #talents { display:none; position:absolute; left:55px; bottom:30px;
+    width:375px; height:375px; border-radius:12px;
+    background:rgba(207, 91, 86, 0.93); border:4px solid #8e332d;
+    z-index:30; overflow:hidden; color:#fff;
+    box-shadow:0 4px 18px rgba(0,0,0,.35); }
+  #talents.show { display:block; }
+  #talents h2 { position:absolute; top:4px; left:50%; transform:translateX(-50%); margin:0;
+    font-size:22px; font-weight:800; color:#fff;
+    -webkit-text-stroke:3.5px #000; paint-order:stroke fill; z-index:4; }
+  #tpbadge { position:absolute; top:6px; left:10px; font-size:16px; font-weight:800;
+    color:#fff; -webkit-text-stroke:2.5px #2a0d0b; paint-order:stroke fill; z-index:4;
+    display:flex; align-items:baseline; gap:3px; }
+  #tpbadge b { font-size:20px; }
+  #tpbadge span { font-size:12px; opacity:.9; }
+  #tclose { position:absolute; top:6px; right:8px; width:26px; height:26px; border-radius:6px;
+    background:#c14a44; border:2px solid #7d2f2a; color:#fff; font-size:18px; font-weight:800;
+    line-height:21px; text-align:center; cursor:pointer; z-index:4; }
+  #talentTree { position:absolute; inset:0; overflow:hidden; cursor:grab; }
+  #talentTree.rotating { cursor:grabbing; }
+  #talentLinks { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  #talentNodes { position:absolute; inset:0; }
+  .tnode { position:absolute; width:26px; height:26px; border-radius:50%;
+    transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.22); cursor:pointer; }
+  .tnode img { width:70%; height:70%; object-fit:contain; pointer-events:none;
+    filter:brightness(0) invert(1); opacity:.95; }
+  .tnode .tcum { position:absolute; top:-8px; right:-9px; font-size:11px; font-weight:800;
+    color:#fff; -webkit-text-stroke:2px #2a0d0b; paint-order:stroke fill; pointer-events:none; }
+  .tnode.owned { box-shadow:inset 0 -2px 0 rgba(0,0,0,.22), 0 0 0 2px rgba(255,255,255,.3); }
+  .tnode.holding { box-shadow:inset 0 -2px 0 rgba(0,0,0,.22), 0 0 0 3px #fff; }
+  #talentCore { position:absolute; left:50%; bottom:52px; transform:translateX(-50%);
+    width:72px; height:72px; pointer-events:none; z-index:3; }
+  #talentCore img { width:100%; height:100%; object-fit:contain; }
+  #talentStats { position:absolute; left:50%; bottom:58px; transform:translateX(48px);
+    text-align:left; font-size:11px; font-weight:800; line-height:1.4;
+    -webkit-text-stroke:2px #2a0d0b; paint-order:stroke fill; white-space:nowrap; z-index:4; }
+  #treset { position:absolute; right:8px; bottom:8px; padding:4px 14px; border-radius:6px;
+    background:#c14a44; border:2px solid #7d2f2a; color:#fff; font-size:13px; font-weight:800;
+    cursor:pointer; box-shadow:0 2px 0 rgba(0,0,0,.25); }
+  #ttip { position:absolute; z-index:9; display:none; pointer-events:none; width:214px;
+    padding:8px 10px 9px; border-radius:5px; background:rgba(0,0,0,.82);
+    box-shadow:0 4px 14px rgba(0,0,0,.4); font-size:11.5px; line-height:1.35; }
+  #ttip .tt-name { font-size:16px; font-weight:800; color:#fff; }
+  #ttip .tt-rar { font-size:10.5px; font-weight:800; margin:1px 0 5px; }
+  #ttip .tt-desc { font-weight:700; color:#fff; white-space:pre-line; }
+  #ttip .tt-hold { margin-top:7px; padding-top:6px; border-top:1px solid rgba(255,255,255,.25);
+    font-size:10.5px; font-weight:800; color:#ffd54f; }
+  #ttip .tt-cost { margin-top:3px; font-size:10.5px; font-weight:700; color:#cfe9ff; }
 
   /* ===== Inventory（照原作截图 1:1：贴左侧、小尺寸、6 列网格） ===== */
   #inventory { position:absolute; left:66px; top:42vh; bottom:-3vh; width:clamp(300px,23vw,400px); height:auto;
@@ -261,7 +310,7 @@
   .ivempty { color:#eaf2fb; font-size:12px; text-align:center; padding:20px 8px;
     -webkit-text-stroke:2px #2a2a2a; paint-order:stroke fill; }
   #tpinfo { font-size:14px; margin-bottom:14px; color:#ffd54f; font-weight:700; }
-  #tclose, #cclose, #mclose { position:absolute; top:12px; right:14px; font-size:22px; cursor:pointer; color:#fff; opacity:.8; }
+  #cclose, #mclose { position:absolute; top:12px; right:14px; font-size:22px; cursor:pointer; color:#fff; opacity:.8; }
   #mobsBtn { background:#8d6e63; border-color:#fff; }
   /* ===== Mob Gallery（照原作截图：8 列 = Common→Super，一行一种怪） ===== */
   #mobs { background:#cbbc4e; color:#fff; width:min(560px,96vw); }
@@ -488,16 +537,7 @@
   .ttitle { font-weight:700; font-size:15px; }
   .tdesc { font-size:11px; color:#bcd; margin-top:2px; line-height:1.4; }
   .ttiers { display:flex; gap:4px; flex-wrap:wrap; }
-  .tnode { width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center;
-    font-size:12px; font-weight:700; border:2px solid rgba(255,255,255,.25); background:rgba(0,0,0,.3); color:#fff; }
-  .tnode.owned { background:#8bc34a; border-color:#fff; color:#143; }
-  .tnode.buy { cursor:pointer; box-shadow:0 0 8px rgba(255,235,59,.55); }
-  .tnode.buy:hover { transform:scale(1.08); }
-  .tnode.lock { opacity:.35; }
-  .tnode.common{border-color:#66c358} .tnode.unusual{border-color:#ceba4a} .tnode.rare{border-color:#3e42b7}
-  .tnode.epic{border-color:#6d18b4} .tnode.legendary{border-color:#b41919} .tnode.mythic{border-color:#19b1b4}
-  .tnode.ultra{border-color:#ce235f} .tnode.super{border-color:#23ce85} .tnode.eternal{border-color:#c1c1c1}
-  .tnode.unique{border-color:#454545}
+  /* 旧版 #talentlist 方节点样式已移除：新版天赋树用 index.html 同款圆形节点 */
 
   /* ---------- 花瓣数据卡（悬停灰卡，照原版卡面） ---------- */
   .reloadwipe { position:absolute; inset:0; background:rgba(0,0,0,.42); pointer-events:none;
@@ -712,12 +752,22 @@
   <button id="restartBtn" class="btn">Respawn</button>
 </div>
 
-<!-- talent panel -->
+<!-- talent panel（与 index.html 一致：左下角浮动面板 + 可旋转树 + HOLD 加点） -->
 <div id="talents">
-  <div id="tclose">×</div>
   <h2>Talents</h2>
-  <div id="tpinfo">Talent points: <span id="tpcount">0 / 0</span> (press T to close)</div>
-  <div id="talentlist"></div>
+  <div id="tpbadge"><b id="tpcount">0</b><span>TP</span></div>
+  <div id="tclose">×</div>
+  <div id="talentTree">
+    <svg id="talentLinks"></svg>
+    <div id="talentCore"><img src="assets/player.png" alt=""></div>
+    <div id="talentNodes"></div>
+  </div>
+  <div id="talentStats">
+    <div>Flower Health: <b id="tstat-hp">0</b></div>
+    <div>Body Damage: <b id="tstat-dmg">0</b></div>
+  </div>
+  <button id="treset">Reset</button>
+  <div id="ttip"></div>
 </div>
 
 <!-- craft panel（按 florr 的合成台重画：上面是台面，下面是花瓣柜） -->

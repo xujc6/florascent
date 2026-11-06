@@ -5719,22 +5719,35 @@ function drawPortals(){
 const elTalents=document.getElementById('talents');
 const elTalentList=document.getElementById('talentlist');
 const elTp=document.getElementById('tpcount');
-function buyTalent(treeId, r){
-  if(!canBuyTalent(treeId, r, player.talents)) return;
-  const info = TALENT_INDEX[treeId+':'+r];
-  if(tpAvailable() < info.tier.cost) return;
-  player.tpSpent += info.tier.cost;
-  player.talents.add(treeId+':'+r);
+
+// 加点/撤销后统一重算（与原版一致：连买整条前置链 / 连撤全部后继）
+function commitTalents(){
   applyTalents();
   recompute();
-  syncSummons();
+  if(typeof syncSummons==='function') syncSummons();
   if(player.hp>player.maxHp) player.hp=player.maxHp;
-  // grow equipped array if a loadout slot opened
   while(player.equipped.length<maxSlots()) player.equipped.push(null);
   buildTalentsUI(); renderInventory(); updateHUD();
 }
-// 天赋树旋转角度（拖拽/滚轮更新）
-let talentRotation = 0;
+// 兼容旧入口：已点亮则长按撤销，未点亮则长按连买
+function buyTalent(treeId, key){
+  const owned = player.talents.has(treeId+':'+key);
+  const res = owned ? holdRemoveTalent(treeId,key) : holdBuyTalent(treeId,key);
+  if(res.ok) commitTalents();
+}
+
+const RAR_COL  = {Common:'#7fbf5a',Unusual:'#d6bd45',Rare:'#4a5fd0',Epic:'#8b3fd0',
+  Legendary:'#c0392b',Mythic:'#3fb8bd',Ultra:'#d0477f',Super:'#5ec46a',Eternal:'#cfcfcf',Unique:'#555555'};
+const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#462068',
+  Legendary:'#601c16',Mythic:'#1f5c5e',Ultra:'#682340',Super:'#2e6235',Eternal:'#666666',Unique:'#2a2a2a'};
+const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
+  Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
+
+let talentRotation = 0, talentZoom = 1;
+// 分叉树相对父节点的展开角度（原版：槽位分出 4 条分支，分支最多）
+const BR_SPREAD = {antennae:-0.36, reach:-0.12, duplicator:0.12, magnetism:0.36,
+  secondChance:-0.26, bodyToxicity:0.26, concentratedPoison:-0.26};
+
 function buildTalentsUI(){
   const wrap = document.getElementById('talentNodes');
   const svg  = document.getElementById('talentLinks');
@@ -5745,85 +5758,144 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  // 面板固定尺寸 375×375（CSS 定义），树在面板内渲染
-  const W = 375, H = 375;
-  // 花朵在面板底部中央，树向上 180° 扇形展开
-  const cx = W/2, cy = H - 55;
+  const W = 375, H = 375, cx = W/2, cy = H - 55;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
-  // 稀有度配色：已购买=亮色，未购买=暗色（原版未购买节点也有稀有度色）
-  const RAR_COL = {Common:'#7fbf5a',Unusual:'#d6bd45',Rare:'#4a5fd0',Epic:'#8b3fd0',
-    Legendary:'#c0392b',Mythic:'#3fb8bd',Ultra:'#d0477f',Super:'#5ec46a',Eternal:'#cfcfcf',Unique:'#555555'};
-  const RAR_DIM = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#462068',
-    Legendary:'#601c16',Mythic:'#1f5c5e',Ultra:'#682340',Super:'#2e6235',Eternal:'#666666',Unique:'#2a2a2a'};
-  const base = Math.min(W, H);
-  const R0 = base * 0.16, STEP = base * 0.11;
-  TALENTS.forEach((t, ti)=>{
-    // 180° 向上展开 + 全局旋转偏移（拖拽可旋转整棵树）
-    const ang = Math.PI + (ti / TALENTS.length) * Math.PI + talentRotation;
-    const ownedIdx = t.tiers.map((ti2,i)=> player.talents.has(t.id+':'+(ti2.key||ti2.r)) ? i : -1).filter(i=>i>=0);
-    const maxOwned = ownedIdx.length ? Math.max(...ownedIdx) : -1;
-    const show = [];
-    if(maxOwned < 0) show.push(0);
-    else { for(let i=0;i<=maxOwned;i++) show.push(i); if(maxOwned+1 < t.tiers.length) show.push(maxOwned+1); }
-    let prevR = 0;
-    show.forEach((idx)=>{
-      const tier = t.tiers[idx];
-      const key = tier.key || tier.r;
-      const owned = player.talents.has(t.id + ':' + key);
-      const buyable = canBuyTalent(t.id, key, player.talents) && tpAvailable() >= tier.cost;
-      const r  = R0 + idx * STEP;
-      const x  = cx + Math.cos(ang) * r, y = cy + Math.sin(ang) * r;
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', cx + Math.cos(ang) * prevR);
-      line.setAttribute('y1', cy + Math.sin(ang) * prevR);
-      line.setAttribute('x2', x); line.setAttribute('y2', y);
-      line.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.42)');
-      line.setAttribute('stroke-width', '5');
-      line.setAttribute('stroke-linecap', 'round');
-      line.setAttribute('stroke-dasharray', '5,3');
-      svg.appendChild(line);
+  const R0 = 46, STEP = 24;
+  const pos = {};
+  const NS = 'http://www.w3.org/2000/svg';
+  const link = (a,b,owned)=>{
+    const ln = document.createElementNS(NS,'line');
+    ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
+    ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
+    ln.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.5)');
+    ln.setAttribute('stroke-width','4');
+    ln.setAttribute('stroke-linecap','round');
+    ln.setAttribute('stroke-dasharray','4,3');
+    svg.appendChild(ln);
+  };
+  // 1) 主干（无跨树前置）从底部花朵向上 180° 放射
+  const roots = TALENTS.filter(t=>!t.req);
+  const a0 = Math.PI + 0.10, a1 = 2*Math.PI - 0.10;
+  const rootAng = {}, rootOff = {};
+  roots.forEach((t,i)=>{
+    rootAng[t.id] = a0 + (i+0.5)/roots.length*(a1-a0) + talentRotation;
+    rootOff[t.id] = (i%3)*9;          // 相邻主枝错开半径，避免第一档节点重叠
+  });
+  for(const t of roots){
+    const ang = rootAng[t.id];
+    t.tiers.forEach((tier,i)=>{
+      const r = (R0 + i*STEP + rootOff[t.id])*talentZoom;
+      const id = talentId(t,tier);
+      const p = {x:cx+Math.cos(ang)*r, y:cy+Math.sin(ang)*r, ang, r};
+      pos[id] = p;
+      const prev = i>0 ? pos[talentId(t,t.tiers[i-1])] : {x:cx,y:cy};
+      link(prev, p, player.talents.has(id));
+    });
+  }
+  // 2) 分叉树：从「精确前置档位」那个节点继续长出去
+  for(const t of TALENTS.filter(x=>x.req)){
+    const rt = TALENTS.find(x=>x.id===t.req.tree);
+    if(!rt) continue;
+    const ri = rt.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
+    if(ri<0) continue;
+    const parent = pos[talentId(rt,rt.tiers[ri])];
+    if(!parent) continue;
+    const ang = parent.ang + (BR_SPREAD[t.id]||0);
+    let prev = parent;
+    t.tiers.forEach((tier)=>{
+      const d = STEP*talentZoom;
+      const p = {x:prev.x+Math.cos(ang)*d, y:prev.y+Math.sin(ang)*d, ang, r:0};
+      const id = talentId(t,tier);
+      pos[id] = p;
+      link(prev, p, player.talents.has(id));
+      prev = p;
+    });
+  }
+  // 3) 全部节点都渲染（原版未点亮为暗稀有度色 + 累计总 TP 数字）
+  const meta = {};
+  for(const t of TALENTS){
+    t.tiers.forEach((tier,i)=>{
+      const id = talentId(t,tier);
+      const p = pos[id];
+      if(!p) return;
+      const owned = player.talents.has(id);
+      const cum  = talentCumulativeTP(t, i);
+      meta[id] = {tree:t, tier, owned, cum};
       const node = document.createElement('div');
-      node.className = 'tnode' + (owned ? ' owned' : (buyable ? ' buy' : ' lock'));
-      node.style.left = x + 'px'; node.style.top = y + 'px';
-      // 未购买也显示稀有度色（暗版），购买后亮色
-      node.style.background = owned ? (RAR_COL[tier.r] || '#6e6e6e') : (RAR_DIM[tier.r] || '#3a3a3a');
-      node.title = t.name + ' (' + tier.r + ') — ' + tier.cost + ' TP';
+      node.className = 'tnode' + (owned?' owned':'');
+      node.dataset.id = id;
+      node.style.left = p.x.toFixed(1)+'px'; node.style.top = p.y.toFixed(1)+'px';
+      node.style.background = owned ? (RAR_COL[tier.r]||'#6e6e6e') : (RAR_DIM[tier.r]||'#3a3a3a');
       const img = document.createElement('img');
-      img.src = 'assets/talents/' + t.icon + '_(' + tier.r + ').webp';
-      img.onerror = function(){ this.style.display = 'none'; };
+      img.src = 'assets/talents/'+t.icon+'_('+tier.r+').webp';
+      img.onerror = function(){ this.style.display='none'; };
       node.appendChild(img);
       if(!owned){
-        const p = document.createElement('span');
-        p.className = 'tprice'; p.textContent = tier.cost;
-        node.appendChild(p);
+        const s = document.createElement('span');
+        s.className = 'tcum'; s.textContent = cum;
+        node.appendChild(s);
       }
-      if(buyable) node.addEventListener('click', (e)=>{ e.stopPropagation(); buyTalent(t.id, key); });
       wrap.appendChild(node);
-      prevR = r;
     });
-  });
+  }
+  wrap._talentMeta = meta;
 }
-// 天赋树旋转：拖拽或滚轮旋转整棵树
+
+// 天赋交互：HOLD 长按加点/撤销 + tooltip（事件委托，重绘不丢）
 (function(){
+  const wrap = document.getElementById('talentNodes');
   const tree = document.getElementById('talentTree');
-  if(!tree || tree.dataset.rotInit) return;
-  tree.dataset.rotInit = '1';
-  let dragging = false, lastX = 0;
+  const tip  = document.getElementById('ttip');
+  if(!wrap || !tree || wrap.dataset.holdInit) return;
+  wrap.dataset.holdInit = '1';
+  let timer = null, holdNode = null;
+  const clearHold = ()=>{ if(timer){clearTimeout(timer);timer=null;} if(holdNode){holdNode.classList.remove('holding');holdNode=null;} };
+  const showTip = (node, e)=>{
+    const meta = wrap._talentMeta; if(!meta || !tip) return;
+    const m = meta[node.dataset.id]; if(!m) return;
+    tip.innerHTML = '<div class="tt-name">'+m.tree.name+'</div>'
+      + '<div class="tt-rar" style="color:'+(RAR_TEXT[m.tier.r]||'#fff')+'">'+m.tier.r+'</div>'
+      + '<div class="tt-desc">'+m.tier.text+'</div>'
+      + '<div class="tt-cost">'+m.cum+' TP total · '+m.tier.cost+' TP</div>'
+      + '<div class="tt-hold">'+(m.owned?'HOLD to remove':'HOLD to upgrade')+'</div>';
+    const px = parseFloat(node.style.left), py = parseFloat(node.style.top);
+    tip.style.left = Math.max(4, Math.min(375-220, px+20))+'px';
+    tip.style.top  = Math.max(4, Math.min(375-150, py-24))+'px';
+    tip.style.display = 'block';
+  };
+  wrap.addEventListener('mousedown', (e)=>{
+    const n = e.target.closest('.tnode'); if(!n) return;
+    e.stopPropagation();
+    const id = n.dataset.id;
+    const m = wrap._talentMeta && wrap._talentMeta[id];
+    if(!m) return;
+    holdNode = n; n.classList.add('holding');
+    const [treeId,key] = id.split(':');
+    timer = setTimeout(()=>{
+      const res = m.owned ? holdRemoveTalent(treeId,key) : holdBuyTalent(treeId,key);
+      n.classList.remove('holding'); timer = null; holdNode = null;
+      if(res.ok) commitTalents();
+    }, 450);
+  });
+  window.addEventListener('mouseup', clearHold);
+  wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
+  wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
+  // 拖拽旋转整棵树 / 滚轮缩放查看全树
+  let dragging=false, lastX=0;
   tree.addEventListener('mousedown', (e)=>{
-    if(e.target.closest('.tnode')) return;   // 点节点不触发旋转
-    dragging = true; lastX = e.clientX;
-    tree.classList.add('rotating');
+    if(e.target.closest('.tnode')) return;
+    dragging=true; lastX=e.clientX; tree.classList.add('rotating');
   });
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
-    talentRotation += (e.clientX - lastX) * 0.012;
-    lastX = e.clientX;
+    talentRotation += (e.clientX-lastX)*0.012; lastX=e.clientX;
     buildTalentsUI();
   });
-  window.addEventListener('mouseup', ()=>{ if(dragging){ dragging=false; tree.classList.remove('rotating'); } });
+  window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
   tree.addEventListener('wheel', (e)=>{
     e.preventDefault();
-    talentRotation += e.deltaY > 0 ? 0.1 : -0.1;
+    talentZoom = Math.max(0.5, Math.min(1.8, talentZoom + (e.deltaY>0?-0.1:0.1)));
+    if(tip) tip.style.display='none';
     buildTalentsUI();
   }, {passive:false});
 })();

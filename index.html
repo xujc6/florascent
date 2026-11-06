@@ -505,16 +505,17 @@
   #talentTree.rotating { cursor:grabbing; }
   #talentLinks { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
   #talentNodes { position:absolute; inset:0; }
-  .tnode { position:absolute; width:42px; height:42px; border-radius:50%;
+  /* 节点：原版为小圆点 + 白色图标 + 稀有度底色，未点亮为暗色并标累计总TP */
+  .tnode { position:absolute; width:26px; height:26px; border-radius:50%;
     transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center;
-    box-shadow:inset 0 -2px 0 rgba(0,0,0,.22); cursor:default; }
-  .tnode img { width:68%; height:68%; object-fit:contain; pointer-events:none;
-    filter:brightness(0) invert(1); opacity:.92; }
-  .tnode .tprice { position:absolute; top:-5px; right:-6px; font-size:11px; font-weight:800;
-    color:#ff6b5a; -webkit-text-stroke:2px #2a0d0b; paint-order:stroke fill; }
-  .tnode.owned { box-shadow:inset 0 -2px 0 rgba(0,0,0,.22), 0 0 0 2px rgba(255,255,255,.22); }
-  .tnode.buy { cursor:pointer; box-shadow:inset 0 -2px 0 rgba(0,0,0,.18), 0 0 0 2px rgba(255,255,255,.55);
-    animation:tPulse 1.1s ease-in-out infinite; }
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.22); cursor:pointer; }
+  .tnode img { width:70%; height:70%; object-fit:contain; pointer-events:none;
+    filter:brightness(0) invert(1); opacity:.95; }
+  /* 未点亮节点上的数字 = 点亮至该档所需的累计总天赋点 */
+  .tnode .tcum { position:absolute; top:-8px; right:-9px; font-size:11px; font-weight:800;
+    color:#fff; -webkit-text-stroke:2px #2a0d0b; paint-order:stroke fill; pointer-events:none; }
+  .tnode.owned { box-shadow:inset 0 -2px 0 rgba(0,0,0,.22), 0 0 0 2px rgba(255,255,255,.3); }
+  .tnode.holding { box-shadow:inset 0 -2px 0 rgba(0,0,0,.22), 0 0 0 3px #fff; }
   @keyframes tPulse { 50% { box-shadow:inset 0 -2px 0 rgba(0,0,0,.18), 0 0 0 5px rgba(255,255,255,.25); } }
   /* 花朵头像：面板底部中央 */
   #talentCore { position:absolute; left:50%; bottom:52px; transform:translateX(-50%);
@@ -527,6 +528,16 @@
   #treset { position:absolute; right:8px; bottom:8px; padding:4px 14px; border-radius:6px;
     background:#c14a44; border:2px solid #7d2f2a; color:#fff; font-size:13px; font-weight:800;
     cursor:pointer; box-shadow:0 2px 0 rgba(0,0,0,.25); }
+  /* 天赋 tooltip：原版黑色信息卡（名称 + 稀有度 + 描述 + HOLD 提示） */
+  #ttip { position:absolute; z-index:9; display:none; pointer-events:none; width:214px;
+    padding:8px 10px 9px; border-radius:5px; background:rgba(0,0,0,.82);
+    box-shadow:0 4px 14px rgba(0,0,0,.4); font-size:11.5px; line-height:1.35; }
+  #ttip .tt-name { font-size:16px; font-weight:800; color:#fff; }
+  #ttip .tt-rar { font-size:10.5px; font-weight:800; margin:1px 0 5px; }
+  #ttip .tt-desc { font-weight:700; color:#fff; white-space:pre-line; }
+  #ttip .tt-hold { margin-top:7px; padding-top:6px; border-top:1px solid rgba(255,255,255,.25);
+    font-size:10.5px; font-weight:800; color:#ffd54f; }
+  #ttip .tt-cost { margin-top:3px; font-size:10.5px; font-weight:700; color:#cfe9ff; }
 
   /* ---------- 花瓣数据卡（悬停灰卡，照原版卡面） ---------- */
   .reloadwipe { position:absolute; inset:0; background:rgba(0,0,0,.42); pointer-events:none;
@@ -782,6 +793,7 @@
     <div>Body Damage: <b id="tstat-dmg">0</b></div>
   </div>
   <button id="treset">Reset</button>
+  <div id="ttip"></div>
 </div>
 
 <!-- craft panel（按 florr 的合成台重画：上面是台面，下面是花瓣柜） -->
