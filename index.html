@@ -481,18 +481,19 @@
      只缩不放、只 contain 不 cover，边缘不会被裁掉 */
   #craft img, #inventory img, #talents img { object-fit:contain; }
   .cslot, #cstack .cstk, #cresult { background-size:contain; background-position:center; background-repeat:no-repeat; }
-  /* ===== Talents：照原版视频（半透明珊瑚红面板覆盖在游戏画面上，非全屏切换）===== */
+  /* ===== Talents：照原版视频（半透明珊瑚红 + 底部花朵向上180°扇形展开 + 虚线连接）===== */
   #talents { display:none; position:absolute; inset:0; width:100%; height:100%;
     background:rgba(207, 91, 86, 0.93); z-index:30; overflow:hidden; color:#fff; }
   #talents.show { display:block; }
   #talents h2 { position:absolute; top:6px; left:50%; transform:translateX(-50%); margin:0;
     font-size:32px; font-weight:800; letter-spacing:.5px; color:#fff;
     -webkit-text-stroke:5px #000; paint-order:stroke fill; z-index:4; }
-  #tpbadge { position:absolute; top:8px; left:12px; width:66px; height:66px; border-radius:50%;
-    background:#a8463f; display:flex; align-items:center; justify-content:center; gap:4px;
-    font-weight:800; z-index:4; box-shadow:0 2px 0 rgba(0,0,0,.15); }
-  #tpbadge b { font-size:26px; -webkit-text-stroke:3px #3a1512; paint-order:stroke fill; }
-  #tpbadge span { font-size:14px; -webkit-text-stroke:2.5px #3a1512; paint-order:stroke fill; }
+  /* TP：左上角文字（原版是"248 TP"文字，不是圆形徽章） */
+  #tpbadge { position:absolute; top:10px; left:16px; font-size:24px; font-weight:800;
+    color:#fff; -webkit-text-stroke:3.5px #2a0d0b; paint-order:stroke fill; z-index:4;
+    display:flex; align-items:baseline; gap:4px; }
+  #tpbadge b { font-size:30px; }
+  #tpbadge span { font-size:16px; opacity:.9; }
   #tclose { position:absolute; top:10px; right:12px; width:34px; height:34px; border-radius:7px;
     background:#c14a44; border:3px solid #7d2f2a; color:#fff; font-size:23px; font-weight:800;
     line-height:27px; text-align:center; cursor:pointer; z-index:4; }
@@ -511,11 +512,14 @@
   .tnode.buy { cursor:pointer; box-shadow:inset 0 -3px 0 rgba(0,0,0,.18), 0 0 0 3px rgba(255,255,255,.55);
     animation:tPulse 1.1s ease-in-out infinite; }
   @keyframes tPulse { 50% { box-shadow:inset 0 -3px 0 rgba(0,0,0,.18), 0 0 0 7px rgba(255,255,255,.25); } }
-  #talentCore { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    width:96px; height:96px; pointer-events:none; }
+  /* 花朵头像：底部中央（原版树从底部花朵向上展开） */
+  #talentCore { position:absolute; left:50%; bottom:70px; transform:translateX(-50%);
+    width:96px; height:96px; pointer-events:none; z-index:3; }
   #talentCore img { width:100%; height:100%; object-fit:contain; }
-  #talentStats { position:absolute; right:16px; bottom:62px; text-align:right; font-size:17px;
-    font-weight:800; line-height:1.45; -webkit-text-stroke:3.5px #2a0d0b; paint-order:stroke fill; }
+  /* 统计信息：花朵旁边（底部中央偏右） */
+  #talentStats { position:absolute; left:50%; bottom:78px; transform:translateX(60px);
+    text-align:left; font-size:15px; font-weight:800; line-height:1.45;
+    -webkit-text-stroke:3px #2a0d0b; paint-order:stroke fill; white-space:nowrap; z-index:4; }
   #treset { position:absolute; right:16px; bottom:14px; padding:7px 20px; border-radius:7px;
     background:#c14a44; border:3px solid #7d2f2a; color:#fff; font-size:17px; font-weight:800;
     cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.25); }

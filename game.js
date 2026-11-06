@@ -5745,15 +5745,17 @@ function buildTalentsUI(){
   wrap.innerHTML = ''; svg.innerHTML = '';
   const W = wrap.clientWidth || window.innerWidth || 960;
   const H = wrap.clientHeight || window.innerHeight || 620;
-  const cx = W/2, cy = H/2;
+  // 原版：花朵在底部中央，树向上 180° 扇形展开（非 360° 全圆）
+  const cx = W/2, cy = H - 120;    // 花朵中心：底部中央偏上（留出统计+Reset空间）
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   // 稀有度配色（照原版天赋节点）
   const RAR_COL = {Common:'#7fbf5a',Unusual:'#d6bd45',Rare:'#4a5fd0',Epic:'#8b3fd0',
     Legendary:'#c0392b',Mythic:'#3fb8bd',Ultra:'#d0477f',Super:'#5ec46a',Eternal:'#cfcfcf',Unique:'#555555'};
   const base = Math.min(W, H);
-  const R0 = base * 0.25, STEP = base * 0.115;
+  const R0 = base * 0.14, STEP = base * 0.10;
   TALENTS.forEach((t, ti)=>{
-    const ang = (ti / TALENTS.length) * Math.PI * 2 - Math.PI/2;
+    // 180° 向上展开：角度从 π（正左）到 2π（正右），经过 1.5π（正上）
+    const ang = Math.PI + (ti / TALENTS.length) * Math.PI;
     // 只显示已点亮的档位 + 紧接的下一档（原版也是只露出可走的路径）
     const ownedIdx = t.tiers.map((ti2,i)=> player.talents.has(t.id+':'+(ti2.key||ti2.r)) ? i : -1).filter(i=>i>=0);
     const maxOwned = ownedIdx.length ? Math.max(...ownedIdx) : -1;
@@ -5775,6 +5777,7 @@ function buildTalentsUI(){
       line.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.42)');
       line.setAttribute('stroke-width', '8');
       line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('stroke-dasharray', '7,5');   // 原版虚线连接
       svg.appendChild(line);
       const node = document.createElement('div');
       node.className = 'tnode' + (owned ? ' owned' : (buyable ? ' buy' : ' lock'));
