@@ -5744,13 +5744,25 @@ const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07af
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
 // 视图：原版天赋树只能旋转（不能上下平移、不能缩放）
-let talentRotation = 0;
-// 原版排列（由视频帧逐点检测得出）：交错六边形网格、节点等大、彼此留明显空隙。
-// 视频 1600px 视图实测：节点直径 66px、中心间距约 110px、相邻列错开约半格。
-// 项目需容纳全部 96 档，故按同一「交错网格」形态密集化，但不做任何节点重叠。
-const TALENT_NODE = 30;
-const TALENT_COLS = 12, TALENT_ROWS = 8;      // 12*8 = 96
-const TALENT_DX = 36, TALENT_DY = 37, TALENT_STAGGER = 18;
+// 原版面板一次只显示约 20 个节点（视频实测直径 66px / 间距 110px / 交错半格），
+// 旋转到不同角度会切换到树的另一段分支 —— 96 档分成若干「可见分组」。
+let talentRotation = 0.3;          // 初值 = 半个切换步长 → 打开时组内旋转角为 0
+const TALENT_NODE = 50;                 // 换算到本面板：66px * (450/558) ≈ 53
+const TALENT_DX = 89, TALENT_DY = 77, TALENT_STAGGER = 44;
+const TALENT_COLS = 5, TALENT_ROWS = 4, TALENT_PER_GROUP = TALENT_COLS*TALENT_ROWS;
+const TALENT_ROT_STEP = 0.6;           // 每转过这个弧度换一组
+// 按天赋顺序把 96 档切分成分组，尽量让同一棵树的档位留在一组里
+const TALENT_GROUPS = (()=>{
+  const groups=[]; let cur=[];
+  for(const t of TALENTS){
+    for(let i=0;i<t.tiers.length;i++){
+      cur.push({t, idx:i});
+      if(cur.length>=TALENT_PER_GROUP){ groups.push(cur); cur=[]; }
+    }
+  }
+  if(cur.length) groups.push(cur);
+  return groups;
+})();
 
 function buildTalentsUI(){
   const wrap = document.getElementById('talentNodes');
@@ -5764,7 +5776,11 @@ function buildTalentsUI(){
   wrap.innerHTML = ''; svg.innerHTML = '';
   const W = 450, H = 420, cx = W/2, cy = H - 54;   // 花朵中心：面板底部中央
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
-  const cosR = Math.cos(talentRotation), sinR = Math.sin(talentRotation);
+  const G = TALENT_GROUPS.length;
+  const k = Math.floor(talentRotation/TALENT_ROT_STEP);
+  const groupIdx = ((k % G) + G) % G;
+  const localRot = ((talentRotation/TALENT_ROT_STEP - k) - 0.5) * 0.7;  // 组内连续旋转 ±0.35
+  const cosR = Math.cos(localRot), sinR = Math.sin(localRot);
   const NS = 'http://www.w3.org/2000/svg';
   const link = (a,b,owned)=>{
     const ln = document.createElementNS(NS,'line');
@@ -5776,69 +5792,64 @@ function buildTalentsUI(){
     ln.setAttribute('stroke-dasharray','9,8');
     svg.appendChild(ln);
   };
-  // 1) 96 档按「累计总TP → 天赋顺序 → 档位」排序，小数字在下、大数字在上
-  const all = [];
-  TALENTS.forEach((t,ti)=>t.tiers.forEach((tier,idx)=>{
-    all.push({t, ti, tier, idx, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
-  }));
-  all.sort((a,b)=> a.cum-b.cum || a.ti-b.ti || a.idx-b.idx);
-  // 2) 交错网格：奇数行横移半格；整体绕花朵刚性旋转
-  const pos = {};
-  let n = 0;
-  for(let row=TALENT_ROWS-1; row>=0; row--){
-    for(let col=0; col<TALENT_COLS && n<all.length; col++){
-      const bx = 24 + col*TALENT_DX + (row%2)*TALENT_STAGGER;
-      const by = 46 + row*TALENT_DY;
-      const dx = bx-cx, dy = by-cy;
-      pos[all[n++].id] = {x:cx + dx*cosR - dy*sinR, y:cy + dx*sinR + dy*cosR};
+  // 当前组：按累计总TP 由下往上填进交错网格（原版小数字在下、大数字在上）
+  const cur = TALENT_GROUPS[groupIdx].slice().sort((a,b)=>
+    talentCumulativeTP(a.t,a.idx) - talentCumulativeTP(b.t,b.idx) ||
+    TALENTS.indexOf(a.t) - TALENTS.indexOf(b.t) || a.idx-b.idx);
+  const pos = {}, curIds = new Set();
+  for(let i=0;i<cur.length;i++){
+    const row = TALENT_ROWS-1 - Math.floor(i/TALENT_COLS);
+    const col = i % TALENT_COLS;
+    const bx = 45 + col*TALENT_DX + (row%2)*TALENT_STAGGER;
+    const by = 60 + row*TALENT_DY;
+    const dx = bx-cx, dy = by-cy;
+    const id = talentId(cur[i].t, cur[i].t.tiers[cur[i].idx]);
+    pos[id] = {x:cx + dx*cosR - dy*sinR, y:cy + dx*sinR + dy*cosR};
+    curIds.add(id);
+  }
+  // 连线：只连当前组内可见的相邻档 / 精确前置；首档连向花朵
+  const flower = {x:cx, y:cy};
+  for(const it of cur){
+    const t = it.t, idx = it.idx;
+    const id = talentId(t,t.tiers[idx]), p = pos[id];
+    if(!p) continue;
+    const owned = player.talents.has(id);
+    if(idx > 0){
+      const pid = talentId(t,t.tiers[idx-1]);
+      if(curIds.has(pid) && pos[pid]) link(pos[pid],p,owned);
+    } else if(t.req){
+      const rt = TALENTS.find(x=>x.id===t.req.tree);
+      if(rt){
+        const ri = rt.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
+        if(ri>=0){ const pid=talentId(rt,rt.tiers[ri]); if(curIds.has(pid)&&pos[pid]) link(pos[pid],p,owned); }
+      }
+    } else {
+      link(flower,p,owned);
     }
   }
-  // 3) 连线：同天赋相邻档 / 跨树精确前置 / 最下排连向花朵
-  const flower = {x:cx, y:cy};
-  for(const t of TALENTS){
-    t.tiers.forEach((tier,idx)=>{
-      const id = talentId(t,tier), p = pos[id];
-      if(!p) return;
-      const owned = player.talents.has(id);
-      if(idx > 0){
-        const prev = pos[talentId(t,t.tiers[idx-1])];
-        if(prev) link(prev,p,owned);
-      } else if(t.req){
-        const rt = TALENTS.find(x=>x.id===t.req.tree);
-        if(rt){
-          const ri = rt.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
-          if(ri>=0){ const par = pos[talentId(rt,rt.tiers[ri])]; if(par) link(par,p,owned); }
-        }
-      } else {
-        link(flower,p,owned);
-      }
-    });
-  }
-  // 4) 节点：统一尺寸、原版彩色圆底图标整张贴
+  // 节点：原版等大彩色圆底图标，彼此留明显空隙
   const meta = {};
-  for(const t of TALENTS){
-    t.tiers.forEach((tier,i)=>{
-      const id = talentId(t,tier), p = pos[id];
-      if(!p) return;
-      const owned = player.talents.has(id);
-      const cum  = talentCumulativeTP(t, i);
-      meta[id] = {tree:t, tier, owned, cum};
-      const node = document.createElement('div');
-      node.className = 'tnode ' + (owned ? 'owned' : 'locked');
-      node.dataset.id = id;
-      node.style.left = p.x.toFixed(1)+'px'; node.style.top = p.y.toFixed(1)+'px';
-      node.style.width = TALENT_NODE+'px'; node.style.height = TALENT_NODE+'px';
-      const img = document.createElement('img');
-      img.src = 'assets/talents/'+t.icon+'_('+tier.r+').webp';
-      img.onerror = function(){ this.style.display='none'; };
-      node.appendChild(img);
-      if(!owned){
-        const s = document.createElement('span');
-        s.className = 'tcum'; s.textContent = cum;
-        node.appendChild(s);
-      }
-      wrap.appendChild(node);
-    });
+  for(const it of cur){
+    const t=it.t, tier=t.tiers[it.idx], id=talentId(t,tier), p=pos[id];
+    if(!p) return;
+    const owned = player.talents.has(id);
+    const cum  = talentCumulativeTP(t, it.idx);
+    meta[id] = {tree:t, tier, owned, cum};
+    const node = document.createElement('div');
+    node.className = 'tnode ' + (owned ? 'owned' : 'locked');
+    node.dataset.id = id;
+    node.style.left = p.x.toFixed(1)+'px'; node.style.top = p.y.toFixed(1)+'px';
+    node.style.width = TALENT_NODE+'px'; node.style.height = TALENT_NODE+'px';
+    const img = document.createElement('img');
+    img.src = 'assets/talents/'+t.icon+'_('+tier.r+').webp';
+    img.onerror = function(){ this.style.display='none'; };
+    node.appendChild(img);
+    if(!owned){
+      const s = document.createElement('span');
+      s.className = 'tcum'; s.textContent = cum;
+      node.appendChild(s);
+    }
+    wrap.appendChild(node);
   }
   wrap._talentMeta = meta;
 }
@@ -5891,7 +5902,8 @@ function buildTalentsUI(){
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
     const dx=e.clientX-lastX; lastX=e.clientX;
-    talentRotation = Math.max(-0.35, Math.min(0.35, talentRotation + dx*0.006));
+    // 拖拽 = 旋转；转过一段角度自动切到树的下一段分支
+    talentRotation += dx*0.006;
     buildTalentsUI();
   });
   window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
