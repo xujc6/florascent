@@ -5743,12 +5743,14 @@ const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#46206
 const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
-// 视图：原版天赋树只能绕花朵旋转（不能上下平移、不能缩放）
+// 视图：原版天赋树只能旋转（不能上下平移、不能缩放）
 let talentRotation = 0;
-// 原版天赋按累计 TP 由内向外分层：数字小的靠近花朵，数字大的在外圈；
-// 每层节点数按半圆弧长分配，保证任意两节点之间都有空隙、绝不互相遮挡。
-const TALENT_RING_CAP = [4, 7, 10, 14, 17, 20, 24];   // 合计 96 = 全部档位
-const TALENT_R0 = 58, TALENT_RING_STEP = 40, TALENT_NODE = 34;
+// 原版排列（由视频帧逐点检测得出）：交错六边形网格、节点等大、彼此留明显空隙。
+// 视频 1600px 视图实测：节点直径 66px、中心间距约 110px、相邻列错开约半格。
+// 项目需容纳全部 96 档，故按同一「交错网格」形态密集化，但不做任何节点重叠。
+const TALENT_NODE = 30;
+const TALENT_COLS = 12, TALENT_ROWS = 8;      // 12*8 = 96
+const TALENT_DX = 36, TALENT_DY = 37, TALENT_STAGGER = 18;
 
 function buildTalentsUI(){
   const wrap = document.getElementById('talentNodes');
@@ -5760,8 +5762,9 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = 450, H = 420, cx = W/2, cy = H - 40;   // 花朵中心：面板底部中央
+  const W = 450, H = 420, cx = W/2, cy = H - 54;   // 花朵中心：面板底部中央
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
+  const cosR = Math.cos(talentRotation), sinR = Math.sin(talentRotation);
   const NS = 'http://www.w3.org/2000/svg';
   const link = (a,b,owned)=>{
     const ln = document.createElementNS(NS,'line');
@@ -5773,25 +5776,24 @@ function buildTalentsUI(){
     ln.setAttribute('stroke-dasharray','9,8');
     svg.appendChild(ln);
   };
-  // 1) 收集 96 个档位，按「累计总 TP → 天赋顺序 → 档位」排序（原版数字由内向外递增）
+  // 1) 96 档按「累计总TP → 天赋顺序 → 档位」排序，小数字在下、大数字在上
   const all = [];
   TALENTS.forEach((t,ti)=>t.tiers.forEach((tier,idx)=>{
     all.push({t, ti, tier, idx, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
   }));
   all.sort((a,b)=> a.cum-b.cum || a.ti-b.ti || a.idx-b.idx);
-  // 2) 分到同心半圆环；环内按天赋顺序排，连线才会顺着枝走
+  // 2) 交错网格：奇数行横移半格；整体绕花朵刚性旋转
   const pos = {};
   let n = 0;
-  TALENT_RING_CAP.forEach((cap,k)=>{
-    const R = TALENT_R0 + k*TALENT_RING_STEP;
-    const slice = all.slice(n, n+cap).sort((a,b)=> a.ti-b.ti || a.idx-b.idx);
-    n += cap;
-    slice.forEach((it,j)=>{
-      const a = Math.PI + (j+0.5)/slice.length*Math.PI + talentRotation;
-      pos[it.id] = {x:cx + R*Math.cos(a), y:cy + R*Math.sin(a)};
-    });
-  });
-  // 3) 连线：同天赋相邻档 / 跨树精确前置 / 最内环连向花朵
+  for(let row=TALENT_ROWS-1; row>=0; row--){
+    for(let col=0; col<TALENT_COLS && n<all.length; col++){
+      const bx = 24 + col*TALENT_DX + (row%2)*TALENT_STAGGER;
+      const by = 46 + row*TALENT_DY;
+      const dx = bx-cx, dy = by-cy;
+      pos[all[n++].id] = {x:cx + dx*cosR - dy*sinR, y:cy + dx*sinR + dy*cosR};
+    }
+  }
+  // 3) 连线：同天赋相邻档 / 跨树精确前置 / 最下排连向花朵
   const flower = {x:cx, y:cy};
   for(const t of TALENTS){
     t.tiers.forEach((tier,idx)=>{
@@ -5812,7 +5814,7 @@ function buildTalentsUI(){
       }
     });
   }
-  // 4) 节点：统一尺寸、原版彩色圆底图标整张贴，绝不重叠
+  // 4) 节点：统一尺寸、原版彩色圆底图标整张贴
   const meta = {};
   for(const t of TALENTS){
     t.tiers.forEach((tier,i)=>{
@@ -5889,7 +5891,7 @@ function buildTalentsUI(){
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
     const dx=e.clientX-lastX; lastX=e.clientX;
-    talentRotation = Math.max(-0.7, Math.min(0.7, talentRotation + dx*0.006));
+    talentRotation = Math.max(-0.35, Math.min(0.35, talentRotation + dx*0.006));
     buildTalentsUI();
   });
   window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
