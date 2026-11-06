@@ -5743,24 +5743,33 @@ const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#46206
 const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
-// 视图：整棵树是一张【以花朵为根的连续圆网】，面板只是视口 —— 不是分组展示。
-// 视频逐点实测（相对花朵的距离 74/93/110/150/197/244/276/310…）呈同心层，
-// 角度集中在若干放射分支上，下半圈被面板裁掉，靠旋转才能看全。
-// 连线只连紧邻节点、两端从圆边缘截断，绝不压到图标上。
+// 视图：整棵树是一张【有左右边界的规整网格树】，不是圆、不是分组。
+// 官方 wiki (Florr.io_UI): "Talents scroll from left to right, and appear as a
+// tree of talents stemming from the flower" —— 树从左到右按固定顺序铺开。
+// 顺序 = official-florrio.fandom.com/wiki/Talents 的 17 个章节顺序：
+// 最左 Petal Health(花瓣耐久)，最右 Concentrated Poison(毒伤)；
+// 分叉天赋都紧挨父天赋（Antennae/Reach/Duplicator/Magnetism 围着 Loadout 等）。
+// 每一列 = 一棵天赋，列内各档位由下往上连成一条链（同种类连在一起）。
+// 交互只有「旋转」：整棵树绕花朵正下方很远的圆心做刚体旋转，
+// 旋转即把左右两端带进面板视口；没有上下平移、没有缩放。
 let talentRotation = 0;
-const TALENT_NODE = 36;
-const TALENT_RING_R    = [72, 132, 192, 252, 312];
-const TALENT_RING_CAP  = [7, 13, 19, 25, 32];        // 合计 96 = 全部档位
-// 96 档按累计总TP 由内环到外环（小数字靠近花朵，大数字在外圈）
+const TALENT_ORDER = [
+  'petalHealth','antennae','reach','duplicator','loadout','magnetism','reload',
+  'petalRotation','health','secondChance','medic','summoner','sharpEdges',
+  'bodyToxicity','luck','poison','concentratedPoison'
+];
+const TALENT_NODE = 24;
+const TALENT_DX = 32, TALENT_DY = 34;      // 17列 / 9档，留出虚线通过的空隙
+const TALENT_BASE_Y = 310;                 // 最下档 y（与底部花朵拉开距离）
+// 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档
 const TALENT_WORLD = (()=>{
-  const all=[];
-  TALENTS.forEach((t,ti)=>t.tiers.forEach((tier,idx)=>{
-    all.push({t, ti, idx, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
-  }));
-  all.sort((a,b)=> a.cum-b.cum || a.ti-b.ti || a.idx-b.idx);
-  const out=[]; let n=0;
-  TALENT_RING_CAP.forEach((cap,k)=>{
-    for(let j=0;j<cap && n<all.length;j++,n++) out.push({...all[n], ring:k, slot:j, cap});
+  const out=[];
+  TALENT_ORDER.forEach((tid,col)=>{
+    const t = TALENTS.find(x=>x.id===tid);
+    if(!t) return;
+    t.tiers.forEach((tier,idx)=>{
+      out.push({t, idx, col, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
+    });
   });
   return out;
 })();
@@ -5775,24 +5784,29 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = 450, H = 420, cx = W/2, cy = H - 54;   // 花朵中心：面板底部中央
+  const W = 580, H = 460, cx = W/2, cy = H - 38;   // 花朵中心：面板底部中央
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
+  // 刚体旋转：圆心在花朵正下方 4000px，小角度旋转≈水平浏览，且树会轻微倾斜
+  const OX = cx, OY = cy + 4000;
+  const cosR = Math.cos(talentRotation), sinR = Math.sin(talentRotation);
+  const treeCX = (TALENT_ORDER.length-1)*TALENT_DX/2;
   const at = {};
   for(const it of TALENT_WORLD){
-    const ang = (it.slot+0.5)/it.cap*Math.PI*2 + (it.ring%2)*Math.PI/it.cap + talentRotation;
-    const R = TALENT_RING_R[it.ring];
-    at[it.ring+':'+it.slot] = {x:cx + R*Math.cos(ang), y:cy + R*Math.sin(ang), it, ang};
+    const bx = cx + (it.col*TALENT_DX - treeCX);
+    const by = TALENT_BASE_Y - it.idx*TALENT_DY;
+    const dx=bx-OX, dy=by-OY;
+    at[it.col+':'+it.idx] = {x:OX + dx*cosR - dy*sinR, y:OY + dx*sinR + dy*cosR, it};
   }
-  // 只渲染落进面板视口的节点（下半圈自然被裁掉，与原版一致）
+  // 只渲染落进面板视口的节点（左右两端靠旋转带进来）
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
-    if(p.x < -25 || p.x > W+25 || p.y < 30 || p.y > H+25) continue;
+    if(p.x < -20 || p.x > W+20 || p.y < 32 || p.y > H+20) continue;
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x,y:p.y}));
-  // 连线端点从圆边缘截断；并确认线段不会擦到第三个节点
+  // 连线两端从圆边缘截断，并确认线段不会擦到第三个节点 → 图标不与线路重合
   const clear = (a,b)=>{
     const dx=b.x-a.x, dy=b.y-a.y, len2=dx*dx+dy*dy;
     if(len2 < 1) return false;
@@ -5805,54 +5819,57 @@ function buildTalentsUI(){
   };
   const link = (a,b,owned)=>{
     const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy);
-    if(d < 1 || d > 82 || !clear(a,b)) return;
-    const t=(TALENT_NODE/2 + 4)/d;
+    if(d < 1 || d > 58 || !clear(a,b)) return;
+    const t=(TALENT_NODE/2 + 3)/d;
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',(a.x+dx*t).toFixed(1)); ln.setAttribute('y1',(a.y+dy*t).toFixed(1));
     ln.setAttribute('x2',(b.x-dx*t).toFixed(1)); ln.setAttribute('y2',(b.y-dy*t).toFixed(1));
     ln.setAttribute('stroke', owned ? '#7d2b26' : 'rgba(112,40,34,.8)');
     ln.setAttribute('stroke-width','5');
     ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','8,7');
+    ln.setAttribute('stroke-dasharray','7,6');
     svg.appendChild(ln);
   };
-  const byRS = {};
-  for(const p of visible) byRS[p.it.ring+':'+p.it.slot] = p;
+  const byCI = {};
+  for(const p of visible) byCI[p.it.col+':'+p.it.idx] = p;
   for(const p of visible){
-    const {ring,slot,cap} = p.it;
-    // 环内相邻（放射枝上的短线）
-    const next = byRS[ring+':'+((slot+1)%cap)];
-    if(next) link(p,next, player.talents.has(p.it.id) && player.talents.has(next.it.id));
-    // 与内环角度最近的节点相连（径向短线）
-    if(ring > 0){
-      const innerCap = TALENT_RING_CAP[ring-1];
-      let best=null, bd=1e9;
-      for(let j=0;j<innerCap;j++){
-        const q = byRS[(ring-1)+':'+j];
-        if(!q) continue;
-        const d=Math.hypot(q.x-p.x,q.y-p.y);
-        if(d<bd){bd=d;best=q;}
-      }
-      if(best) link(best,p, player.talents.has(p.it.id) && player.talents.has(best.it.id));
-    }
+    const {col,idx} = p.it;
+    // 同列相邻档：同种类连成一条竖直链（主干）
+    const up = byCI[col+':'+(idx+1)];
+    if(up) link(p,up, player.talents.has(p.it.id) && player.talents.has(up.it.id));
+    // 相邻列同档：横向短连，把 17 条链织成一整块有边界的网
+    const right = byCI[(col+1)+':'+idx];
+    if(right) link(p,right, player.talents.has(p.it.id) && player.talents.has(right.it.id));
   }
-  // 内环连回花朵，让整棵树有根
+  // 精确跨树前置：父档 → 子档首档（只在两者都可见且距离够近时连）
+  for(const p of visible){
+    const t = p.it.t;
+    if(p.it.idx !== 0 || !t.req) continue;
+    const parent = TALENTS.find(x=>x.id===t.req.tree);
+    if(!parent) continue;
+    const ri = parent.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
+    if(ri<0) continue;
+    const pc = TALENT_ORDER.indexOf(parent.id);
+    const q = byCI[pc+':'+ri];
+    if(q) link(q,p, player.talents.has(p.it.id) && player.talents.has(q.it.id));
+  }
+  // 花朵连向最下排中心附近的节点
   const flower = {x:cx, y:cy};
   for(const p of visible){
-    if(p.it.ring !== 0) continue;
+    if(p.it.idx !== 0) continue;
     const dx=p.x-cx, dy=p.y-cy, d=Math.hypot(dx,dy);
-    if(d<1 || !clear(flower,p)) continue;
-    const t0=40/d, t1=(TALENT_NODE/2+4)/d;
+    if(d<1 || d>90 || d<42 || !clear(flower,p)) continue;
+    const t0=30/d, t1=(TALENT_NODE/2+3)/d;
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',(cx+dx*t0).toFixed(1)); ln.setAttribute('y1',(cy+dy*t0).toFixed(1));
     ln.setAttribute('x2',(p.x-dx*t1).toFixed(1)); ln.setAttribute('y2',(p.y-dy*t1).toFixed(1));
     ln.setAttribute('stroke','rgba(112,40,34,.8)');
     ln.setAttribute('stroke-width','5');
     ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','8,7');
+    ln.setAttribute('stroke-dasharray','7,6');
     svg.appendChild(ln);
   }
-  // 节点：原版等大彩色圆底图标，彼此留明显空隙
+  // 节点：等大彩色圆底图标，彼此留空隙
   const meta = {};
   for(const p of visible){
     const it=p.it, t=it.t, tier=t.tiers[it.idx], id=it.id;
@@ -5895,8 +5912,8 @@ function buildTalentsUI(){
       + '<div class="tt-cost">'+m.cum+' TP total · '+m.tier.cost+' TP</div>'
       + '<div class="tt-hold">'+(m.owned?'HOLD to remove':'HOLD to upgrade')+'</div>';
     const px = parseFloat(node.style.left), py = parseFloat(node.style.top);
-    tip.style.left = Math.max(4, Math.min(450-220, px+20))+'px';
-    tip.style.top  = Math.max(4, Math.min(420-150, py-24))+'px';
+    tip.style.left = Math.max(4, Math.min(580-220, px+20))+'px';
+    tip.style.top  = Math.max(4, Math.min(460-150, py-24))+'px';
     tip.style.display = 'block';
   };
   wrap.addEventListener('mousedown', (e)=>{
@@ -5925,8 +5942,9 @@ function buildTalentsUI(){
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
     const dx=e.clientX-lastX; lastX=e.clientX;
-    // 拖拽 = 整棵树绕花朵旋转（可转满圈看完全部 96 档）；不上下平移、不缩放
-    talentRotation += dx*0.006;
+    // 只能旋转：绕花朵正下方远处圆心做刚体旋转，小角度≈左右浏览，
+    // ±0.015rad 约 ±60px，刚好把最左(花瓣耐久)与最右(毒伤)两端都带进视口
+    talentRotation = Math.max(-0.015, Math.min(0.015, talentRotation + dx*0.00015));
     buildTalentsUI();
   });
   window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
