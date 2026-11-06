@@ -5743,24 +5743,26 @@ const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#46206
 const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
-// 视图：整棵树是一张【有左右边界的规整网格树】，不是圆、不是分组。
-// 官方 wiki (Florr.io_UI): "Talents scroll from left to right, and appear as a
-// tree of talents stemming from the flower" —— 树从左到右按固定顺序铺开。
-// 顺序 = official-florrio.fandom.com/wiki/Talents 的 17 个章节顺序：
-// 最左 Petal Health(花瓣耐久)，最右 Concentrated Poison(毒伤)；
-// 分叉天赋都紧挨父天赋（Antennae/Reach/Duplicator/Magnetism 围着 Loadout 等）。
-// 每一列 = 一棵天赋，列内各档位由下往上连成一条链（同种类连在一起）。
-// 交互只有「旋转」：整棵树绕花朵正下方很远的圆心做刚体旋转，
-// 旋转即把左右两端带进面板视口；没有上下平移、没有缩放。
+// 视图：整棵树是一个【环绕圆心的大圆环】——官方 fandom (Talents)：
+// "the player's flower icon connected to all the talents in a skill-tree format"，
+// 花朵在面板底部中央，天赋树是绕圆心的一整圈环带，360° 无缝衔接。
+// 顺序 = official-florrio.fandom.com/wiki/Talents 的 17 个章节顺序，沿圆周顺时针排布：
+// 静止时最左可见 Petal Health(花瓣耐久)，滑到另一端是 Concentrated Poison(毒伤)。
+// 每一档沿半径向外生长，链内各档沿螺旋微微弯曲（原版链不是直线），
+// 相邻天赋同档之间用严格同心圆弧相连（原版环状线路）。
+// 交互只有「滑动旋转」：按住拖动绕圆心转，松手带惯性缓停；
+// 没有上下平移、没有缩放。
 let talentRotation = 0;
 const TALENT_ORDER = [
   'petalHealth','antennae','reach','duplicator','loadout','magnetism','reload',
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-const TALENT_NODE = 24;
-const TALENT_DX = 32, TALENT_DY = 34;      // 17列 / 9档，留出虚线通过的空隙
-const TALENT_BASE_Y = 310;                 // 最下档 y（与底部花朵拉开距离）
+const TALENT_NODE = 36;                    // 节点图标直径（放大，提升辨识度）
+const TALENT_R0 = 480, TALENT_DR = 46;     // 环带：第0档所在半径 / 每升一档外扩
+const TALENT_BEND = 0.011;                 // 链每升一档沿圆周弯一点(rad) → 原版弯曲链
+const TALENT_CX = 290, TALENT_CY = 880;    // 圆心：面板正下方远处，环的上沿穿过面板
+const TALENT_DPHI = Math.PI*2/17;          // 相邻两棵天赋的圆心角
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5784,64 +5786,87 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = 580, H = 460, cx = W/2, cy = H - 38;   // 花朵中心：面板底部中央
+  const W = 580, H = 460;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 刚体旋转：圆心在花朵正下方 4000px，小角度旋转≈水平浏览，且树会轻微倾斜
-  const OX = cx, OY = cy + 4000;
-  const cosR = Math.cos(talentRotation), sinR = Math.sin(talentRotation);
-  const treeCX = (TALENT_ORDER.length-1)*TALENT_DX/2;
+  // 极坐标布局：圆心 (TALENT_CX, TALENT_CY) 在面板正下方，
+  // 角 = 天赋在圆周上的位置 + 档位的螺旋弯曲 + 用户滑动旋转量；半径 = 档位环
+  const posOf = (col, idx)=>{
+    const phi = (col-1.5)*TALENT_DPHI + idx*TALENT_BEND + talentRotation;
+    const rho = TALENT_R0 + idx*TALENT_DR;
+    return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), phi, rho };
+  };
   const at = {};
   for(const it of TALENT_WORLD){
-    const bx = cx + (it.col*TALENT_DX - treeCX);
-    const by = TALENT_BASE_Y - it.idx*TALENT_DY;
-    const dx=bx-OX, dy=by-OY;
-    at[it.col+':'+it.idx] = {x:OX + dx*cosR - dy*sinR, y:OY + dx*sinR + dy*cosR, it};
+    const p = posOf(it.col, it.idx);
+    p.it = it;
+    at[it.col+':'+it.idx] = p;
   }
-  // 只渲染落进面板视口的节点（左右两端靠旋转带进来）
+  // 只渲染落进面板视口的节点（其余靠滑动旋转带进来，环是整圈、无缝衔接）
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
-    if(p.x < -20 || p.x > W+20 || p.y < 32 || p.y > H+20) continue;
+    if(p.x < -26 || p.x > W+26 || p.y < 20 || p.y > H+26) continue;
     visible.push(p);
   }
-  const centers = visible.map(p=>({x:p.x,y:p.y}));
-  // 连线两端从圆边缘截断，并确认线段不会擦到第三个节点 → 图标不与线路重合
-  const clear = (a,b)=>{
-    const dx=b.x-a.x, dy=b.y-a.y, len2=dx*dx+dy*dy;
-    if(len2 < 1) return false;
-    for(const q of centers){
-      if((q.x===a.x&&q.y===a.y)||(q.x===b.x&&q.y===b.y)) continue;
-      const t=Math.max(0,Math.min(1,((q.x-a.x)*dx+(q.y-a.y)*dy)/len2));
-      if(Math.hypot(q.x-(a.x+t*dx),q.y-(a.y+t*dy)) < TALENT_NODE/2+2) return false;
+  const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
+  // 曲线采样检测：确认路径不会擦到除两端外的第三个节点 → 图标不与线路重合
+  const curveClear = (a,c,b,skipA,skipB)=>{
+    for(let i=1;i<12;i++){
+      const t=i/12, u=1-t;
+      const x=u*u*a.x+2*u*t*c.x+t*t*b.x, y=u*u*a.y+2*u*t*c.y+t*t*b.y;
+      for(const q of centers){
+        if(q.key===skipA || q.key===skipB) continue;
+        if(Math.hypot(q.x-x,q.y-y) < TALENT_NODE/2+3) return false;
+      }
     }
     return true;
   };
-  const link = (a,b,owned)=>{
-    const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy);
-    if(d < 1 || d > 58 || !clear(a,b)) return;
-    const t=(TALENT_NODE/2 + 3)/d;
-    const ln = document.createElementNS(NS,'line');
-    ln.setAttribute('x1',(a.x+dx*t).toFixed(1)); ln.setAttribute('y1',(a.y+dy*t).toFixed(1));
-    ln.setAttribute('x2',(b.x-dx*t).toFixed(1)); ln.setAttribute('y2',(b.y-dy*t).toFixed(1));
-    ln.setAttribute('stroke', owned ? '#7d2b26' : 'rgba(112,40,34,.8)');
-    ln.setAttribute('stroke-width','5');
-    ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','7,6');
-    svg.appendChild(ln);
+  const stroke = (p, owned)=>{
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke', owned ? '#7d2b26' : 'rgba(112,40,34,.8)');
+    p.setAttribute('stroke-width','5');
+    p.setAttribute('stroke-linecap','round');
+    p.setAttribute('stroke-dasharray','7,6');
+    svg.appendChild(p);
+  };
+  const quad = (a,cx,cy,b,owned)=>{
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d','M '+a.x.toFixed(1)+' '+a.y.toFixed(1)
+      +' Q '+cx.toFixed(1)+' '+cy.toFixed(1)+' '+b.x.toFixed(1)+' '+b.y.toFixed(1));
+    stroke(p, owned);
+  };
+  // 链内相邻档：沿螺旋的平滑曲线（控制点取角/半径中点 → 原版的弯曲链）
+  const chainLink = (a,b,owned)=>{
+    const mPhi=(a.phi+b.phi)/2, mRho=(a.rho+b.rho)/2;
+    quad(a, TALENT_CX + mRho*Math.sin(mPhi), TALENT_CY - mRho*Math.cos(mPhi), b, owned);
+  };
+  // 相邻天赋同档：严格同心圆弧（以 TALENT_CX/CY 为圆心的正圆 → 原版环状线路）
+  const arcLink = (a,b,owned)=>{
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d','M '+a.x.toFixed(1)+' '+a.y.toFixed(1)
+      +' A '+a.rho.toFixed(1)+' '+a.rho.toFixed(1)+' 0 0 1 '+b.x.toFixed(1)+' '+b.y.toFixed(1));
+    stroke(p, owned);
+  };
+  // 跨树前置 / 花朵连线：弯向圆心的曲线，采样确认不压第三个节点才画
+  const curveLink = (a,b,owned,skipA,skipB,pull)=>{
+    const cxp=(a.x+b.x)/2 + (TALENT_CX-(a.x+b.x)/2)*pull;
+    const cyp=(a.y+b.y)/2 + (TALENT_CY-(a.y+b.y)/2)*pull;
+    if(!curveClear(a,{x:cxp,y:cyp},b,skipA,skipB)) return;
+    quad(a,cxp,cyp,b,owned);
   };
   const byCI = {};
   for(const p of visible) byCI[p.it.col+':'+p.it.idx] = p;
   for(const p of visible){
     const {col,idx} = p.it;
-    // 同列相邻档：同种类连成一条竖直链（主干）
+    // 同链相邻档：同种类连成一条微弯的链（主干）
     const up = byCI[col+':'+(idx+1)];
-    if(up) link(p,up, player.talents.has(p.it.id) && player.talents.has(up.it.id));
-    // 相邻列同档：横向短连，把 17 条链织成一整块有边界的网
-    const right = byCI[(col+1)+':'+idx];
-    if(right) link(p,right, player.talents.has(p.it.id) && player.talents.has(right.it.id));
+    if(up) chainLink(p, up, player.talents.has(p.it.id) && player.talents.has(up.it.id));
+    // 相邻天赋同档：同心圆弧，把整圈缝合成环（首尾也相接 → 无缝）
+    const right = byCI[((col+1)%TALENT_ORDER.length)+':'+idx];
+    if(right) arcLink(p, right, player.talents.has(p.it.id) && player.talents.has(right.it.id));
   }
-  // 精确跨树前置：父档 → 子档首档（只在两者都可见且距离够近时连）
+  // 精确跨树前置：父档 → 子档首档（弯向圆心的弧线，不压其他节点才画）
   for(const p of visible){
     const t = p.it.t;
     if(p.it.idx !== 0 || !t.req) continue;
@@ -5851,23 +5876,17 @@ function buildTalentsUI(){
     if(ri<0) continue;
     const pc = TALENT_ORDER.indexOf(parent.id);
     const q = byCI[pc+':'+ri];
-    if(q) link(q,p, player.talents.has(p.it.id) && player.talents.has(q.it.id));
+    if(q && Math.hypot(q.x-p.x, q.y-p.y) < 640)
+      curveLink(q, p, player.talents.has(p.it.id) && player.talents.has(q.it.id),
+                pc+':'+ri, p.it.col+':'+p.it.idx, 0.3);
   }
-  // 花朵连向最下排中心附近的节点
-  const flower = {x:cx, y:cy};
+  // 花朵（面板底部中央）连向环上靠近它的第0档节点
+  const flower = {x:W/2, y:H-38};
   for(const p of visible){
     if(p.it.idx !== 0) continue;
-    const dx=p.x-cx, dy=p.y-cy, d=Math.hypot(dx,dy);
-    if(d<1 || d>90 || d<42 || !clear(flower,p)) continue;
-    const t0=30/d, t1=(TALENT_NODE/2+3)/d;
-    const ln = document.createElementNS(NS,'line');
-    ln.setAttribute('x1',(cx+dx*t0).toFixed(1)); ln.setAttribute('y1',(cy+dy*t0).toFixed(1));
-    ln.setAttribute('x2',(p.x-dx*t1).toFixed(1)); ln.setAttribute('y2',(p.y-dy*t1).toFixed(1));
-    ln.setAttribute('stroke','rgba(112,40,34,.8)');
-    ln.setAttribute('stroke-width','5');
-    ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','7,6');
-    svg.appendChild(ln);
+    const d = Math.hypot(p.x-flower.x, p.y-flower.y);
+    if(d > 140 || d < 40) continue;
+    curveLink(flower, p, false, null, p.it.col+':'+p.it.idx, 0.22);
   }
   // 节点：等大彩色圆底图标，彼此留空隙
   const meta = {};
@@ -5919,6 +5938,7 @@ function buildTalentsUI(){
   wrap.addEventListener('mousedown', (e)=>{
     const n = e.target.closest('.tnode'); if(!n) return;
     e.stopPropagation();
+    stopInertia();   // 点节点加点时让环停下来，避免按住时树还在转
     const id = n.dataset.id;
     const m = wrap._talentMeta && wrap._talentMeta[id];
     if(!m) return;
@@ -5933,21 +5953,61 @@ function buildTalentsUI(){
   window.addEventListener('mouseup', clearHold);
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
-  // 原版：只能绕花朵旋转整棵树；不允许上下平移，也不允许缩放
-  let dragging=false, lastX=0;
+  // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
+  // 拖动跟手 + 松手惯性缓停；环是整圈 360°，转到头自然接回开头，无死区。
+  let dragging=false, lastX=0, lastT=0, rotVel=0, inertiaId=0;
+  const ROT_K = 0.0009;   // 像素 → 弧度
+  const wrapRot = ()=>{ const T=Math.PI*2; talentRotation = ((talentRotation+Math.PI)%T+T)%T - Math.PI; };
+  const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
+  const startInertia = ()=>{
+    stopInertia();
+    if(Math.abs(rotVel) < 0.00002) return;
+    let prev = performance.now();
+    const step = (now)=>{
+      const dt = Math.min(50, now-prev); prev = now;
+      talentRotation += rotVel*dt; wrapRot();
+      rotVel *= Math.pow(0.94, dt/16.7);   // 指数阻尼 → 滑动流畅、缓停自然
+      buildTalentsUI();
+      if(Math.abs(rotVel) > 0.00002) inertiaId = requestAnimationFrame(step);
+      else inertiaId = 0;
+    };
+    inertiaId = requestAnimationFrame(step);
+  };
+  const dragStart = (x)=>{
+    dragging=true; stopInertia(); rotVel=0;
+    lastX=x; lastT=performance.now();
+    tree.classList.add('rotating');
+  };
+  const dragMove = (x)=>{
+    if(!dragging) return;
+    const dx=x-lastX, now=performance.now();
+    const dtf=Math.max(1, now-lastT);
+    talentRotation += dx*ROT_K; wrapRot();
+    rotVel = 0.65*rotVel + 0.35*(dx*ROT_K/dtf);   // 平滑速度估计
+    lastX=x; lastT=now;
+    buildTalentsUI();
+  };
+  const dragEnd = ()=>{
+    if(!dragging) return;
+    dragging=false; tree.classList.remove('rotating');
+    startInertia();
+  };
   tree.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.tnode')) return;
-    dragging=true; lastX=e.clientX; tree.classList.add('rotating');
+    dragStart(e.clientX);
   });
-  window.addEventListener('mousemove', (e)=>{
+  window.addEventListener('mousemove', (e)=>{ dragMove(e.clientX); });
+  window.addEventListener('mouseup', dragEnd);
+  tree.addEventListener('touchstart', (e)=>{
+    if(e.target.closest('.tnode')) return;
+    dragStart(e.touches[0].clientX);
+  }, {passive:true});
+  tree.addEventListener('touchmove', (e)=>{
     if(!dragging) return;
-    const dx=e.clientX-lastX; lastX=e.clientX;
-    // 只能旋转：绕花朵正下方远处圆心做刚体旋转，小角度≈左右浏览，
-    // ±0.015rad 约 ±60px，刚好把最左(花瓣耐久)与最右(毒伤)两端都带进视口
-    talentRotation = Math.max(-0.015, Math.min(0.015, talentRotation + dx*0.00015));
-    buildTalentsUI();
-  });
-  window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
+    e.preventDefault();
+    dragMove(e.touches[0].clientX);
+  }, {passive:false});
+  window.addEventListener('touchend', dragEnd);
 })();
 function toggleTalents(){
   if(!elTalents) return;
