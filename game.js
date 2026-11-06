@@ -4961,7 +4961,7 @@ function drawMobPlate(sx, y, e, topY){
   const mobName = (e.def && e.def.name) ? e.def.name : (e.mobRarity || '');
   const ridx = Math.max(0, MOB_RARITY.indexOf(e.mobRarity));
   const r    = e.r || 12;
-  const fs   = Math.max(8, Math.min(11.5, r*0.42));
+  const fs   = 11;   // 固定字体大小：不随怪物半径/视角缩放变化（原版视频确认）
   // 血条长度随稀有度增长：Common 34 → Eternal/Unique 94（用户要求）
   const MOB_BAR_W = [34, 40, 46, 53, 61, 70, 79, 88, 94, 94];
   const barW = MOB_BAR_W[Math.min(ridx, MOB_BAR_W.length-1)] || 34;
@@ -7805,7 +7805,9 @@ function buildMenuBg(){
   const want = 34;
   let made = 0, rounds = 0;
 
-  // Basic 从 Common 到 Ultra 抽：低稀有度纯白为主，偶尔夹几片淡彩色，像原作首页
+  // 原版首页：所有花瓣都在飘（用户要求：这是所有花瓣，不是随机的 Basic）。
+  // 每片沿对角线（右下）匀速飘，起点/终点都在屏幕外 → 无缝循环，不会"飘完"。
+  const ALL_PETAL_NAMES = (MANIFEST && MANIFEST.petals) ? Object.keys(MANIFEST.petals) : ['Basic'];
   const RARITY_BAG = ['Common','Common','Common','Common','Common','Common','Common',
                       'Unusual','Unusual','Rare','Epic','Legendary','Mythic','Ultra'];
 
@@ -7813,7 +7815,8 @@ function buildMenuBg(){
     let guard = 0;
     while(made < want && guard++ < want*6){
       const rarity = RARITY_BAG[(Math.random()*RARITY_BAG.length)|0];
-      const img = getPetalImage('Basic', rarity);
+      const pname  = ALL_PETAL_NAMES[(Math.random()*ALL_PETAL_NAMES.length)|0];
+      const img = getPetalImage(pname, rarity);
       if(!img.complete || !img.naturalWidth) continue;    // 还没解码完，下一轮再试
       const sp = buildPetalSprite(img);
       if(!sp) continue;
