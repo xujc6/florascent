@@ -5743,10 +5743,16 @@ const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#46206
 const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
-let talentRotation = 0, talentZoom = 1;
-// 分叉树相对父节点的展开角度（原版：槽位分出 4 条分支，分支最多）
-const BR_SPREAD = {antennae:-0.36, reach:-0.12, duplicator:0.12, magnetism:0.36,
-  secondChance:-0.26, bodyToxicity:0.26, concentratedPoison:-0.26};
+// 视图：横向平移 / 缩放 / 旋转（原版天赋树是横向铺开的网，可左右滚动查看）
+let talentRotation = 0, talentZoom = 1, talentPanX = 0, talentPanY = 0;
+// 17 棵树在网中的列顺序（主干与分叉交错铺开，不再是每棵树一条直线）
+const TALENT_COL_ORDER = [
+  'poison','concentratedPoison','sharpEdges','bodyToxicity','petalRotation','luck',
+  'health','secondChance','loadout','antennae','reach','duplicator','magnetism',
+  'medic','reload','summoner','petalHealth'
+];
+// 档位横向摆动：让每条链在网里左右蜿蜒，连线方向不断变化（原版不是笔直射线）
+const TALENT_WOBBLE = [0, 0.90, -0.60, 0.80, -0.75, 0.65, -0.85, 0.50, 0.35];
 
 function buildTalentsUI(){
   const wrap = document.getElementById('talentNodes');
@@ -5758,74 +5764,93 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = 375, H = 375, cx = W/2, cy = H - 55;
+  const W = 375, H = 375, cx = W/2, cy = H - 54;   // 花朵中心（面板底部中央）
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
-  const R0 = 46, STEP = 24;
-  const pos = {};
+  const CELL_X = 42, CELL_Y = 26;
+  const cosR = Math.cos(talentRotation), sinR = Math.sin(talentRotation);
   const NS = 'http://www.w3.org/2000/svg';
   const link = (a,b,owned)=>{
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
-    ln.setAttribute('stroke', owned ? '#8e332d' : 'rgba(96,32,28,.5)');
-    ln.setAttribute('stroke-width','4');
+    ln.setAttribute('stroke', owned ? '#7d2b26' : 'rgba(112,40,34,.8)');
+    ln.setAttribute('stroke-width','6');
     ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','4,3');
+    ln.setAttribute('stroke-dasharray','9,8');   // 原版粗短虚线
     svg.appendChild(ln);
   };
-  // 1) 主干（无跨树前置）从底部花朵向上 180° 放射
-  const roots = TALENTS.filter(t=>!t.req);
-  const a0 = Math.PI + 0.10, a1 = 2*Math.PI - 0.10;
-  const rootAng = {}, rootOff = {};
-  roots.forEach((t,i)=>{
-    rootAng[t.id] = a0 + (i+0.5)/roots.length*(a1-a0) + talentRotation;
-    rootOff[t.id] = (i%3)*9;          // 相邻主枝错开半径，避免第一档节点重叠
-  });
-  for(const t of roots){
-    const ang = rootAng[t.id];
-    t.tiers.forEach((tier,i)=>{
-      const r = (R0 + i*STEP + rootOff[t.id])*talentZoom;
+  const project = (bx,by)=>{
+    const dx=(bx-cx)*talentZoom, dy=(by-cy)*talentZoom;
+    return {x:cx + dx*cosR - dy*sinR + talentPanX,
+            y:cy + dx*sinR + dy*cosR + talentPanY};
+  };
+  const colOf = {};
+  TALENT_COL_ORDER.forEach((id,i)=>{ colOf[id] = i; });
+  const pos = {};
+  // 每个节点：列由天赋决定，行由档位决定，再加摆动 → 折线网
+  for(const t of TALENTS){
+    const ci = colOf[t.id] ?? 8;
+    t.tiers.forEach((tier,idx)=>{
+      const amp = 0.72 + 0.28*Math.sin(ci*1.3);   // 每棵树摆动幅度/相位不同，织成有机的网
+      const wob = (TALENT_WOBBLE[idx]||0)*CELL_X*amp + Math.sin(ci*1.7 + idx*1.3)*16;
+      const bx = cx + (ci-8)*CELL_X + wob;
+      const by = cy - 62 - idx*CELL_Y;
       const id = talentId(t,tier);
-      const p = {x:cx+Math.cos(ang)*r, y:cy+Math.sin(ang)*r, ang, r};
-      pos[id] = p;
-      const prev = i>0 ? pos[talentId(t,t.tiers[i-1])] : {x:cx,y:cy};
-      link(prev, p, player.talents.has(id));
+      pos[id] = project(bx,by);
     });
   }
-  // 2) 分叉树：从「精确前置档位」那个节点继续长出去
-  for(const t of TALENTS.filter(x=>x.req)){
-    const rt = TALENTS.find(x=>x.id===t.req.tree);
-    if(!rt) continue;
-    const ri = rt.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
-    if(ri<0) continue;
-    const parent = pos[talentId(rt,rt.tiers[ri])];
-    if(!parent) continue;
-    const ang = parent.ang + (BR_SPREAD[t.id]||0);
-    let prev = parent;
-    t.tiers.forEach((tier)=>{
-      const d = STEP*talentZoom;
-      const p = {x:prev.x+Math.cos(ang)*d, y:prev.y+Math.sin(ang)*d, ang, r:0};
-      const id = talentId(t,tier);
-      pos[id] = p;
-      link(prev, p, player.talents.has(id));
-      prev = p;
+  // 连线：同树相邻档（折线）+ 主干首档连花朵 + 分叉首档连精确父档
+  const flower = {x:cx, y:cy};
+  for(const t of TALENTS){
+    t.tiers.forEach((tier,idx)=>{
+      const id = talentId(t,tier), p = pos[id];
+      if(!p) return;
+      const owned = player.talents.has(id);
+      if(idx > 0){
+        const prev = pos[talentId(t,t.tiers[idx-1])];
+        if(prev) link(prev,p,owned);
+      } else if(t.req){
+        const rt = TALENTS.find(x=>x.id===t.req.tree);
+        if(rt){
+          const ri = rt.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
+          if(ri>=0){ const par = pos[talentId(rt,rt.tiers[ri])]; if(par) link(par,p,owned); }
+        }
+      } else {
+        link(flower,p,owned);
+      }
     });
   }
-  // 3) 全部节点都渲染（原版未点亮为暗稀有度色 + 累计总 TP 数字）
+  // 原版网里还有相邻分支间的横向连绳，把各条链织成多边形网格
+  const byRow = {};
+  for(const t of TALENTS){
+    const ci = colOf[t.id] ?? 8;
+    t.tiers.forEach((tier,idx)=>{
+      const id = talentId(t,tier);
+      (byRow[idx] || (byRow[idx]=[])).push({ci, p:pos[id]});
+    });
+  }
+  for(const idx of Object.keys(byRow)){
+    const row = byRow[idx].sort((a,b)=>a.ci-b.ci);
+    for(let k=0;k<row.length-1;k++){
+      if((row[k].ci*7 + Number(idx)*3) % 4 !== 0) continue;
+      if(row[k].p && row[k+1].p) link(row[k].p, row[k+1].p, false);
+    }
+  }
+  // 全部节点常驻渲染：原版图标整张贴上去，尺寸随累计总 TP 变化
   const meta = {};
   for(const t of TALENTS){
     t.tiers.forEach((tier,i)=>{
-      const id = talentId(t,tier);
-      const p = pos[id];
+      const id = talentId(t,tier), p = pos[id];
       if(!p) return;
       const owned = player.talents.has(id);
       const cum  = talentCumulativeTP(t, i);
+      const size = (30 + Math.min(20, Math.round(cum*0.13))) * talentZoom;
       meta[id] = {tree:t, tier, owned, cum};
       const node = document.createElement('div');
-      node.className = 'tnode' + (owned?' owned':'');
+      node.className = 'tnode ' + (owned ? 'owned' : 'locked');
       node.dataset.id = id;
       node.style.left = p.x.toFixed(1)+'px'; node.style.top = p.y.toFixed(1)+'px';
-      node.style.background = owned ? (RAR_COL[tier.r]||'#6e6e6e') : (RAR_DIM[tier.r]||'#3a3a3a');
+      node.style.width = size.toFixed(1)+'px'; node.style.height = size.toFixed(1)+'px';
       const img = document.createElement('img');
       img.src = 'assets/talents/'+t.icon+'_('+tier.r+').webp';
       img.onerror = function(){ this.style.display='none'; };
@@ -5880,21 +5905,25 @@ function buildTalentsUI(){
   window.addEventListener('mouseup', clearHold);
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
-  // 拖拽旋转整棵树 / 滚轮缩放查看全树
-  let dragging=false, lastX=0;
+  // 原版天赋树横向铺开：拖拽平移查看，Shift+拖拽旋转，滚轮缩放
+  let dragging=false, lastX=0, lastY=0, rotating=false;
   tree.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.tnode')) return;
-    dragging=true; lastX=e.clientX; tree.classList.add('rotating');
+    dragging=true; rotating=e.shiftKey; lastX=e.clientX; lastY=e.clientY;
+    tree.classList.add('rotating');
   });
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
-    talentRotation += (e.clientX-lastX)*0.012; lastX=e.clientX;
+    const dx=e.clientX-lastX, dy=e.clientY-lastY;
+    lastX=e.clientX; lastY=e.clientY;
+    if(rotating) talentRotation += dx*0.008;
+    else { talentPanX += dx; talentPanY += dy; }
     buildTalentsUI();
   });
-  window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;tree.classList.remove('rotating');} });
+  window.addEventListener('mouseup', ()=>{ if(dragging){dragging=false;rotating=false;tree.classList.remove('rotating');} });
   tree.addEventListener('wheel', (e)=>{
     e.preventDefault();
-    talentZoom = Math.max(0.5, Math.min(1.8, talentZoom + (e.deltaY>0?-0.1:0.1)));
+    talentZoom = Math.max(0.55, Math.min(1.8, talentZoom + (e.deltaY>0?-0.1:0.1)));
     if(tip) tip.style.display='none';
     buildTalentsUI();
   }, {passive:false});
