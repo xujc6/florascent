@@ -5745,29 +5745,28 @@ const RAR_DIM  = {Common:'#3d5d2d',Unusual:'#6b5e22',Rare:'#253068',Epic:'#46206
 const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07aff',
   Legendary:'#ff6b6b',Mythic:'#4dd0e1',Ultra:'#ff7ab8',Super:'#8ce99a',Eternal:'#e0e0e0',Unique:'#aaa'};
 
-// 视图（依据官方 wiki 上传的天赋树实录 Skilltree_enlarged.mp4 逐帧核对）：
-// 花朵固定在面板底部中央；每种天赋 = 一条【独立的之字形折线链】，
-// 从花朵附近的低稀有度档位向树冠的高稀有度档位延伸（fandom UI：
-// "Talents scroll from left to right ... a tree of talents stemming from the flower"）。
-// 链内相邻档位用暗红细实线连接；不同种类之间【完全没有连线】（官方录屏确认）。
-// 只有主干天赋的首档有从花朵放射出来的细枝干；
+// 视图（依据用户 2026-11-06 高清录屏逐帧核对 + 官方 wiki 章节顺序）：
+// 花朵固定在面板底部中央【作为旋转圆心，本身不动】；17 条天赋链围绕花朵
+// 成整圈 360° 排布（fandom UI："a tree of talents stemming from the flower"），
+// 每条链从花朵附近的低稀有度档位沿半径向外的方向延伸到高稀有度档位。
+// 链内相邻档位用暗红【虚线】连接；不同种类之间不连线（只有分支接父档）。
 // 分支天赋的起点抬到其前置父档的高度（wiki：分支由下至上从主干分出）。
-// 交互只有「滑动旋转」：按住拖动绕圆心转，松手带惯性缓停；无平移、无缩放。
+// 交互只有「滑动旋转」：按住拖动绕【花朵】转，松手带惯性缓停；无平移、无缩放。
 let talentRotation = 0;
-// 顺序按当前版参考素材的层级（Namu wiki 天赋目录 + 官方 wiki 分支关系）：
-// 10 条主干从左到右，7 条分支紧跟各自父主干；最左花瓣耐久、最右毒伤。
+// 顺序 = 官方 wiki 章节顺序（天赋树围绕花朵的环序，分支紧邻父天赋）：
+// 最左 petalHealth(花瓣耐久)，最右 concentratedPoison(浓缩毒伤)。
 const TALENT_ORDER = [
-  'petalHealth','loadout','antennae','reach','duplicator','magnetism','reload',
+  'petalHealth','antennae','reach','duplicator','loadout','magnetism','reload',
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// 尺度按官方录屏实测换算：原版节点直径≈86px/720画布、链内相邻中心距≈110-160px；
-// 面板 580×460 按高度比例 0.64 换算 → 节点≈55px、链段≈75px
-const TALENT_NODE = 52;                    // 节点图标直径
-const TALENT_R0 = 380, TALENT_DR = 32;     // 环带：第0档所在半径 / 每升一档外扩
-const TALENT_ZIGZAG = 34;                  // 每档交替左右摆动(px) → 原版折线链
-const TALENT_CX = 290, TALENT_CY = 690;    // 圆心：面板正下方远处，环的上沿穿过面板
+// 尺度：用户高清录屏实测 节点直径≈80px/800画布、花朵≈122px，换算到 580×460 面板
+const TALENT_NODE = 54;                    // 节点图标直径
+const TALENT_R0 = 140, TALENT_DR = 36;     // 第0档所在半径 / 每升一档向外扩
+// 圆心 = 花朵位置（面板底部中央）→ 整棵树绕花朵旋转，花朵本身固定不动
+const TALENT_CX = 290, TALENT_CY = 422;
 const TALENT_DPHI = Math.PI*2/17;          // 相邻两棵天赋的圆心角
+const TALENT_CENTER_COL = 8;               // health 位于环序第8列，静止时朝向正上方
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5803,13 +5802,11 @@ function buildTalentsUI(){
   const W = 580, H = 460;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 极坐标：链按 TALENT_ORDER 沿圆周排布，档位沿半径向外长；
-  // 每档交替左右摆动固定像素 → 与原版一致的之字形折线链。
-  // 保持纯刚体旋转（极角加常数），任意旋转角下节点间距恒定，不会互相挤压。
+  // 极坐标：链按 TALENT_ORDER 沿圆周排布，档位沿半径向外长（笔直径向，非折线）。
+  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定；极角加常数，间距恒定不挤压。
   const posOf = (col, idx, lift)=>{
     const rho = TALENT_R0 + (idx+lift)*TALENT_DR;
-    const zig = (idx % 2 ? 1 : -1) * TALENT_ZIGZAG / rho;
-    const phi = (col-1.5)*TALENT_DPHI + zig + talentRotation;
+    const phi = (col - TALENT_CENTER_COL)*TALENT_DPHI + talentRotation;
     return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), rho };
   };
   const at = {};
@@ -5838,21 +5835,22 @@ function buildTalentsUI(){
     }
     return true;
   };
-  // 原版：暗红【细实线】直线段（不是虚线、不是圆弧、不是曲线），图标压在线端上
+  // 原版：暗红【虚线】直线段（用户高清录屏确认是虚线，不是实线）
   const line = (a,b,owned,skipA,skipB)=>{
     if(!lineClear(a,b,skipA,skipB)) return;
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
-    // 官方录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深，不是深棕）
+    // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深）
     ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.95)' : 'rgba(164,44,70,.95)');
     ln.setAttribute('stroke-width','3');
     ln.setAttribute('stroke-linecap','round');
+    ln.setAttribute('stroke-dasharray','7,6');
     svg.appendChild(ln);
   };
   const byCI = {};
   for(const p of visible) byCI[p.it.col+':'+p.it.idx] = p;
-  // ① 只连【同一种类】：同链相邻档位的细实线（原版折线链）
+  // ① 只连【同一种类】：同链相邻档位的虚线
   for(const p of visible){
     const {col,idx} = p.it;
     const up = byCI[col+':'+(idx+1)];
@@ -5860,8 +5858,24 @@ function buildTalentsUI(){
       player.talents.has(p.it.id) && player.talents.has(up.it.id),
       col+':'+idx, col+':'+(idx+1));
   }
-  // ② 不同种类之间：完全不连线（官方录屏逐帧确认；圆弧/跨树前置线已删除）
-  // ③ 花朵枝干：从花朵向各条链的首档斜向上放射细线（原版树根）
+  // ② 分支连接：分支天赋首档 ← 其前置父档（wiki Requirements 精确到档位）。
+  //    这是天赋树「分叉」的唯一跨种类连线（antennae/reach/duplicator/magnetism
+  //    接 Loadout、secondChance 接 Health、bodyToxicity 接 SharpEdges、
+  //    concentratedPoison 接 Poison）；除此之外不同种类之间不连线。
+  for(const p of visible){
+    const t = p.it.t;
+    if(p.it.idx !== 0 || !t.req) continue;
+    const parent = TALENTS.find(x=>x.id===t.req.tree);
+    if(!parent) continue;
+    const ri = parent.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
+    if(ri < 0) continue;
+    const pc = TALENT_ORDER.indexOf(parent.id);
+    const q = byCI[pc+':'+ri];
+    if(q) line(q, p,
+      player.talents.has(p.it.id) && player.talents.has(q.it.id),
+      pc+':'+ri, p.it.col+':'+p.it.idx);
+  }
+  // ③ 花朵枝干：从花朵向各条主干链的首档放射虚线（原版树根）
   const flower = {x:W/2, y:H-38};
   for(const p of visible){
     if(p.it.idx !== 0 || p.y > flower.y - 8) continue;
@@ -5901,9 +5915,8 @@ function buildTalentsUI(){
   const tip  = document.getElementById('ttip');
   if(!wrap || !tree || wrap.dataset.holdInit) return;
   wrap.dataset.holdInit = '1';
-  let timer = null, holdNode = null, holdLock = false;
-  // HOLD 加点的整段按住期间：界面与角色一律静止，禁止拖拽/惯性/视角位移
-  const clearHold = ()=>{ holdLock=false; if(timer){clearTimeout(timer);timer=null;} if(holdNode){holdNode.classList.remove('holding');holdNode=null;} };
+  let timer = null, holdNode = null;
+  const clearHold = ()=>{ if(timer){clearTimeout(timer);timer=null;} if(holdNode){holdNode.classList.remove('holding');holdNode=null;} };
   const showTip = (node, e)=>{
     const meta = wrap._talentMeta; if(!meta || !tip) return;
     const m = meta[node.dataset.id]; if(!m) return;
@@ -5920,7 +5933,7 @@ function buildTalentsUI(){
   wrap.addEventListener('mousedown', (e)=>{
     const n = e.target.closest('.tnode'); if(!n) return;
     e.stopPropagation();
-    holdLock = true; stopInertia();   // 加点期间整棵树锁死，禁止任何转动
+    stopInertia();   // 按住节点时让树停下，避免惯性漂移导致松手误判
     const id = n.dataset.id;
     const m = wrap._talentMeta && wrap._talentMeta[id];
     if(!m) return;
@@ -5932,7 +5945,7 @@ function buildTalentsUI(){
       if(res.ok) commitTalents();
     }, 450);
   });
-  window.addEventListener('mouseup', ()=>{ holdLock=false; clearHold(); });
+  window.addEventListener('mouseup', ()=>{ clearHold(); });
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
   // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
@@ -5943,7 +5956,7 @@ function buildTalentsUI(){
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
-    if(holdLock || Math.abs(rotVel) < 0.00002) return;
+    if(Math.abs(rotVel) < 0.00002) return;
     let prev = performance.now();
     const step = (now)=>{
       const dt = Math.min(50, now-prev); prev = now;
@@ -5956,13 +5969,12 @@ function buildTalentsUI(){
     inertiaId = requestAnimationFrame(step);
   };
   const dragStart = (x)=>{
-    if(holdLock) return;
     dragging=true; stopInertia(); rotVel=0;
     lastX=x; lastT=performance.now();
     tree.classList.add('rotating');
   };
   const dragMove = (x)=>{
-    if(!dragging || holdLock) return;
+    if(!dragging) return;
     const dx=x-lastX, now=performance.now();
     const dtf=Math.max(1, now-lastT);
     talentRotation += dx*ROT_K; wrapRot();
