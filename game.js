@@ -5766,8 +5766,32 @@ const TALENT_NODE = 30;                    // 节点图标直径
 const TALENT_R0 = 140, TALENT_DR = 36;     // 第0档所在半径 / 每升一档向外扩
 // 圆心 = 花朵位置（面板底部中央）→ 整棵树绕花朵旋转，花朵本身固定不动
 const TALENT_CX = 290, TALENT_CY = 422;
-const TALENT_DPHI = Math.PI*2/17;          // 相邻两棵天赋的圆心角
-const TALENT_CENTER_COL = 8;               // health 位于环序第8列，静止时朝向正上方
+// 原版天赋树是从花朵向上展开的「扇形」（约190°），而非完整360°环；
+// 且每棵天赋的档位沿弧线（螺旋）延伸，并非笔直径向直线。
+// 各天赋基准角度（度）——主干树均匀分布、分支树紧邻父树（像素级实测）：
+const TALENT_ANGLES = [
+  -95,   // 0 petalHealth
+  -91,   // 1 antennae（loadout 分支）
+  -84,   // 2 reach（loadout 分支）
+  -77,   // 3 duplicator（loadout 分支）
+  -71,   // 4 loadout
+  -65,   // 5 magnetism（loadout 分支）
+  -48,   // 6 reload
+  -24,   // 7 petalRotation
+  0,     // 8 health
+  8,     // 9 secondChance（health 分支）
+  19,    // 10 medic
+  38,    // 11 summoner
+  57,    // 12 sharpEdges
+  65,    // 13 bodyToxicity（sharpEdges 分支）
+  76,    // 14 luck
+  95,    // 15 poison
+  103,   // 16 concentratedPoison（poison 分支）
+];
+// 螺旋率（弧度/档）：原版每条链沿「弧线」延伸，并非笔直径向直线。
+// 实测（录屏多帧反旋重建 + 单帧链追踪）：每条链的 phi 随档位向外逐渐向
+// health(0°)中心线收敛 —— 左侧链向右弯、右侧链向左弯，约 1.3~1.7°/档。
+const TALENT_SPIRAL = Math.PI * 1.5/180;   // 每档向内弯曲角（朝 health 收敛）
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5803,11 +5827,17 @@ function buildTalentsUI(){
   const W = 580, H = 460;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 极坐标：链按 TALENT_ORDER 沿圆周排布，档位沿半径向外长（笔直径向，非折线）。
-  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定；极角加常数，间距恒定不挤压。
+  // 极坐标：链按 TALENT_ORDER 沿扇形排布，档位沿半径向外长，并叠加对称螺旋偏移
+  // → 每棵天赋呈「弧线」形态：左侧链向右弯、右侧链向左弯，朝 health(0°) 收敛；
+  //   弧线凸向外侧、中间 health 垂直，而非笔直径向直线。
+  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定。
   const posOf = (col, idx, lift)=>{
-    const rho = TALENT_R0 + (idx+lift)*TALENT_DR;
-    const phi = (col - TALENT_CENTER_COL)*TALENT_DPHI + talentRotation;
+    const t = idx + lift;
+    const rho = TALENT_R0 + t*TALENT_DR;
+    const base = TALENT_ANGLES[col] * Math.PI/180;   // 该天赋基准角度（度→弧度）
+    // 弧线方向：health(0°)保持笔直；左侧链向右弯、右侧链向左弯（都朝 0° 收敛）
+    const dir = base === 0 ? 0 : (base > 0 ? -1 : 1);
+    const phi = base + dir*t*TALENT_SPIRAL + talentRotation;
     return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), rho };
   };
   const at = {};
