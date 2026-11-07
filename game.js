@@ -5760,8 +5760,9 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// 尺度：用户高清录屏实测 节点直径≈80px/800画布、花朵≈122px，换算到 580×460 面板
-const TALENT_NODE = 54;                    // 节点图标直径
+// 尺度：原版 layout.json 节点间距=36px，hd22 抽帧连通域实测节点直径≈29px（留7px空隙）；
+// 之前 54px 是误算（节点严重重叠），修正为 30px 使同链相邻档位彼此留空隙
+const TALENT_NODE = 30;                    // 节点图标直径
 const TALENT_R0 = 140, TALENT_DR = 36;     // 第0档所在半径 / 每升一档向外扩
 // 圆心 = 花朵位置（面板底部中央）→ 整棵树绕花朵旋转，花朵本身固定不动
 const TALENT_CX = 290, TALENT_CY = 422;
