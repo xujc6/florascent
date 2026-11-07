@@ -1700,13 +1700,14 @@ window.addEventListener('wheel', (e)=>{
     panelScroll.target = Math.max(0, Math.min(max, panelScroll.target + dy));
     return;                       // 面板里滚界面 —— 不再改视野
   }
-  if(state !== STATE.PLAY) return;
+  if(state !== STATE.PLAY || anyPanelOpen()) return;   // 面板打开时禁止视角缩放
   e.preventDefault();
   const k = (e.deltaY > 0) ? 1/1.12 : 1.12;      // 滚轮上 = 放大
   player.zoomTarget = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, (player.zoomTarget || player.userZoom || 1) * k));
 }, { passive:false });
 // 每帧把当前视野缓动到目标值（缩放动画才顺滑，而不是一格一格跳）
 function stepZoom(dt){
+  if(anyPanelOpen()) return false;   // 面板打开时视野冻结，不再缓动
   const t = player.zoomTarget || 1;
   const cur = player.userZoom || 1;
   if(Math.abs(t - cur) < 0.0005){ return false; }
@@ -2103,7 +2104,8 @@ function anyPanelOpen(){
   return !!((elCraft   && elCraft.style.display   === 'block')
          || (elInv     && elInv.style.display     === 'block')
          || (elMobs    && elMobs.style.display    === 'block')
-         || (elTalents && elTalents.style.display === 'block'));
+         || (elTalents && (elTalents.style.display === 'block'
+                          || elTalents.classList.contains('show'))));
 }
 function moveDir(){
   if(anyPanelOpen()) return {dx:0, dy:0, fromKeys:true};
@@ -5752,8 +5754,10 @@ const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07af
 // 分支天赋的起点抬到其前置父档的高度（wiki：分支由下至上从主干分出）。
 // 交互只有「滑动旋转」：按住拖动绕圆心转，松手带惯性缓停；无平移、无缩放。
 let talentRotation = 0;
+// 顺序按当前版参考素材的层级（Namu wiki 天赋目录 + 官方 wiki 分支关系）：
+// 10 条主干从左到右，7 条分支紧跟各自父主干；最左花瓣耐久、最右毒伤。
 const TALENT_ORDER = [
-  'petalHealth','antennae','reach','duplicator','loadout','magnetism','reload',
+  'petalHealth','loadout','antennae','reach','duplicator','magnetism','reload',
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
@@ -5897,8 +5901,9 @@ function buildTalentsUI(){
   const tip  = document.getElementById('ttip');
   if(!wrap || !tree || wrap.dataset.holdInit) return;
   wrap.dataset.holdInit = '1';
-  let timer = null, holdNode = null;
-  const clearHold = ()=>{ if(timer){clearTimeout(timer);timer=null;} if(holdNode){holdNode.classList.remove('holding');holdNode=null;} };
+  let timer = null, holdNode = null, holdLock = false;
+  // HOLD 加点的整段按住期间：界面与角色一律静止，禁止拖拽/惯性/视角位移
+  const clearHold = ()=>{ holdLock=false; if(timer){clearTimeout(timer);timer=null;} if(holdNode){holdNode.classList.remove('holding');holdNode=null;} };
   const showTip = (node, e)=>{
     const meta = wrap._talentMeta; if(!meta || !tip) return;
     const m = meta[node.dataset.id]; if(!m) return;
@@ -5915,7 +5920,7 @@ function buildTalentsUI(){
   wrap.addEventListener('mousedown', (e)=>{
     const n = e.target.closest('.tnode'); if(!n) return;
     e.stopPropagation();
-    stopInertia();   // 点节点加点时让环停下来，避免按住时树还在转
+    holdLock = true; stopInertia();   // 加点期间整棵树锁死，禁止任何转动
     const id = n.dataset.id;
     const m = wrap._talentMeta && wrap._talentMeta[id];
     if(!m) return;
@@ -5927,7 +5932,7 @@ function buildTalentsUI(){
       if(res.ok) commitTalents();
     }, 450);
   });
-  window.addEventListener('mouseup', clearHold);
+  window.addEventListener('mouseup', ()=>{ holdLock=false; clearHold(); });
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
   // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
@@ -5938,7 +5943,7 @@ function buildTalentsUI(){
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
-    if(Math.abs(rotVel) < 0.00002) return;
+    if(holdLock || Math.abs(rotVel) < 0.00002) return;
     let prev = performance.now();
     const step = (now)=>{
       const dt = Math.min(50, now-prev); prev = now;
@@ -5951,12 +5956,13 @@ function buildTalentsUI(){
     inertiaId = requestAnimationFrame(step);
   };
   const dragStart = (x)=>{
+    if(holdLock) return;
     dragging=true; stopInertia(); rotVel=0;
     lastX=x; lastT=performance.now();
     tree.classList.add('rotating');
   };
   const dragMove = (x)=>{
-    if(!dragging) return;
+    if(!dragging || holdLock) return;
     const dx=x-lastX, now=performance.now();
     const dtf=Math.max(1, now-lastT);
     talentRotation += dx*ROT_K; wrapRot();

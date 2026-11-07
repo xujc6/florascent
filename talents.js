@@ -375,12 +375,8 @@ function holdRemoveTalent(treeId, key){
   return {ok:true, removed:[...doomed], refund};
 }
 
-// TP economy：与原版一致 —— 公式 x + [x/5] + [x/10]*8 - 1（x 为当前等级）
-// （升到 10 的倍数加 10TP，非 10 倍数但 5 的倍数加 2TP，其余加 1TP）
-function tpTotal(){
-  const x = Math.max(1, Math.floor(player.level||1));
-  return x + Math.floor(x/5) + Math.floor(x/10)*8 - 1;
-}
+// TP economy：按需求固定为 2000 点可用（不随等级增长）；加点消耗、撤销返还照旧。
+function tpTotal(){ return 2000; }
 function tpAvailable(){ return Math.max(0, tpTotal() - player.tpSpent); }
 
 // recompute all derived talent stats and stash onto `player`
