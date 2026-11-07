@@ -5757,10 +5757,12 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-const TALENT_NODE = 44;                    // 节点图标直径（放大，提升辨识度）
-const TALENT_R0 = 380, TALENT_DR = 30;     // 环带：第0档所在半径 / 每升一档外扩
-const TALENT_ZIGZAG = 30;                  // 每档交替左右摆动(px) → 原版折线链
-const TALENT_CX = 290, TALENT_CY = 680;    // 圆心：面板正下方远处，环的上沿穿过面板
+// 尺度按官方录屏实测换算：原版节点直径≈86px/720画布、链内相邻中心距≈110-160px；
+// 面板 580×460 按高度比例 0.64 换算 → 节点≈55px、链段≈75px
+const TALENT_NODE = 52;                    // 节点图标直径
+const TALENT_R0 = 380, TALENT_DR = 32;     // 环带：第0档所在半径 / 每升一档外扩
+const TALENT_ZIGZAG = 34;                  // 每档交替左右摆动(px) → 原版折线链
+const TALENT_CX = 290, TALENT_CY = 690;    // 圆心：面板正下方远处，环的上沿穿过面板
 const TALENT_DPHI = Math.PI*2/17;          // 相邻两棵天赋的圆心角
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
@@ -5798,7 +5800,8 @@ function buildTalentsUI(){
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
   // 极坐标：链按 TALENT_ORDER 沿圆周排布，档位沿半径向外长；
-  // 每档交替左右摆动固定像素 → 与原版一致的之字形折线链
+  // 每档交替左右摆动固定像素 → 与原版一致的之字形折线链。
+  // 保持纯刚体旋转（极角加常数），任意旋转角下节点间距恒定，不会互相挤压。
   const posOf = (col, idx, lift)=>{
     const rho = TALENT_R0 + (idx+lift)*TALENT_DR;
     const zig = (idx % 2 ? 1 : -1) * TALENT_ZIGZAG / rho;
@@ -5811,12 +5814,12 @@ function buildTalentsUI(){
     p.it = it;
     at[it.col+':'+it.idx] = p;
   }
-  // 只渲染【完整落进】面板视口的节点，边缘不会出现被裁一半的图标
+  // 上下裁掉不完整图标；左右按原版保留半截节点（滚动时树冠延续到画面外）
   const m = TALENT_NODE/2 + 2;
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
-    if(p.x < m || p.x > W-m || p.y < m+20 || p.y > H-m) continue;
+    if(p.x < -m || p.x > W+m || p.y < m+20 || p.y > H-m) continue;
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
@@ -5837,7 +5840,8 @@ function buildTalentsUI(){
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
-    ln.setAttribute('stroke', owned ? 'rgba(96,20,42,.92)' : 'rgba(124,32,58,.9)');
+    // 官方录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深，不是深棕）
+    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.95)' : 'rgba(164,44,70,.95)');
     ln.setAttribute('stroke-width','3');
     ln.setAttribute('stroke-linecap','round');
     svg.appendChild(ln);
