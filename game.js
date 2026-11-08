@@ -5760,29 +5760,30 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// ===== 布局基准：用户 2026-11-08 原版清晰截图 + 3 段录屏 131 帧 / 1486 个节点观测 =====
-// 面板：接近正方形（视频 131 帧 W/H≈1.01，清晰截图 1.11），本实现 560×560。
-//       旧版 580×460 明显扁宽，且 R0=84/DR=91 使 9 档最大半径达 812px，
-//       远超面板高度 → 大半天赋点被永久裁掉（用户反馈「无法看见所有的天赋点」）。
-// 花朵：底部中央 (280,486)，实测原版花朵中心在面板高度约 88% 处、直径约面板宽 13.7%。
-// 排布：以花朵为极点的 190° 扇形分层（录屏 phi -104°~+86°），共 9 档，
-//       最大 rho≈460 全部落在面板内 → 每个天赋点都看得见。
-//   · 每条链的偏角随半径增大自动收窄（矩形面板约束 |dx|≤XMAX）：
-//     链从内向外朝中轴弯成【弧线】，正是用户蓝线标注的那条 C 形弧；
-//     左右对称收拢，不是整棵树同向旋转的漩涡；health(0°) 仍笔直。
-//   · 相邻链径向错开半档，避免同层挤成一圈（视频实测层距=半档）。
-const TALENT_NODE = 30;                     // 节点图标直径
-const TALENT_R0 = 78, TALENT_DR = 37;       // 第0档半径 / 每升一档的层距
+// ===== 布局基准：用户 2026-11-08 原版清晰截图（v09_panel.png 800×794）像素提取 =====
+// 关键纠正：原版同一条天赋链的 9 档（Common→...→Unique，节点上数字=累计 TP 2/6/12/20/30/42/56/72/90）
+//   在面板里【不是直线、不是弧线、不是螺旋】，而是从花朵附近出发、左右摆动向上生长的
+//   「Z 字形蜿蜒枝干」——rho 非单调（t=2 回到 145）、phi 锯齿摆动（66/22/-4/-3/45/38/18/-3/17）。
+//   之前所有「极坐标扇形 + 弧线」实现都错；本版直接把 health 链真实坐标做成枝干模板，
+//   17 条天赋链复用此模板、绕花朵旋转不同基准角，整体呈原版那种网状分叉树。
+// 面板：正方形 560×560（录屏 131 帧 W/H≈1.01）。花朵底部中央 (280,486)。
+// 缩放：原版面板 800px → 本面板 560px，比例 0.7；模板 rho 已 ×0.5（让 17 条枝全在面板内、互不裁切）。
+const TALENT_NODE = 26;                     // 节点图标直径
 const TALENT_CX = 280, TALENT_CY = 486;     // 圆心 = 花朵 → 旋转绕花朵，花朵不动
-const TALENT_XMAX = 246;                    // 节点圆心允许的最大水平偏移
-const TALENT_SPAN = Math.PI*190/180;        // 扇形张角上限
-// 每 3 条链循环错开 0 / 1 / 2 档：内层周长小，若 17 条链都堆在同一半径
-// 必然重叠；错层后每个半径层只有约 6 条链，正好留出节点直径的空隙。
-const TALENT_LAYER = 1.0;
-// 链自身弧线：档位越往外越朝中轴多偏一点（左右对称，非整棵树同向漩涡）。
-// 与「phiMax 随半径收窄」叠加后，reload 这类侧链呈明显 C 形弧线（用户蓝线）。
-const TALENT_ARC = Math.PI*0.3/180;
-const TALENT_BENDF = 0.25;                  // 额外弯曲不超过基准角的 25%，避免各链穿过中轴互相堆叠
+// health 链 9 档相对花朵的 (rho, phi°)，从 v09_panel.png 像素提取（视觉模型 + 颜色分割双重核对）×0.4 缩放
+const TALENT_BRANCH = [
+  { r: 65,  p: 66.4 },  // t=0 Common   累计TP 2
+  { r: 90,  p: 21.8 },  // t=1 Unusual         6
+  { r: 58,  p:-4.3  },  // t=2 Rare           12
+  { r:122,  p:-3.0  },  // t=3 Epic           20
+  { r:124,  p:44.9  },  // t=4 Legendary      30
+  { r:195,  p:37.8  },  // t=5 Mythic         42
+  { r:154,  p:18.1  },  // t=6 Ultra          56
+  { r:184,  p:-2.6  },  // t=7 Super          72
+  { r:217,  p:16.5  },  // t=8 Unique         90
+];
+// 17 条链基准角：±40° 扇形（保证枝干最外档旋转后仍在面板内）
+const TALENT_BASE = TALENT_ORDER.map((_, i) => (i - 8) * Math.PI * 80 / 180 / 16);
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5818,28 +5819,14 @@ function buildTalentsUI(){
   const W = 560, H = 560;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 极坐标：17 条链按 wiki 章节序铺在 190° 扇形内，档位沿半径向外分层。
-  // 关键：该半径下矩形面板允许的最大偏角 phiMax=asin(XMAX/rho) 随半径增大而变小，
-  // 于是同一条链从内到外逐渐朝中轴收拢 → 档位连成一条 C 形【弧线】（用户蓝线），
-  // 而不是笔直径向直线；左右对称收拢，故不是整棵树同向旋转的漩涡。
-  // 最终再把 phi 夹进 ±phiMax，保证【所有 96 个天赋点恒在面板内、不会被裁掉】。
+  // 枝干模板：每条链的档位沿 health 真实坐标走，整条链绕花朵旋转 base 角。
+  // 这样每条天赋都是「Z 字形蜿蜒枝」（原版形态），而非笔直放射/弧线/螺旋。
+  // 旋转量只加在角度上 → 花朵恒为圆心、本身不动。
   const posOf = (col, idx, lift)=>{
-    const t = idx + lift;
-    // 奇数链外移半档：相邻链节点彼此错开，不再排成整齐同心圆
-    const rho = TALENT_R0 + (t + (col % 3)*TALENT_LAYER)*TALENT_DR;
-    const phiMax = Math.asin(Math.min(0.97, TALENT_XMAX/Math.max(rho,1)));
-    const spread = Math.min(TALENT_SPAN/2, phiMax);
-    // 链序 → 扇形内相对位置 [-1,1]；health(col=8) 恒为 0，保持笔直
-    const half = (TALENT_ORDER.length-1)/2;
-    const frac = (col - half)/half;
-    // 左侧链向右弯、右侧链向左弯（朝 health 中轴收拢），叠加矩形夹紧的自然收窄
-    const dir = frac === 0 ? 0 : -Math.sign(frac);
-    const basePhi = frac*spread;
-    const bend = dir*Math.min(t*TALENT_ARC, Math.abs(basePhi)*TALENT_BENDF);
-    // 旋转只作用于角度 → 花朵恒为圆心、本身不动；夹紧后节点仍全部可见
-    const phiRaw = basePhi + bend + talentRotation;
-    const phi = Math.max(-phiMax, Math.min(phiMax, phiRaw));
-    return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), rho };
+    const t = Math.min(idx + lift, TALENT_BRANCH.length - 1);
+    const br = TALENT_BRANCH[t];
+    const phi = br.p * Math.PI / 180 + TALENT_BASE[col] + talentRotation;
+    return { x: TALENT_CX + br.r * Math.sin(phi), y: TALENT_CY - br.r * Math.cos(phi), rho: br.r };
   };
   const at = {};
   for(const it of TALENT_WORLD){
@@ -5852,7 +5839,7 @@ function buildTalentsUI(){
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
-    if(p.x < -m || p.x > W+m || p.y < m+4 || p.y > H-m) continue;
+    if(p.x < -m || p.x > W+m || p.y < m || p.y > H-m) continue;
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
@@ -5868,13 +5855,13 @@ function buildTalentsUI(){
     return true;
   };
   // 原版：暗红【虚线】直线段（用户高清录屏确认是虚线，不是实线）
+  // 蜿蜒枝形态下连线必然穿过其他节点（原版网状树亦如此），故不再用 lineClear 过滤
   const line = (a,b,owned,skipA,skipB)=>{
-    if(!lineClear(a,b,skipA,skipB)) return;
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
     // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深）
-    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.8)' : 'rgba(164,44,70,.72)');
+    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.85)' : 'rgba(164,44,70,.75)');
     ln.setAttribute('stroke-width','2');
     ln.setAttribute('stroke-linecap','round');
     ln.setAttribute('stroke-dasharray','7,6');
@@ -5986,7 +5973,7 @@ function buildTalentsUI(){
   // 小幅摆动既保留原版滑动手感，又保证任何时刻所有天赋点都可见。
   let dragging=false, lastX=0, lastT=0, rotVel=0, inertiaId=0;
   const ROT_K = 0.0009;   // 像素 → 弧度
-  const wrapRot = ()=>{ talentRotation = Math.max(-0.30, Math.min(0.30, talentRotation)); };
+  const wrapRot = ()=>{ talentRotation = Math.max(-0.12, Math.min(0.12, talentRotation)); };
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
