@@ -5760,38 +5760,26 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// 尺度：原版 layout.json 节点间距=36px，hd22 抽帧连通域实测节点直径≈29px（留7px空隙）；
-// 之前 54px 是误算（节点严重重叠），修正为 30px 使同链相邻档位彼此留空隙
-const TALENT_NODE = 30;                    // 节点图标直径
-const TALENT_R0 = 140, TALENT_DR = 36;     // 第0档所在半径 / 每升一档向外扩
+// 尺度（用户 2026-11-06 高清录屏 5 帧颜色分割实测，原版面板 800×794）：
+//   节点直径≈94px、同链档距≈157px、花朵直径≈125px、花朵固定(400,701)。
+//   换算到本面板高 460px（比例 0.58）：节点 54px、档距 91px、首档半径 84px。
+//   之前 30px/36px 把整棵树压成密集小点阵，是「不像原版」的最大原因。
+const TALENT_NODE = 54;                    // 节点图标直径
+const TALENT_R0 = 84, TALENT_DR = 91;      // 第0档所在半径 / 每升一档向外扩
 // 圆心 = 花朵位置（面板底部中央）→ 整棵树绕花朵旋转，花朵本身固定不动
 const TALENT_CX = 290, TALENT_CY = 422;
-// 原版天赋树是从花朵向上展开的「扇形」（约190°），而非完整360°环；
-// 且每棵天赋的档位沿弧线（螺旋）延伸，并非笔直径向直线。
-// 各天赋基准角度（度）——主干树均匀分布、分支树紧邻父树（像素级实测）：
-const TALENT_ANGLES = [
-  -95,   // 0 petalHealth
-  -91,   // 1 antennae（loadout 分支）
-  -84,   // 2 reach（loadout 分支）
-  -77,   // 3 duplicator（loadout 分支）
-  -71,   // 4 loadout
-  -65,   // 5 magnetism（loadout 分支）
-  -48,   // 6 reload
-  -24,   // 7 petalRotation
-  0,     // 8 health
-  8,     // 9 secondChance（health 分支）
-  19,    // 10 medic
-  38,    // 11 summoner
-  57,    // 12 sharpEdges
-  65,    // 13 bodyToxicity（sharpEdges 分支）
-  76,    // 14 luck
-  95,    // 15 poison
-  103,   // 16 concentratedPoison（poison 分支）
-];
-// 螺旋率（弧度/档）：原版每条链沿「弧线」延伸，并非笔直径向直线。
-// 实测（录屏多帧反旋重建 + 单帧链追踪）：每条链的 phi 随档位向外逐渐向
-// health(0°)中心线收敛 —— 左侧链向右弯、右侧链向左弯，约 1.3~1.7°/档。
-const TALENT_SPIRAL = Math.PI * 1.5/180;   // 每档向内弯曲角（朝 health 收敛）
+// 原版是【整圈 360° 环】，花朵为圆心。录屏里所有可见节点 phi 都落在
+// -98°~+98°，那只是因为面板只容得下上半环（下半环在花朵下方被裁掉），
+// 并非扇形树——这正是原版需要「滑动旋转」浏览的原因。
+// 17 条天赋按 wiki 章节序均匀环排，health 固定在正上方 0°。
+const TALENT_DPHI = 360/17;
+const TALENT_ANGLES = TALENT_ORDER.map((_,i)=>(i-8)*TALENT_DPHI);
+// 相邻链的档位在【径向错开半个档距】：原版实测层间距≈80px、同链档距≈157px，
+// 即奇数链整体外移半档。这打破了整齐的同心圆点阵，形成原版的螺旋/编织纹理，
+// 也是「reload 的天赋点不是一条直线、整体像螺旋」的由来。
+const TALENT_STAGGER = 0.5;
+// 螺旋率（弧度/档）：整圈环上所有链同向缓慢偏转，构成漩涡状螺旋臂。
+const TALENT_SPIRAL = Math.PI * 1.5/180;
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5827,17 +5815,15 @@ function buildTalentsUI(){
   const W = 580, H = 460;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 极坐标：链按 TALENT_ORDER 沿扇形排布，档位沿半径向外长，并叠加对称螺旋偏移
-  // → 每棵天赋呈「弧线」形态：左侧链向右弯、右侧链向左弯，朝 health(0°) 收敛；
-  //   弧线凸向外侧、中间 health 垂直，而非笔直径向直线。
-  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定。
+  // 极坐标：17 条天赋链按 wiki 章节序均匀环排 360°，相邻链径向错开半档，
+  // 档位沿半径向外并同向缓慢偏转 → 整体呈漩涡状螺旋臂（原版「螺旋」形态）。
+  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定；下半环被面板裁掉，靠旋转转出。
   const posOf = (col, idx, lift)=>{
     const t = idx + lift;
-    const rho = TALENT_R0 + t*TALENT_DR;
-    const base = TALENT_ANGLES[col] * Math.PI/180;   // 该天赋基准角度（度→弧度）
-    // 弧线方向：health(0°)保持笔直；左侧链向右弯、右侧链向左弯（都朝 0° 收敛）
-    const dir = base === 0 ? 0 : (base > 0 ? -1 : 1);
-    const phi = base + dir*t*TALENT_SPIRAL + talentRotation;
+    // 奇数链外移半档：相邻链节点彼此错开，不再排成整齐同心圆
+    const rho = TALENT_R0 + (t + (col & 1)*TALENT_STAGGER)*TALENT_DR;
+    // 整圈环排 + 同向螺旋臂；旋转量只加在角度上 → 花朵恒为圆心、本身不动
+    const phi = TALENT_ANGLES[col]*Math.PI/180 + t*TALENT_SPIRAL + talentRotation;
     return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), rho };
   };
   const at = {};
