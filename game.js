@@ -5760,26 +5760,29 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// 尺度（用户 2026-11-06 高清录屏 5 帧颜色分割实测，原版面板 800×794）：
-//   节点直径≈94px、同链档距≈157px、花朵直径≈125px、花朵固定(400,701)。
-//   换算到本面板高 460px（比例 0.58）：节点 54px、档距 91px、首档半径 84px。
-//   之前 30px/36px 把整棵树压成密集小点阵，是「不像原版」的最大原因。
-const TALENT_NODE = 54;                    // 节点图标直径
-const TALENT_R0 = 84, TALENT_DR = 91;      // 第0档所在半径 / 每升一档向外扩
-// 圆心 = 花朵位置（面板底部中央）→ 整棵树绕花朵旋转，花朵本身固定不动
-const TALENT_CX = 290, TALENT_CY = 422;
-// 原版是【整圈 360° 环】，花朵为圆心。录屏里所有可见节点 phi 都落在
-// -98°~+98°，那只是因为面板只容得下上半环（下半环在花朵下方被裁掉），
-// 并非扇形树——这正是原版需要「滑动旋转」浏览的原因。
-// 17 条天赋按 wiki 章节序均匀环排，health 固定在正上方 0°。
-const TALENT_DPHI = 360/17;
-const TALENT_ANGLES = TALENT_ORDER.map((_,i)=>(i-8)*TALENT_DPHI);
-// 相邻链的档位在【径向错开半个档距】：原版实测层间距≈80px、同链档距≈157px，
-// 即奇数链整体外移半档。这打破了整齐的同心圆点阵，形成原版的螺旋/编织纹理，
-// 也是「reload 的天赋点不是一条直线、整体像螺旋」的由来。
-const TALENT_STAGGER = 0.5;
-// 螺旋率（弧度/档）：整圈环上所有链同向缓慢偏转，构成漩涡状螺旋臂。
-const TALENT_SPIRAL = Math.PI * 1.5/180;
+// ===== 布局基准：用户 2026-11-08 原版清晰截图 + 3 段录屏 131 帧 / 1486 个节点观测 =====
+// 面板：接近正方形（视频 131 帧 W/H≈1.01，清晰截图 1.11），本实现 560×560。
+//       旧版 580×460 明显扁宽，且 R0=84/DR=91 使 9 档最大半径达 812px，
+//       远超面板高度 → 大半天赋点被永久裁掉（用户反馈「无法看见所有的天赋点」）。
+// 花朵：底部中央 (280,486)，实测原版花朵中心在面板高度约 88% 处、直径约面板宽 13.7%。
+// 排布：以花朵为极点的 190° 扇形分层（录屏 phi -104°~+86°），共 9 档，
+//       最大 rho≈460 全部落在面板内 → 每个天赋点都看得见。
+//   · 每条链的偏角随半径增大自动收窄（矩形面板约束 |dx|≤XMAX）：
+//     链从内向外朝中轴弯成【弧线】，正是用户蓝线标注的那条 C 形弧；
+//     左右对称收拢，不是整棵树同向旋转的漩涡；health(0°) 仍笔直。
+//   · 相邻链径向错开半档，避免同层挤成一圈（视频实测层距=半档）。
+const TALENT_NODE = 30;                     // 节点图标直径
+const TALENT_R0 = 78, TALENT_DR = 37;       // 第0档半径 / 每升一档的层距
+const TALENT_CX = 280, TALENT_CY = 486;     // 圆心 = 花朵 → 旋转绕花朵，花朵不动
+const TALENT_XMAX = 246;                    // 节点圆心允许的最大水平偏移
+const TALENT_SPAN = Math.PI*190/180;        // 扇形张角上限
+// 每 3 条链循环错开 0 / 1 / 2 档：内层周长小，若 17 条链都堆在同一半径
+// 必然重叠；错层后每个半径层只有约 6 条链，正好留出节点直径的空隙。
+const TALENT_LAYER = 1.0;
+// 链自身弧线：档位越往外越朝中轴多偏一点（左右对称，非整棵树同向漩涡）。
+// 与「phiMax 随半径收窄」叠加后，reload 这类侧链呈明显 C 形弧线（用户蓝线）。
+const TALENT_ARC = Math.PI*0.3/180;
+const TALENT_BENDF = 0.25;                  // 额外弯曲不超过基准角的 25%，避免各链穿过中轴互相堆叠
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5812,18 +5815,30 @@ function buildTalentsUI(){
   const hpEl = document.getElementById('tstat-hp'); if(hpEl) hpEl.textContent = fmt(player.maxHp);
   const dmgEl = document.getElementById('tstat-dmg'); if(dmgEl) dmgEl.textContent = fmt(player.bodyDmg);
   wrap.innerHTML = ''; svg.innerHTML = '';
-  const W = 580, H = 460;
+  const W = 560, H = 560;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 极坐标：17 条天赋链按 wiki 章节序均匀环排 360°，相邻链径向错开半档，
-  // 档位沿半径向外并同向缓慢偏转 → 整体呈漩涡状螺旋臂（原版「螺旋」形态）。
-  // 圆心 = 花朵 → 刚体旋转即绕花朵转，花朵固定；下半环被面板裁掉，靠旋转转出。
+  // 极坐标：17 条链按 wiki 章节序铺在 190° 扇形内，档位沿半径向外分层。
+  // 关键：该半径下矩形面板允许的最大偏角 phiMax=asin(XMAX/rho) 随半径增大而变小，
+  // 于是同一条链从内到外逐渐朝中轴收拢 → 档位连成一条 C 形【弧线】（用户蓝线），
+  // 而不是笔直径向直线；左右对称收拢，故不是整棵树同向旋转的漩涡。
+  // 最终再把 phi 夹进 ±phiMax，保证【所有 96 个天赋点恒在面板内、不会被裁掉】。
   const posOf = (col, idx, lift)=>{
     const t = idx + lift;
     // 奇数链外移半档：相邻链节点彼此错开，不再排成整齐同心圆
-    const rho = TALENT_R0 + (t + (col & 1)*TALENT_STAGGER)*TALENT_DR;
-    // 整圈环排 + 同向螺旋臂；旋转量只加在角度上 → 花朵恒为圆心、本身不动
-    const phi = TALENT_ANGLES[col]*Math.PI/180 + t*TALENT_SPIRAL + talentRotation;
+    const rho = TALENT_R0 + (t + (col % 3)*TALENT_LAYER)*TALENT_DR;
+    const phiMax = Math.asin(Math.min(0.97, TALENT_XMAX/Math.max(rho,1)));
+    const spread = Math.min(TALENT_SPAN/2, phiMax);
+    // 链序 → 扇形内相对位置 [-1,1]；health(col=8) 恒为 0，保持笔直
+    const half = (TALENT_ORDER.length-1)/2;
+    const frac = (col - half)/half;
+    // 左侧链向右弯、右侧链向左弯（朝 health 中轴收拢），叠加矩形夹紧的自然收窄
+    const dir = frac === 0 ? 0 : -Math.sign(frac);
+    const basePhi = frac*spread;
+    const bend = dir*Math.min(t*TALENT_ARC, Math.abs(basePhi)*TALENT_BENDF);
+    // 旋转只作用于角度 → 花朵恒为圆心、本身不动；夹紧后节点仍全部可见
+    const phiRaw = basePhi + bend + talentRotation;
+    const phi = Math.max(-phiMax, Math.min(phiMax, phiRaw));
     return { x:TALENT_CX + rho*Math.sin(phi), y:TALENT_CY - rho*Math.cos(phi), rho };
   };
   const at = {};
@@ -5837,7 +5852,7 @@ function buildTalentsUI(){
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
-    if(p.x < -m || p.x > W+m || p.y < m+20 || p.y > H-m) continue;
+    if(p.x < -m || p.x > W+m || p.y < m+4 || p.y > H-m) continue;
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
@@ -5859,8 +5874,8 @@ function buildTalentsUI(){
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
     // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深）
-    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.95)' : 'rgba(164,44,70,.95)');
-    ln.setAttribute('stroke-width','3');
+    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.8)' : 'rgba(164,44,70,.72)');
+    ln.setAttribute('stroke-width','2');
     ln.setAttribute('stroke-linecap','round');
     ln.setAttribute('stroke-dasharray','7,6');
     svg.appendChild(ln);
@@ -5893,7 +5908,7 @@ function buildTalentsUI(){
       pc+':'+ri, p.it.col+':'+p.it.idx);
   }
   // ③ 花朵枝干：从花朵向各条主干链的首档放射虚线（原版树根）
-  const flower = {x:W/2, y:H-38};
+  const flower = {x:TALENT_CX, y:TALENT_CY};
   for(const p of visible){
     if(p.it.idx !== 0 || p.y > flower.y - 8) continue;
     const d = Math.hypot(p.x-flower.x, p.y-flower.y);
@@ -5943,8 +5958,8 @@ function buildTalentsUI(){
       + '<div class="tt-cost">'+m.cum+' TP total · '+m.tier.cost+' TP</div>'
       + '<div class="tt-hold">'+(m.owned?'HOLD to remove':'HOLD to upgrade')+'</div>';
     const px = parseFloat(node.style.left), py = parseFloat(node.style.top);
-    tip.style.left = Math.max(4, Math.min(580-220, px+20))+'px';
-    tip.style.top  = Math.max(4, Math.min(460-150, py-24))+'px';
+    tip.style.left = Math.max(4, Math.min(560-220, px+20))+'px';
+    tip.style.top  = Math.max(4, Math.min(560-150, py-24))+'px';
     tip.style.display = 'block';
   };
   wrap.addEventListener('mousedown', (e)=>{
@@ -5966,10 +5981,12 @@ function buildTalentsUI(){
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
   // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
-  // 拖动跟手 + 松手惯性缓停；环是整圈 360°，转到头自然接回开头，无死区。
+  // 拖动跟手 + 松手惯性缓停。旋转限幅 ±17°：扇形树全部节点本来就在面板内，
+  // 大幅旋转只会把两侧节点推出面板（旧版「看不见所有天赋点」的元凶之一），
+  // 小幅摆动既保留原版滑动手感，又保证任何时刻所有天赋点都可见。
   let dragging=false, lastX=0, lastT=0, rotVel=0, inertiaId=0;
   const ROT_K = 0.0009;   // 像素 → 弧度
-  const wrapRot = ()=>{ const T=Math.PI*2; talentRotation = ((talentRotation+Math.PI)%T+T)%T - Math.PI; };
+  const wrapRot = ()=>{ talentRotation = Math.max(-0.30, Math.min(0.30, talentRotation)); };
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
