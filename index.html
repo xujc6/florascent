@@ -487,7 +487,7 @@
   /* 原版面板接近正方形（录屏 131 帧 W/H≈1.01，清晰截图 1.11）；旧版 580×460 明显扁宽 */
   #talents { display:none; position:absolute; left:55px; bottom:30px;
     width:560px; height:560px; border-radius:12px;
-    background:rgba(196, 59, 90, 0.96); border:4px solid #9b2c47;
+    background:rgba(202, 99, 95, 0.96); border:4px solid #a04a45;
     z-index:30; overflow:hidden; color:#fff;
     box-shadow:0 4px 18px rgba(0,0,0,.35); }
   #talents.show { display:block; }
@@ -513,7 +513,7 @@
     filter:drop-shadow(0 2px 2px rgba(0,0,0,.28)); }
   .tnode img { width:100%; height:100%; display:block; border-radius:50%; pointer-events:none; }
   /* 原版：未点亮/买不起的节点灰度变暗，点亮后恢复满色 */
-  .tnode.locked img { filter:grayscale(.62) brightness(.74); }
+  .tnode.locked img { filter:grayscale(.38) brightness(.84); }
   .tnode.owned img { filter:none; }
   .tnode.owned { box-shadow:0 0 0 2px rgba(255,255,255,.42); }
   .tnode.holding { box-shadow:0 0 0 3px #fff; }
@@ -522,9 +522,9 @@
   .tnode .tcum { position:absolute; top:-8px; right:-9px; font-size:11px; font-weight:800;
     color:#fff; -webkit-text-stroke:1.5px #2a0d0b; paint-order:stroke fill; pointer-events:none; }
   /* 花朵头像：面板底部中央 */
-  /* 花朵中心 y = 560-34-38 = 488，与布局圆心 TALENT_CY=486 一致；直径 76px≈面板宽 13.7%（原版实测） */
-  #talentCore { position:absolute; left:50%; bottom:34px; transform:translateX(-50%);
-    width:76px; height:76px; pointer-events:none; z-index:3; }
+  /* 花朵中心 y = 560-22-52 = 486，与布局圆心 TALENT_CY 一致；直径 104px≈面板宽 18.6%（原版实测约 19%） */
+  #talentCore { position:absolute; left:50%; bottom:22px; transform:translateX(-50%);
+    width:104px; height:104px; pointer-events:none; z-index:3; }
   #talentCore img { width:100%; height:100%; object-fit:contain; }
   /* 统计信息：花朵右侧 */
   #talentStats { position:absolute; left:50%; bottom:52px; transform:translateX(50px);
@@ -842,18 +842,18 @@
 </div>
 </div>
 
-<script src="manifest.js?v=20261108a"></script>
+<script src="manifest.js?v=20261108b"></script>
 <!-- file:// 下 canvas 会被污染（getImageData 抛 SecurityError），地块/花瓣图改用内联 data: URL -->
-<script>if(location.protocol==='file:'){document.write('<script src="assets_inline.js?v=20261108a"><\/script>');}</script>
-<script src="assets/maps_tmj/portals.js?v=20261108a"></script>
-<script src="petals.js?v=20261108a"></script>
-<script src="mobver.js?v=20261108a"></script>
-<script src="regions.js?v=20261108a"></script>
-<script src="zones.js?v=20261108a"></script>
-<script src="mobmask.js?v=20261108a"></script>
-<script src="cardfiles.js?v=20261108a"></script>
-<script src="mobtext.js?v=20261108a"></script>
-<script src="talents.js?v=20261108a"></script>
-<script src="game.js?v=20261108a"></script>
+<script>if(location.protocol==='file:'){document.write('<script src="assets_inline.js?v=20261108b"><\/script>');}</script>
+<script src="assets/maps_tmj/portals.js?v=20261108b"></script>
+<script src="petals.js?v=20261108b"></script>
+<script src="mobver.js?v=20261108b"></script>
+<script src="regions.js?v=20261108b"></script>
+<script src="zones.js?v=20261108b"></script>
+<script src="mobmask.js?v=20261108b"></script>
+<script src="cardfiles.js?v=20261108b"></script>
+<script src="mobtext.js?v=20261108b"></script>
+<script src="talents.js?v=20261108b"></script>
+<script src="game.js?v=20261108b"></script>
 </body>
 </html>

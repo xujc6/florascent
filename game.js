@@ -5752,7 +5752,7 @@ const RAR_TEXT = {Common:'#8bc34a',Unusual:'#ffe066',Rare:'#6fa8ff',Epic:'#c07af
 // 链内相邻档位用暗红【虚线】连接；不同种类之间不连线（只有分支接父档）。
 // 分支天赋的起点抬到其前置父档的高度（wiki：分支由下至上从主干分出）。
 // 交互只有「滑动旋转」：按住拖动绕【花朵】转，松手带惯性缓停；无平移、无缩放。
-let talentRotation = 0;
+// 平移量在下方常量区声明（TALENT_TABLE 之后）
 // 顺序 = 官方 wiki 章节顺序（天赋树围绕花朵的环序，分支紧邻父天赋）：
 // 最左 petalHealth(花瓣耐久)，最右 concentratedPoison(浓缩毒伤)。
 const TALENT_ORDER = [
@@ -5760,38 +5760,54 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// ===== 布局基准：用户 2026-11-08 十张原版分链截图 + 3 段录屏 131 帧/1486 节点观测 =====
-// 形态：每条天赋链是「Z 字形蜿蜒枝」（用户蓝线 + 像素提取双重确认），
-//       不是直线/弧线/螺旋。分支不连花朵，连在父链特定档位上（wiki Requirements）。
-// 布局：360° 环排（17 链均匀分布，间距 21.18°），大节点 + 一屏只看到部分，
-//       靠滑动旋转浏览全部（原版正是如此：一屏约 10 个大节点，树延伸出面板）。
-// 左右边界：面板只显示树的一部分弧（约 190°），左端 petalHealth 右端 poison
-//           是当前视角下的边界，旋转后其他链转进来。
-const TALENT_NODE = 50;                     // 节点图标直径（接近原版占面板宽 12%）
-const TALENT_R0 = 130, TALENT_DR = 58;      // 第0档半径 / 每升一档层距
-const TALENT_CX = 280, TALENT_CY = 486;     // 圆心 = 花朵 → 旋转绕花朵，花朵不动
-// Z 字形蜿蜒模板：每档 phi 偏移（度），模拟原版 Z 字形蛇形枝干。
-const TALENT_ZIG = [+10, -7, +5, -3, +7, -2, +4, -1, +3];
-// 17 条链基准角（度）：360° 环排（间距 21.18°，足够大节点不重叠），
-// health 在 0°（正上方）。通过 visible 过滤只显示 phi ±95° 内的节点 → 只向上展开。
-const TALENT_BASE = TALENT_ORDER.map((_, i) => (i - 8) * 360 / 17);
-// 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
+// ===== 布局基准：用户 10 张原版分链高清截图 + 蓝线标注图，逐像素量取 =====
+// 决定性依据：节点右上角的白色数字 = 该档位的【累计 TP】，与 talents.js 完全一致
+//   （例：reload = 2,8,18,30,46,66,90,118,150；petalHealth = 2,6,12,20,30,42,56,72,90）。
+// 因此可以按数字把截图里每个圆精确对应到「哪条链的第几档」，还原真实形状：
+//   · reload 9 档按档位连起来是一条【逆时针向内盘绕的螺旋/蛇形】，正是用户蓝线所指。
+//   · 每条链都是这种弯曲形态，不是直线、不是放射线、不是方格。
+//   · 原版一屏只显示 1~2 条链（10~19 个节点），其余靠【滑动平移】浏览；
+//     花朵是固定 UI，不随树移动。
+//   · 严格左右边界：最左 petalHealth(花瓣耐久)，最右 poison/concentratedPoison(剧毒)。
+//   · 分支不连花朵，连在父链指定档位（wiki Requirements + 用户 10 图说明）。
+// 下表 = 从 reload 链实测 9 档螺旋硬编码，17 条链按官方顺序从左到右铺开，
+// 相邻链按三档垂直错开并做轻松弛，保证 96 档两两不重叠（渲染最小中心距 ≈66px > 节点 62px）；
+// 一屏可见 2~3 条链的部分档位，交错成与原版一致的虚线网。
+// 坐标 = 相对花朵的 (dx 右正, dy 上正)，原版 960 宽缩放下。
+const TALENT_TABLE = {
+  petalHealth: [[-880.0, 28.0], [-954.0, 63.0], [-982.0, 101.0], [-925.0, 150.0], [-858.0, 166.0], [-797.0, 128.0], [-807.0, 77.0], [-897.0, 66.0], [-854.7, 108.3]],
+  antennae: [[-775.0, 54.0], [-844.3, 77.0], [-880.0, 129.6]],
+  reach: [[-670.8, 74.2], [-744.0, 115.0], [-772.0, 153.0]],
+  duplicator: [[-565.0, 28.0], [-639.0, 63.0], [-666.2, 106.8], [-610.0, 150.0]],
+  loadout: [[-460.0, 54.0], [-534.0, 89.0], [-562.0, 127.0], [-505.0, 176.0], [-438.0, 192.0]],
+  magnetism: [[-355.8, 74.2]],
+  reload: [[-250.0, 28.0], [-324.0, 63.0], [-351.2, 106.8], [-295.0, 150.0], [-228.0, 166.0], [-167.0, 128.0], [-177.0, 77.0], [-267.0, 66.0], [-224.7, 108.3]],
+  petalRotation: [[-145.0, 54.0], [-214.3, 77.0], [-250.0, 129.6], [-190.0, 176.0], [-123.0, 192.0]],
+  health: [[-40.0, 80.0], [-114.0, 115.0], [-142.0, 153.0], [-85.0, 202.0], [-18.0, 218.0], [43.0, 180.0], [33.0, 129.0], [-57.0, 118.0], [-13.0, 151.0]],
+  secondChance: [[65.0, 28.0], [-9.0, 63.0]],
+  medic: [[170.0, 54.0], [96.0, 89.0], [68.0, 127.0], [125.0, 176.0], [192.0, 192.0], [252.5, 156.9], [238.3, 98.1], [153.0, 92.0], [195.3, 134.4]],
+  summoner: [[273.7, 72.7], [205.7, 103.0], [170.0, 155.6], [230.0, 202.0], [297.0, 218.0], [358.0, 180.0], [350.3, 125.3], [258.3, 124.4], [300.9, 150.9]],
+  sharpEdges: [[380.0, 28.0], [306.0, 63.0], [284.2, 103.9], [333.8, 153.8], [402.0, 166.0], [463.0, 128.0], [453.0, 77.0], [363.0, 66.0]],
+  bodyToxicity: [[485.0, 54.0]],
+  luck: [[589.0, 73.5], [516.0, 115.0], [488.0, 153.0], [545.0, 202.0], [612.0, 218.0], [673.0, 180.0], [665.3, 125.3], [568.8, 120.2], [615.9, 150.9]],
+  poison: [[695.0, 28.0], [621.0, 63.0], [598.2, 105.2], [648.8, 153.8], [717.0, 166.0], [778.0, 128.0], [768.0, 77.0], [678.0, 66.0], [722.0, 99.0]],
+  concentratedPoison: [[800.0, 54.0]],
+};
+// 树比面板大（原版靠拖动看全部），放大系数保证节点彼此不重叠
+const TALENT_SCALE = 2.0;                  // 原版960宽→560面板的适配系数，节点/面板比例与原版一致
+const TALENT_NODE = 62;                     // 节点图标直径（面板宽 11%，原版实测约 12%）
+// 花朵 = 固定在面板底部中央的 UI（不随树移动，用户明确要求「不能让花朵移动」）
+const TALENT_CX = 280, TALENT_CY = 486;
+// 树内容层的平移量（拖动改变；花朵不参与平移）
+let talentPanX = 0, talentPanY = 0;
+// 每个档位的世界格位（列 = 天赋顺序，行 = 该天赋的第几档）
 const TALENT_WORLD = (()=>{
   const out=[];
   TALENT_ORDER.forEach((tid,col)=>{
     const t = TALENTS.find(x=>x.id===tid);
     if(!t) return;
-    // 分支天赋（Requirements 指向别的天赋）起点抬到父档之上，数据直接取自 wiki
-    let lift = 0;
-    if(t.req && t.req.tree !== tid){
-      const parent = TALENTS.find(x=>x.id===t.req.tree);
-      if(parent){
-        const ri = parent.tiers.findIndex(ti=>(ti.key||ti.r)===t.req.key);
-        if(ri >= 0) lift = ri + 1;
-      }
-    }
     t.tiers.forEach((tier,idx)=>{
-      out.push({t, idx, col, lift, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
+      out.push({t, idx, col, lift:0, id:talentId(t,tier), cum:talentCumulativeTP(t,idx)});
     });
   });
   return out;
@@ -5810,32 +5826,30 @@ function buildTalentsUI(){
   const W = 560, H = 560;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 枝干布局：每条链沿 Z 字形蜿蜒模板延伸，整条链绕花朵旋转 base 角。
-  // 360° 环排（间距 21.18°）→ 大节点不重叠；只显示 phi ±95° 内的节点 → 只向上展开。
-  const posOf = (col, idx, lift)=>{
-    const t = Math.min(idx + lift, TALENT_ZIG.length - 1);
-    const rho = TALENT_R0 + (idx + lift) * TALENT_DR;
-    const phi = (TALENT_BASE[col] + TALENT_ZIG[t]) * Math.PI / 180 + talentRotation;
-    return { x: TALENT_CX + rho * Math.sin(phi), y: TALENT_CY - rho * Math.cos(phi), rho, phi };
+  // 直接查【原版截图像素坐标表】：每个档位的位置都是实测值，不由公式生成。
+  // 树内容层整体平移（talentPanX/Y）；花朵 (TALENT_CX,TALENT_CY) 固定不动。
+  const posOf = (col, idx)=>{
+    const q = (TALENT_TABLE[TALENT_ORDER[col]] || [])[idx];
+    if(!q) return { x:TALENT_CX, y:TALENT_CY, outside:true };
+    return {
+      x: TALENT_CX + q[0]*TALENT_SCALE + talentPanX,
+      y: TALENT_CY - q[1]*TALENT_SCALE + talentPanY
+    };
   };
   const at = {};
   for(const it of TALENT_WORLD){
-    const p = posOf(it.col, it.idx, it.lift);
+    const p = posOf(it.col, it.idx);
     p.it = it;
     at[it.col+':'+it.idx] = p;
   }
-  // 上下裁掉不完整图标；左右按原版保留半截节点（滚动时树冠延续到画面外）
-  // 额外：只显示 phi 在 ±95° 内的节点（360° 环排但只向上展开，不在花朵下方）
+  // 只按面板矩形裁切：树比面板大，靠拖动把其余部分带进视野（原版即如此）。
+  // 不做任何角度/扇形过滤——位置完全由实测坐标表决定。
   const m = TALENT_NODE/2 + 2;
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
+    if(p.outside) continue;
     if(p.x < -m || p.x > W+m || p.y < m || p.y > H-m) continue;
-    // phi 归一化到 [-π, π]
-    let ph = p.phi;
-    while(ph > Math.PI) ph -= 2*Math.PI;
-    while(ph < -Math.PI) ph += 2*Math.PI;
-    if(ph < -1.22 || ph > 1.22) continue;  // ±70° 以外的节点不显示（确保全在花朵上方）
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
@@ -5857,10 +5871,10 @@ function buildTalentsUI(){
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
     // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深），加粗到 3px 确保虚线可见
-    ln.setAttribute('stroke', owned ? 'rgba(120,28,50,.9)' : 'rgba(140,34,58,.8)');
-    ln.setAttribute('stroke-width','3');
+    ln.setAttribute('stroke', owned ? 'rgba(108,22,44,.95)' : 'rgba(130,30,54,.9)');
+    ln.setAttribute('stroke-width','4');
     ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','8,5');
+    ln.setAttribute('stroke-dasharray','5,5');
     svg.appendChild(ln);
   };
   const byCI = {};
@@ -5890,14 +5904,13 @@ function buildTalentsUI(){
       player.talents.has(p.it.id) && player.talents.has(q.it.id),
       pc+':'+ri, p.it.col+':'+p.it.idx);
   }
-  // ③ 花朵枝干：从花朵向各条主干链的首档放射虚线（原版树根）
-  // 只连 idx=0 且无 req 的主链首档；距离限 60~200（太远的是面板边缘的链，不连）
+  // ③ 花朵枝干：从固定花朵向各条主干链首档放射虚线（原版树根）。
+  //    花朵不随树平移，所以树滑动时这些线会伸缩，与原版一致。
   const flower = {x:TALENT_CX, y:TALENT_CY};
   for(const p of visible){
     if(p.it.idx !== 0 || p.it.t.req) continue;
-    if(p.y > flower.y - 8) continue;  // 只连花朵上方的
-    const d = Math.hypot(p.x-flower.x, p.y-flower.y);
-    if(d < 60 || d > 200) continue;
+    if(p.y > flower.y - 8) continue;
+    if(Math.hypot(p.x-flower.x, p.y-flower.y) > 460) continue;  // 原版花朵只连附近的枝干
     line(flower, p, false, null, p.it.col+':'+p.it.idx);
   }
   // 节点：等大彩色圆底图标，彼此留空隙
@@ -5965,39 +5978,44 @@ function buildTalentsUI(){
   window.addEventListener('mouseup', ()=>{ clearHold(); });
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
-  // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
-  // 拖动跟手 + 松手惯性缓停。360° 环排 → 不限幅旋转，转到头自然接回开头。
-  // 只显示 phi ±95° 内的节点 → 始终只向上展开，旋转时新链从两侧转进来。
-  let dragging=false, lastX=0, lastT=0, rotVel=0, inertiaId=0;
-  const ROT_K = 0.004;   // 像素 → 弧度（大节点拖动更跟手）
-  const wrapRot = ()=>{ /* 360° 不限幅 */ };
+  // 原版：树是比面板大的内容层，靠【拖动平移】浏览；花朵是固定 UI 不随树移动。
+  // 左右边界：滑到头分别是 petalHealth(花瓣耐久) 与 poison(剧毒)。
+  // 拖动跟手 + 松手惯性缓停，X/Y 双向。
+  let dragging=false, lastX=0, lastY=0, lastT=0, velX=0, velY=0, inertiaId=0;
+  const PAN_X = 2050, PAN_Y = 90;   // 平移限幅：左端花瓣耐久 ↔ 右端剧毒
+  const clampPan = ()=>{
+    talentPanX = Math.max(-PAN_X, Math.min(PAN_X, talentPanX));
+    talentPanY = Math.max(-PAN_Y, Math.min(PAN_Y, talentPanY));
+  };
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
-    if(Math.abs(rotVel) < 0.00002) return;
+    if(Math.abs(velX)+Math.abs(velY) < 0.02) return;
     let prev = performance.now();
     const step = (now)=>{
       const dt = Math.min(50, now-prev); prev = now;
-      talentRotation += rotVel*dt; wrapRot();
-      rotVel *= Math.pow(0.94, dt/16.7);   // 指数阻尼 → 滑动流畅、缓停自然
+      talentPanX += velX*dt; talentPanY += velY*dt; clampPan();
+      const damp = Math.pow(0.94, dt/16.7);
+      velX *= damp; velY *= damp;
       buildTalentsUI();
-      if(Math.abs(rotVel) > 0.00002) inertiaId = requestAnimationFrame(step);
+      if(Math.abs(velX)+Math.abs(velY) > 0.02) inertiaId = requestAnimationFrame(step);
       else inertiaId = 0;
     };
     inertiaId = requestAnimationFrame(step);
   };
-  const dragStart = (x)=>{
-    dragging=true; stopInertia(); rotVel=0;
-    lastX=x; lastT=performance.now();
+  const dragStart = (x,y)=>{
+    dragging=true; stopInertia(); velX=velY=0;
+    lastX=x; lastY=y; lastT=performance.now();
     tree.classList.add('rotating');
   };
-  const dragMove = (x)=>{
+  const dragMove = (x,y)=>{
     if(!dragging) return;
-    const dx=x-lastX, now=performance.now();
+    const dx=x-lastX, dy=y-lastY, now=performance.now();
     const dtf=Math.max(1, now-lastT);
-    talentRotation += dx*ROT_K; wrapRot();
-    rotVel = 0.65*rotVel + 0.35*(dx*ROT_K/dtf);   // 平滑速度估计
-    lastX=x; lastT=now;
+    talentPanX += dx*3.0; talentPanY += dy*1.4; clampPan();
+    velX = 0.65*velX + 0.35*(dx*3.0/dtf);
+    velY = 0.65*velY + 0.35*(dy*1.4/dtf);
+    lastX=x; lastY=y; lastT=now;
     buildTalentsUI();
   };
   const dragEnd = ()=>{
@@ -6007,18 +6025,18 @@ function buildTalentsUI(){
   };
   tree.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.tnode')) return;
-    dragStart(e.clientX);
+    dragStart(e.clientX, e.clientY);
   });
-  window.addEventListener('mousemove', (e)=>{ dragMove(e.clientX); });
+  window.addEventListener('mousemove', (e)=>{ dragMove(e.clientX, e.clientY); });
   window.addEventListener('mouseup', dragEnd);
   tree.addEventListener('touchstart', (e)=>{
     if(e.target.closest('.tnode')) return;
-    dragStart(e.touches[0].clientX);
+    dragStart(e.touches[0].clientX, e.touches[0].clientY);
   }, {passive:true});
   tree.addEventListener('touchmove', (e)=>{
     if(!dragging) return;
     e.preventDefault();
-    dragMove(e.touches[0].clientX);
+    dragMove(e.touches[0].clientX, e.touches[0].clientY);
   }, {passive:false});
   window.addEventListener('touchend', dragEnd);
 })();
