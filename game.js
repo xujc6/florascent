@@ -5760,30 +5760,21 @@ const TALENT_ORDER = [
   'petalRotation','health','secondChance','medic','summoner','sharpEdges',
   'bodyToxicity','luck','poison','concentratedPoison'
 ];
-// ===== 布局基准：用户 2026-11-08 原版清晰截图（v09_panel.png 800×794）像素提取 =====
-// 关键纠正：原版同一条天赋链的 9 档（Common→...→Unique，节点上数字=累计 TP 2/6/12/20/30/42/56/72/90）
-//   在面板里【不是直线、不是弧线、不是螺旋】，而是从花朵附近出发、左右摆动向上生长的
-//   「Z 字形蜿蜒枝干」——rho 非单调（t=2 回到 145）、phi 锯齿摆动（66/22/-4/-3/45/38/18/-3/17）。
-//   之前所有「极坐标扇形 + 弧线」实现都错；本版直接把 health 链真实坐标做成枝干模板，
-//   17 条天赋链复用此模板、绕花朵旋转不同基准角，整体呈原版那种网状分叉树。
-// 面板：正方形 560×560（录屏 131 帧 W/H≈1.01）。花朵底部中央 (280,486)。
-// 缩放：原版面板 800px → 本面板 560px，比例 0.7；模板 rho 已 ×0.5（让 17 条枝全在面板内、互不裁切）。
-const TALENT_NODE = 26;                     // 节点图标直径
+// ===== 布局基准：用户 2026-11-08 十张原版分链截图 + 3 段录屏 131 帧/1486 节点观测 =====
+// 形态：每条天赋链是「Z 字形蜿蜒枝」（用户蓝线 + 像素提取双重确认），
+//       不是直线/弧线/螺旋。分支不连花朵，连在父链特定档位上（wiki Requirements）。
+// 布局：360° 环排（17 链均匀分布，间距 21.18°），大节点 + 一屏只看到部分，
+//       靠滑动旋转浏览全部（原版正是如此：一屏约 10 个大节点，树延伸出面板）。
+// 左右边界：面板只显示树的一部分弧（约 190°），左端 petalHealth 右端 poison
+//           是当前视角下的边界，旋转后其他链转进来。
+const TALENT_NODE = 50;                     // 节点图标直径（接近原版占面板宽 12%）
+const TALENT_R0 = 130, TALENT_DR = 58;      // 第0档半径 / 每升一档层距
 const TALENT_CX = 280, TALENT_CY = 486;     // 圆心 = 花朵 → 旋转绕花朵，花朵不动
-// health 链 9 档相对花朵的 (rho, phi°)，从 v09_panel.png 像素提取（视觉模型 + 颜色分割双重核对）×0.4 缩放
-const TALENT_BRANCH = [
-  { r: 65,  p: 66.4 },  // t=0 Common   累计TP 2
-  { r: 90,  p: 21.8 },  // t=1 Unusual         6
-  { r: 58,  p:-4.3  },  // t=2 Rare           12
-  { r:122,  p:-3.0  },  // t=3 Epic           20
-  { r:124,  p:44.9  },  // t=4 Legendary      30
-  { r:195,  p:37.8  },  // t=5 Mythic         42
-  { r:154,  p:18.1  },  // t=6 Ultra          56
-  { r:184,  p:-2.6  },  // t=7 Super          72
-  { r:217,  p:16.5  },  // t=8 Unique         90
-];
-// 17 条链基准角：±40° 扇形（保证枝干最外档旋转后仍在面板内）
-const TALENT_BASE = TALENT_ORDER.map((_, i) => (i - 8) * Math.PI * 80 / 180 / 16);
+// Z 字形蜿蜒模板：每档 phi 偏移（度），模拟原版 Z 字形蛇形枝干。
+const TALENT_ZIG = [+10, -7, +5, -3, +7, -2, +4, -1, +3];
+// 17 条链基准角（度）：360° 环排（间距 21.18°，足够大节点不重叠），
+// health 在 0°（正上方）。通过 visible 过滤只显示 phi ±95° 内的节点 → 只向上展开。
+const TALENT_BASE = TALENT_ORDER.map((_, i) => (i - 8) * 360 / 17);
 // 每个档位的固定格位：列 = 天赋顺序，行 = 该天赋的第几档 + 分支抬升
 const TALENT_WORLD = (()=>{
   const out=[];
@@ -5819,14 +5810,13 @@ function buildTalentsUI(){
   const W = 560, H = 560;
   svg.setAttribute('viewBox', '0 0 '+W+' '+H);
   const NS = 'http://www.w3.org/2000/svg';
-  // 枝干模板：每条链的档位沿 health 真实坐标走，整条链绕花朵旋转 base 角。
-  // 这样每条天赋都是「Z 字形蜿蜒枝」（原版形态），而非笔直放射/弧线/螺旋。
-  // 旋转量只加在角度上 → 花朵恒为圆心、本身不动。
+  // 枝干布局：每条链沿 Z 字形蜿蜒模板延伸，整条链绕花朵旋转 base 角。
+  // 360° 环排（间距 21.18°）→ 大节点不重叠；只显示 phi ±95° 内的节点 → 只向上展开。
   const posOf = (col, idx, lift)=>{
-    const t = Math.min(idx + lift, TALENT_BRANCH.length - 1);
-    const br = TALENT_BRANCH[t];
-    const phi = br.p * Math.PI / 180 + TALENT_BASE[col] + talentRotation;
-    return { x: TALENT_CX + br.r * Math.sin(phi), y: TALENT_CY - br.r * Math.cos(phi), rho: br.r };
+    const t = Math.min(idx + lift, TALENT_ZIG.length - 1);
+    const rho = TALENT_R0 + (idx + lift) * TALENT_DR;
+    const phi = (TALENT_BASE[col] + TALENT_ZIG[t]) * Math.PI / 180 + talentRotation;
+    return { x: TALENT_CX + rho * Math.sin(phi), y: TALENT_CY - rho * Math.cos(phi), rho, phi };
   };
   const at = {};
   for(const it of TALENT_WORLD){
@@ -5835,11 +5825,17 @@ function buildTalentsUI(){
     at[it.col+':'+it.idx] = p;
   }
   // 上下裁掉不完整图标；左右按原版保留半截节点（滚动时树冠延续到画面外）
+  // 额外：只显示 phi 在 ±95° 内的节点（360° 环排但只向上展开，不在花朵下方）
   const m = TALENT_NODE/2 + 2;
   const visible = [];
   for(const key of Object.keys(at)){
     const p = at[key];
     if(p.x < -m || p.x > W+m || p.y < m || p.y > H-m) continue;
+    // phi 归一化到 [-π, π]
+    let ph = p.phi;
+    while(ph > Math.PI) ph -= 2*Math.PI;
+    while(ph < -Math.PI) ph += 2*Math.PI;
+    if(ph < -1.22 || ph > 1.22) continue;  // ±70° 以外的节点不显示（确保全在花朵上方）
     visible.push(p);
   }
   const centers = visible.map(p=>({x:p.x, y:p.y, key:p.it.col+':'+p.it.idx}));
@@ -5860,11 +5856,11 @@ function buildTalentsUI(){
     const ln = document.createElementNS(NS,'line');
     ln.setAttribute('x1',a.x.toFixed(1)); ln.setAttribute('y1',a.y.toFixed(1));
     ln.setAttribute('x2',b.x.toFixed(1)); ln.setAttribute('y2',b.y.toFixed(1));
-    // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深）
-    ln.setAttribute('stroke', owned ? 'rgba(140,34,58,.85)' : 'rgba(164,44,70,.75)');
-    ln.setAttribute('stroke-width','2');
+    // 录屏实测线色 ≈ rgb(164,44,70)（比玫红背景略深），加粗到 3px 确保虚线可见
+    ln.setAttribute('stroke', owned ? 'rgba(120,28,50,.9)' : 'rgba(140,34,58,.8)');
+    ln.setAttribute('stroke-width','3');
     ln.setAttribute('stroke-linecap','round');
-    ln.setAttribute('stroke-dasharray','7,6');
+    ln.setAttribute('stroke-dasharray','8,5');
     svg.appendChild(ln);
   };
   const byCI = {};
@@ -5895,11 +5891,13 @@ function buildTalentsUI(){
       pc+':'+ri, p.it.col+':'+p.it.idx);
   }
   // ③ 花朵枝干：从花朵向各条主干链的首档放射虚线（原版树根）
+  // 只连 idx=0 且无 req 的主链首档；距离限 60~200（太远的是面板边缘的链，不连）
   const flower = {x:TALENT_CX, y:TALENT_CY};
   for(const p of visible){
-    if(p.it.idx !== 0 || p.y > flower.y - 8) continue;
+    if(p.it.idx !== 0 || p.it.t.req) continue;
+    if(p.y > flower.y - 8) continue;  // 只连花朵上方的
     const d = Math.hypot(p.x-flower.x, p.y-flower.y);
-    if(d < 50 || d > 270) continue;
+    if(d < 60 || d > 200) continue;
     line(flower, p, false, null, p.it.col+':'+p.it.idx);
   }
   // 节点：等大彩色圆底图标，彼此留空隙
@@ -5968,12 +5966,11 @@ function buildTalentsUI(){
   wrap.addEventListener('mouseover', (e)=>{ const n=e.target.closest('.tnode'); if(n) showTip(n,e); });
   wrap.addEventListener('mouseout', (e)=>{ if(e.target.closest('.tnode') && tip) tip.style.display='none'; });
   // 原版：只能绕圆心旋转整棵树（滑动切换）；不允许上下平移，也不允许缩放。
-  // 拖动跟手 + 松手惯性缓停。旋转限幅 ±17°：扇形树全部节点本来就在面板内，
-  // 大幅旋转只会把两侧节点推出面板（旧版「看不见所有天赋点」的元凶之一），
-  // 小幅摆动既保留原版滑动手感，又保证任何时刻所有天赋点都可见。
+  // 拖动跟手 + 松手惯性缓停。360° 环排 → 不限幅旋转，转到头自然接回开头。
+  // 只显示 phi ±95° 内的节点 → 始终只向上展开，旋转时新链从两侧转进来。
   let dragging=false, lastX=0, lastT=0, rotVel=0, inertiaId=0;
-  const ROT_K = 0.0009;   // 像素 → 弧度
-  const wrapRot = ()=>{ talentRotation = Math.max(-0.12, Math.min(0.12, talentRotation)); };
+  const ROT_K = 0.004;   // 像素 → 弧度（大节点拖动更跟手）
+  const wrapRot = ()=>{ /* 360° 不限幅 */ };
   const stopInertia = ()=>{ if(inertiaId){ cancelAnimationFrame(inertiaId); inertiaId=0; } };
   const startInertia = ()=>{
     stopInertia();
