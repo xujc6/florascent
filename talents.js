@@ -40,7 +40,7 @@ const TALENTS = [
   {
     id:'bodyToxicity', name:'Body Toxicity', icon:'Body_Toxicity',
     desc:'Adds some Poison Damage to the player\'s Body Damage.',
-    req:{tree:'sharpEdges', key:'Ultra'},        // Branches off Ultra Sharp Edges
+    req:{tree:'sharpEdges', key:'Mythic'},       // 原版 body_toxicity <- body_damage6 (Mythic)
     tiers:[
       {r:'Ultra', cost:10, effect:{bodyTox:true},
        text:'When colliding with an enemy, deals additional damage equal to 0.6x Body Damage as Poison over 1 second.'},
