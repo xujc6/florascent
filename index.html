@@ -485,58 +485,58 @@
   .cslot, #cstack .cstk, #cresult { background-size:contain; background-position:center; background-repeat:no-repeat; }
   /* ===== Talents：照原版视频（左下角红橙面板 + 原版彩色圆底图标 + 折线网状树）===== */
   /* 原版面板接近正方形（录屏 131 帧 W/H≈1.01，清晰截图 1.11）；旧版 580×460 明显扁宽 */
-  #talents { display:none; position:absolute; left:55px; bottom:30px;
-    width:560px; height:560px; border-radius:12px;
-    background:rgba(202, 99, 95, 0.96); border:4px solid #a04a45;
-    z-index:30; overflow:hidden; color:#fff;
-    box-shadow:0 4px 18px rgba(0,0,0,.35); }
+  /* Calibrated against the user's official-client video, 2026-11-13. */
+  #talents { display:none; position:absolute; left:80px; bottom:18px;
+    width:560px; height:560px; border:0; border-radius:3px;
+    background:#c94859; color:#fff; z-index:30; overflow:hidden; }
+  #talents::after { content:''; position:absolute; inset:0; border:6px solid #9f3a47;
+    border-radius:3px; z-index:10; pointer-events:none; }
   #talents.show { display:block; }
-  #talents h2 { position:absolute; top:5px; left:50%; transform:translateX(-50%); margin:0;
-    font-size:22px; font-weight:800; letter-spacing:.5px; color:#fff;
-    -webkit-text-stroke:3px #000; paint-order:stroke fill; z-index:4; }
-  /* TP：左上角大字（原版 "248 TP"） */
-  #tpbadge { position:absolute; top:5px; left:11px; font-size:17px; font-weight:800;
-    color:#fff; -webkit-text-stroke:2.5px #2a0d0b; paint-order:stroke fill; z-index:4;
-    display:flex; align-items:baseline; gap:3px; }
-  #tpbadge b { font-size:24px; }
-  #tpbadge span { font-size:13px; opacity:.92; }
-  #tclose { position:absolute; top:6px; right:8px; width:26px; height:26px; border-radius:6px;
-    background:#c14a44; border:2px solid #7d2f2a; color:#fff; font-size:18px; font-weight:800;
-    line-height:21px; text-align:center; cursor:pointer; z-index:4; }
-  #tclose:hover { background:#d05a53; }
-  #talentTree { position:absolute; inset:0; overflow:hidden; cursor:grab; }
-  #talentTree.rotating { cursor:grabbing; }
+  #talents h2 { position:absolute; top:12px; left:50%; transform:translateX(-50%);
+    margin:0; font-size:24px; font-weight:800; line-height:1.15;
+    -webkit-text-stroke:2.5px #292929; paint-order:stroke fill; z-index:4; }
+  #tpbadge { position:absolute; top:22px; left:25px; display:flex; align-items:center;
+    gap:12px; font-weight:800; -webkit-text-stroke:2px #292929; paint-order:stroke fill; z-index:4; }
+  #tpbadge b { font-size:30px; line-height:1; }
+  #tpbadge span { font-size:22px; }
+  #tclose { position:absolute; top:14px; right:14px; width:24px; height:24px;
+    background:#a34450; border:3px solid #903642; border-radius:5px;
+    color:#ddd; font:bold 26px/16px sans-serif; text-align:center; cursor:pointer; z-index:11; }
+  #talentTree { position:absolute; inset:0; overflow:hidden; clip-path:inset(6px);
+    cursor:grab; touch-action:none; }
+  #talentTree.dragging { cursor:grabbing; }
   #talentLinks { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
   #talentNodes { position:absolute; inset:0; }
-  /* 节点：直接贴原版「彩色圆底 + 白色符号」整张图标，不再自画圆、不再刷白 */
-  .tnode { position:absolute; transform:translate(-50%,-50%); border-radius:50%; cursor:pointer;
-    filter:drop-shadow(0 2px 2px rgba(0,0,0,.28)); }
-  .tnode img { width:100%; height:100%; display:block; border-radius:50%; pointer-events:none; }
-  /* 原版：未点亮/买不起的节点灰度变暗，点亮后恢复满色 */
-  .tnode.locked img { filter:grayscale(.38) brightness(.84); }
-  .tnode.owned img { filter:none; }
-  .tnode.owned { box-shadow:0 0 0 2px rgba(255,255,255,.42); }
-  .tnode.holding { box-shadow:0 0 0 3px #fff; }
-  /* 未点亮节点右上角数字 = 点亮至该档所需的累计总天赋点 */
-  /* 节点缩到 30px 后，累计 TP 数字同步缩小，避免数字互相盖住图标（原版数字也明显小于图标） */
-  .tnode .tcum { position:absolute; top:-8px; right:-9px; font-size:11px; font-weight:800;
-    color:#fff; -webkit-text-stroke:1.5px #2a0d0b; paint-order:stroke fill; pointer-events:none; }
-  /* 花朵头像：面板底部中央 */
-  /* 花朵中心 y = 560-22-52 = 486，与布局圆心 TALENT_CY 一致；直径 104px≈面板宽 18.6%（原版实测约 19%） */
-  #talentCore { position:absolute; left:50%; bottom:22px; transform:translateX(-50%);
-    width:104px; height:104px; pointer-events:none; z-index:3; }
+  .tnode { position:absolute; width:66px; height:66px; transform:translate(-50%,-50%);
+    border:6px solid #626262; border-radius:50%; background:#777; cursor:pointer;
+    box-sizing:border-box; filter:none; }
+  .tnode[hidden] { display:none; }
+  .tnode img { position:absolute; width:66px; height:66px; max-width:none;
+    left:-6px; top:-6px; display:block; pointer-events:none; }
+  .tnode.affordable { background:color-mix(in srgb,var(--rar) 62%,#808080);
+    border-color:color-mix(in srgb,var(--rar) 45%,#555); }
+  .tnode.owned { background:var(--rar); border-color:color-mix(in srgb,var(--rar) 70%,#333); }
+  .tnode.holding { box-shadow:0 0 0 2px rgba(255,255,255,.85); }
+  .tnode .tcum { position:absolute; right:-8px; top:-9px; font-size:17px;
+    font-weight:700; font-style:italic; line-height:1; color:#fff;
+    -webkit-text-stroke:2.5px #252525; paint-order:stroke fill; pointer-events:none; }
+  .tnode.unaffordable .tcum { color:#f45b6b; }
+  #talentCore { position:absolute; left:280px; top:495px; width:88px; height:88px;
+    transform:translate(-50%,-50%); pointer-events:none; z-index:3; }
   #talentCore img { width:100%; height:100%; object-fit:contain; }
-  /* 统计信息：花朵右侧 */
-  #talentStats { position:absolute; left:50%; bottom:52px; transform:translateX(50px);
-    text-align:left; font-size:11px; font-weight:800; line-height:1.4;
-    -webkit-text-stroke:2px #2a0d0b; paint-order:stroke fill; white-space:nowrap; z-index:4; }
-  #treset { position:absolute; right:8px; bottom:8px; padding:4px 14px; border-radius:6px;
-    background:#c14a44; border:2px solid #7d2f2a; color:#fff; font-size:13px; font-weight:800;
-    cursor:pointer; box-shadow:0 2px 0 rgba(0,0,0,.25); }
-  /* 天赋 tooltip：原版黑色信息卡（名称 + 稀有度 + 描述 + HOLD 提示） */
-  #ttip { position:absolute; z-index:9; display:none; pointer-events:none; width:214px;
+  #talentStats { position:absolute; left:335px; top:480px; font-size:12px;
+    font-weight:700; line-height:1.45; white-space:nowrap; pointer-events:none; z-index:4;
+    -webkit-text-stroke:1.5px #171717; paint-order:stroke fill; }
+  #talentStats div:first-child { color:#8fff66; }
+  #talentStats div:last-child { color:#f09399; }
+  #talentStats b { color:white; }
+  #treset { position:absolute; right:11px; bottom:11px; padding:3px 12px;
+    border:3px solid #616161; border-radius:6px; background:#818181; color:#fff;
+    font-size:13px; font-weight:800; cursor:pointer; z-index:11;
+    -webkit-text-stroke:1px #333; paint-order:stroke fill; }
+  #ttip { position:absolute; z-index:12; display:none; pointer-events:none; width:214px;
     padding:8px 10px 9px; border-radius:5px; background:rgba(0,0,0,.82);
-    box-shadow:0 4px 14px rgba(0,0,0,.4); font-size:11.5px; line-height:1.35; }
+    font-size:11.5px; line-height:1.35; }
   #ttip .tt-name { font-size:16px; font-weight:800; color:#fff; }
   #ttip .tt-rar { font-size:10.5px; font-weight:800; margin:1px 0 5px; }
   #ttip .tt-desc { font-weight:700; color:#fff; white-space:pre-line; }
@@ -785,8 +785,8 @@
 
 <!-- talent panel（照原版视频：左下角浮动面板 375×375 + 底部花朵 + 可旋转树） -->
 <div id="talents">
-  <h2>Talents</h2>
-  <div id="tpbadge"><b id="tpcount">0</b><span>TP</span></div>
+  <h2>天赋</h2>
+  <div id="tpbadge"><b id="tpcount">0</b><span>天赋点</span></div>
   <div id="tclose">×</div>
   <div id="talentTree">
     <svg id="talentLinks"></svg>
@@ -794,10 +794,10 @@
     <div id="talentNodes"></div>
   </div>
   <div id="talentStats">
-    <div>Flower Health: <b id="tstat-hp">0</b></div>
-    <div>Body Damage: <b id="tstat-dmg">0</b></div>
+    <div>花朵生命值：<b id="tstat-hp">0</b></div>
+    <div>身体伤害：<b id="tstat-dmg">0</b></div>
   </div>
-  <button id="treset">Reset</button>
+  <button id="treset">重置</button>
   <div id="ttip"></div>
 </div>
 
@@ -842,18 +842,18 @@
 </div>
 </div>
 
-<script src="manifest.js?v=20261108c"></script>
+<script src="manifest.js?v=20261113a"></script>
 <!-- file:// 下 canvas 会被污染（getImageData 抛 SecurityError），地块/花瓣图改用内联 data: URL -->
-<script>if(location.protocol==='file:'){document.write('<script src="assets_inline.js?v=20261108c"><\/script>');}</script>
-<script src="assets/maps_tmj/portals.js?v=20261108c"></script>
-<script src="petals.js?v=20261108c"></script>
-<script src="mobver.js?v=20261108c"></script>
-<script src="regions.js?v=20261108c"></script>
-<script src="zones.js?v=20261108c"></script>
-<script src="mobmask.js?v=20261108c"></script>
-<script src="cardfiles.js?v=20261108c"></script>
-<script src="mobtext.js?v=20261108c"></script>
-<script src="talents.js?v=20261108c"></script>
-<script src="game.js?v=20261108c"></script>
+<script>if(location.protocol==='file:'){document.write('<script src="assets_inline.js?v=20261113a"><\/script>');}</script>
+<script src="assets/maps_tmj/portals.js?v=20261113a"></script>
+<script src="petals.js?v=20261113a"></script>
+<script src="mobver.js?v=20261113a"></script>
+<script src="regions.js?v=20261113a"></script>
+<script src="zones.js?v=20261113a"></script>
+<script src="mobmask.js?v=20261113a"></script>
+<script src="cardfiles.js?v=20261113a"></script>
+<script src="mobtext.js?v=20261113a"></script>
+<script src="talents.js?v=20261113a"></script>
+<script src="game.js?v=20261113a"></script>
 </body>
 </html>

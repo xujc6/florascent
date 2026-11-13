@@ -50,7 +50,7 @@ const TALENTS = [
   {
     id:'concentratedPoison', name:'Concentrated Poison', icon:'Concentrated_Poison',
     desc:'Increases the speed at which Poison Damage is dealt, shortening the overall time a target remains Poisoned.',
-    req:{tree:'poison', key:'Rare'},             // Branches off Rare Poison
+    req:{tree:'poison', key:'Rare4'},            // Official poison6, not poison3 (florr_talents.ndjson id83)
     tiers:[
       {r:'Super', cost:15, effect:{poison:0.20, poisonDur:-0.167},
        text:'Increases Poison damage per second by 20%. Decreases Poison duration by 16.67%.'},
@@ -275,37 +275,36 @@ function tierIndexByKey(tree, key){
 // 前置链：从根（花朵）一路到某个节点的完整节点序列。
 // 跨树前置用 tree.req（精确到具体档位），同树前置为上一档。
 // ------------------------------------------------------------
+// Official deps: poison3..poison9 all branch from poison2 (ids77..82,111).
+// Other same-tree nodes keep their existing preceding-tier dependency.
+function talentParent(tree, idx){
+  if(idx>0){
+    const pi=tree.id==='poison' && idx>=2 ? 1 : idx-1;
+    return {tree,idx:pi,tier:tree.tiers[pi],id:talentId(tree,tree.tiers[pi])};
+  }
+  if(!tree.req) return null;
+  const parent=talentTreeById(tree.req.tree);
+  if(!parent) return null;
+  const pi=tierIndexByKey(parent,tree.req.key);
+  return pi<0 ? null : {tree:parent,idx:pi,tier:parent.tiers[pi],id:talentId(parent,parent.tiers[pi])};
+}
+
 function talentChain(tree, idx, seen){
-  seen = seen || new Set();
-  const out = [];
-  if(tree.req){
-    const rt = talentTreeById(tree.req.tree);
-    if(rt){
-      const ri = tierIndexByKey(rt, tree.req.key);
-      if(ri >= 0) out.push(...talentChain(rt, ri, seen));
-    }
-  }
-  for(let i=0;i<=idx;i++){
-    const id = talentId(tree, tree.tiers[i]);
-    if(seen.has(id)) continue;
-    seen.add(id); out.push({tree, idx:i, tier:tree.tiers[i], id});
-  }
+  seen=seen || new Set();
+  if(!tree || idx<0 || idx>=tree.tiers.length) return [];
+  const tier=tree.tiers[idx],id=talentId(tree,tier);
+  if(seen.has(id)) return [];
+  seen.add(id);
+  const parent=talentParent(tree,idx);
+  const out=parent ? talentChain(parent.tree,parent.idx,seen) : [];
+  out.push({tree,idx,tier,id});
   return out;
 }
 
 // 累计总 TP：点亮至该节点所需的所有天赋点（含跨树前置），
 // 也就是原版未点亮节点上显示的那个数字。
 function talentCumulativeTP(tree, idx){
-  let sum = 0;
-  for(let i=0;i<=idx;i++) sum += tree.tiers[i].cost;
-  if(tree.req){
-    const rt = talentTreeById(tree.req.tree);
-    if(rt){
-      const ri = tierIndexByKey(rt, tree.req.key);
-      if(ri >= 0) sum += talentCumulativeTP(rt, ri);
-    }
-  }
-  return sum;
+  return talentChain(tree,idx).reduce((sum,n)=>sum+n.tier.cost,0);
 }
 
 // 某棵树是否已点亮任意一档（旧接口保留，供存档兼容）
@@ -321,15 +320,8 @@ function canBuyTalent(treeId, key, owned){
   if(owned.has(id)) return false;
   const info = TALENT_INDEX[id];
   if(!info) return false;
-  const t = info.tree;
-  if(t.req){
-    const rt = talentTreeById(t.req.tree);
-    if(!rt) return false;
-    const ri = tierIndexByKey(rt, t.req.key);
-    if(ri < 0 || !owned.has(talentId(rt, rt.tiers[ri]))) return false;
-  }
-  if(info.idx > 0 && !owned.has(talentId(t, t.tiers[info.idx-1]))) return false;
-  return true;
+  const parent=talentParent(info.tree,info.idx);
+  return !parent || owned.has(parent.id);
 }
 
 // ------------------------------------------------------------
