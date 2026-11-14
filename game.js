@@ -2080,6 +2080,7 @@ function damagePlayer(amount){
 
 // ---------- update ----------
 let lastT = performance.now();
+let lastRenderT = 0;      // 按需渲染的节流时间戳
 let sgRetryT = 0, sgRetryN = 0;
 let _autoSaveT = 15;   // 每 15s 自动存档一次（PLAY 状态下）
 function loop(now){
@@ -2094,7 +2095,17 @@ function loop(now){
   if(state===STATE.PLAY){ update(dt); updateWax(dt); updateBubbleDash(dt);
     _autoSaveT -= dt; if(_autoSaveT <= 0){ _autoSaveT = 15; saveGame(); }
   }
-  render();
+  // 按需渲染：标签页隐藏时整帧跳过；面板打开 / 主菜单降低重绘频率，省 CPU/GPU。
+  // 只影响重绘节奏，不改任何绘制内容与数值。
+  if(!document.hidden){
+    const cap = (state===STATE.PLAY && anyPanelOpen()) ? 20      // 面板打开：世界冻结，20fps 足够
+              : (state===STATE.MENU) ? 30                        // 主菜单：30fps
+              : 0;                                               // 游戏中 / 死亡：全速
+    if(!cap || now - lastRenderT >= 1000/cap){
+      lastRenderT = now;
+      render();
+    }
+  }
   requestAnimationFrame(loop);
 }
 
@@ -5450,12 +5461,17 @@ function updateSpinHud(){
   elSpin.innerHTML = 'Spin ' + m.toFixed(2) + '× <b>' + curSpin().toFixed(2) + '</b> rad/s'
     + '  <span style="opacity:.65">Q - / E +</span>';
 }
+const _hud = { body:'', level:-1, xp:-1, hp:-1, hpText:'' };
 function updateHUD(){
-  if(elBody) elBody.innerHTML = 'Body <b>' + (player.bodyDmg||0).toFixed(1) + '</b> dmg';
-  elLevel.textContent = 'Lv '+player.level;
-  elXp.style.width = Math.min(100,(player.xp/player.xpNeed)*100)+'%';
-  elHp.style.width = Math.max(0,(player.hp/player.maxHp)*100)+'%';
-  elHpText.textContent = Math.ceil(player.hp)+' / '+Math.round(player.maxHp);
+  const b = (player.bodyDmg||0).toFixed(1);
+  if(elBody && _hud.body !== b){ _hud.body = b; elBody.innerHTML = 'Body <b>' + b + '</b> dmg'; }
+  if(_hud.level !== player.level){ _hud.level = player.level; elLevel.textContent = 'Lv '+player.level; }
+  const xp = Math.min(100,(player.xp/player.xpNeed)*100);
+  if(Math.abs(_hud.xp - xp) > 0.25){ _hud.xp = xp; elXp.style.width = xp+'%'; }
+  const hp = Math.max(0,(player.hp/player.maxHp)*100);
+  if(Math.abs(_hud.hp - hp) > 0.25){ _hud.hp = hp; elHp.style.width = hp+'%'; }
+  const ht = Math.ceil(player.hp)+' / '+Math.round(player.maxHp);
+  if(_hud.hpText !== ht){ _hud.hpText = ht; elHpText.textContent = ht; }
 }
 function flashLevel(){
   const e=document.getElementById('levelbox');
