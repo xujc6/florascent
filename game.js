@@ -3899,6 +3899,64 @@ function render(){
     throw err;
   }
 }
+// 暗角渐变：每帧都画全屏渐变很费，缓存成离屏 canvas（resize 才重画），画面不变
+let _vignCv = null, _vignKey = '';
+function getVignette(){
+  const key = W+'x'+H+'x'+DPR;
+  if(_vignCv && _vignKey === key) return _vignCv;
+  const cv = document.createElement('canvas');
+  cv.width = Math.max(1, Math.round(W*DPR)); cv.height = Math.max(1, Math.round(H*DPR));
+  const g = cv.getContext('2d');
+  const grd = g.createRadialGradient(cv.width/2, cv.height/2, Math.min(cv.width,cv.height)*0.35,
+                                     cv.width/2, cv.height/2, Math.max(cv.width,cv.height)*0.75);
+  grd.addColorStop(0, 'rgba(0,0,0,0)');
+  grd.addColorStop(1, 'rgba(0,0,0,0.28)');
+  g.fillStyle = grd; g.fillRect(0,0,cv.width,cv.height);
+  _vignCv = cv; _vignKey = key;
+  return cv;
+}
+// 带描边文字缓存：名字/字号不变时复用离屏图，省掉每帧 strokeText+fillText（画面不变）
+const _txtCv = {};
+function cachedStrokedText(key, txt, font, fillStyle, strokeStyle, lineWidth, baseline){
+  let c = _txtCv[key];
+  if(c) return c;
+  const tm = document.createElement('canvas').getContext('2d');
+  tm.font = font;
+  const tw = Math.ceil(tm.measureText(txt).width);
+  const pad = Math.ceil(lineWidth*2 + 6);
+  const fs = parseFloat(font) || 16;
+  const th = Math.ceil(fs*1.6) + pad;
+  const cv = document.createElement('canvas');
+  cv.width = tw + pad; cv.height = th;
+  const g = cv.getContext('2d');
+  g.font = font; g.textAlign = 'center'; g.textBaseline = baseline || 'alphabetic';
+  g.lineJoin = 'round'; g.lineWidth = lineWidth;
+  const anchorY = (baseline === 'middle') ? th/2 : (th - pad/2);
+  g.strokeStyle = strokeStyle; g.strokeText(txt, cv.width/2, anchorY);
+  g.fillStyle = fillStyle; g.fillText(txt, cv.width/2, anchorY);
+  c = { cv, anchorY };
+  _txtCv[key] = c;
+  return c;
+}
+// 受击闪红：预渲染红色 tint 版贴图缓存（替代每帧 ctx.filter，画面接近、GPU 开销大降）
+const _redImg = {};
+function tintImageRed(src, key){
+  if(!src) return null;
+  const w = src.naturalWidth || src.width;
+  const h = src.naturalHeight || src.height;
+  if(!w || !h) return null;
+  const k = key || src.src || ('cv:'+w+'x'+h);
+  if(_redImg[k]) return _redImg[k];
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const g = cv.getContext('2d');
+  g.drawImage(src, 0, 0);
+  g.globalCompositeOperation = 'source-atop';
+  g.fillStyle = 'rgba(255, 64, 64, 0.78)';
+  g.fillRect(0, 0, w, h);
+  _redImg[k] = cv;
+  return cv;
+}
 function renderInner(){
   ctx.clearRect(0,0,W,H);
   // background: authentic florr tilemap if available, else generated bg
@@ -3924,10 +3982,7 @@ function renderInner(){
   }
   updateBossBar();
   // vignette
-  const g = ctx.createRadialGradient(W/2,H/2, Math.min(W,H)*0.35, W/2,H/2, Math.max(W,H)*0.75);
-  g.addColorStop(0,'rgba(0,0,0,0)');
-  g.addColorStop(1,'rgba(0,0,0,0.28)');
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.drawImage(getVignette(), 0, 0, W, H);
   if(state===STATE.PLAY || state===STATE.DEAD) drawMinimap(reg);
   else if(mmCtx) mmCtx.clearRect(0,0,mmCanvas.width,mmCanvas.height);
   if(DBG_COLL) drawCollisionOverlay();
@@ -3991,12 +4046,9 @@ function drawFlowerBadge(){
   ctx.lineWidth = 3; ctx.strokeStyle = '#2f6620';
   pill(capX, capY, capW, capH, capH/2); ctx.stroke();
   // 名字：白字黑描边居中
-  ctx.font = '700 15px "Ubuntu", sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
-  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.8)';
   const nm = player.name || 'Unnamed';
-  ctx.strokeText(nm, capX+capW/2, capY+capH/2);
-  ctx.fillStyle = '#fff'; ctx.fillText(nm, capX+capW/2, capY+capH/2);
+  const tNm = cachedStrokedText('badge|'+nm, nm, '700 15px "Ubuntu", sans-serif', '#fff', 'rgba(0,0,0,0.8)', 3, 'middle');
+  ctx.drawImage(tNm.cv, (capX+capW/2) - tNm.cv.width/2, (capY+capH/2) - tNm.anchorY);
   // 头像最后画：轻微覆盖血条左缘（不超出屏幕）
   const face = pickFaceImg();
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, avR, 0, 6.2832); ctx.clip();
@@ -4916,10 +4968,6 @@ function drawEnemies(){
     ctx.rotate(p.rot + (e.faceRot || 0));
     ctx.scale(p.sx, p.sy);
     ctx.globalAlpha = p.alpha;
-    // 受击闪红：不是画一个红圆，而是把整只生物（腿/躯干/翅膀）按贴图形状染红
-    if(flash){
-      try{ ctx.filter = 'grayscale(1) brightness(1.45) sepia(1) saturate(16) hue-rotate(-48deg)'; }catch(_){}
-    }
     if(img && img.complete && img.naturalWidth){
       const s = e.r * (isClean ? 2.0 : 2.3) * (MOB_DRAW_K[e.sprite] || 1) * VIEW;   // 跟视野一起缩放
       // 轴心修正：把身体（不透明质心）摆到旋转中心，否则一转身就绕着中心甩
@@ -4933,10 +4981,11 @@ function drawEnemies(){
         const bi = getMobImage(e.sprite, e.mobRarity, parts.body);
         if(bi && bi.complete && bi.naturalWidth && !bi.__broken) baseImg = bi;
       }
+      // 受击闪红：用预渲染的红色贴图（替代每帧 ctx.filter，画面接近、GPU 开销大降）
+      if(flash){ baseImg = tintImageRed(baseImg) || baseImg; }
       if(parts) drawMobLegs(e, s, ox, oy2);     // 腿画在躯干下面
       ctx.drawImage(baseImg, -s/2 + ox, -s/2 + oy2, s, s);
       if(parts) drawMobWings(e, s, ox, oy2);    // 翅膀贴在躯干背上
-      if(flash){ try{ ctx.filter = 'none'; }catch(_){} }
     } else {
       drawProceduralMob(e, flash);
     }
@@ -5330,14 +5379,17 @@ function drawPlayer(){
     ctx.translate(px,py); ctx.rotate(ang+Math.PI/2);
     if(p.name==='Sawblade') ctx.rotate(performance.now()/1000*25);   // 锯片：绕花瓣中心快速自转
     if(player.inBush) ctx.globalAlpha = 0.3;      // 密道里花瓣是灰的、不能用
-    if(p.flashT > 0) ctx.filter = 'grayscale(1) brightness(1.35) sepia(1) saturate(14) hue-rotate(-25deg)';
     if(sp){
       // 去底后的精灵是「正方形画布 + 居中图案」，按正方形边长缩放 → 所有花瓣最大边一致
       const PSIZE_K = { Shovel: 3.0, Faster: 0.55, Golden_Leaf: 1.5, Leaf: 1.5, Soil: 1.75, Sawblade: 1.5 };    // 铲子细长画大；Faster 缩小；Golden Leaf / Leaf / Sawblade 1.5x，Soil 1.75x
       const s = petalS * 1.15 * (PSIZE_K[p.name] || 1);
-      ctx.drawImage(sp.cv, -s/2, -s/2, s, s);
+      const src = (p.flashT > 0) ? (tintImageRed(sp.cv, 'petal:'+p.name+'_'+p.rarity) || sp.cv) : sp.cv;
+      ctx.drawImage(src, -s/2, -s/2, s, s);
     }
-    else if(img && img.complete && img.naturalWidth){ ctx.drawImage(img,-petalS/2,-petalS/2,petalS,petalS); }
+    else if(img && img.complete && img.naturalWidth){
+      const src = (p.flashT > 0) ? (tintImageRed(img, 'petalImg:'+p.name+'_'+p.rarity) || img) : img;
+      ctx.drawImage(src, -petalS/2, -petalS/2, petalS, petalS);
+    }
     else if(img){ ctx.fillStyle=RARITY_COLOR[p.rarity]; ctx.beginPath(); ctx.arc(0,0,petalS*0.4,0,6.28); ctx.fill(); }
     ctx.restore();
   });
@@ -5406,11 +5458,11 @@ function drawPlayer(){
   }
   ctx.restore();
   // name（放到花瓣环上方，别盖住花瓣）
-  ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='700 '+Math.round(11*Math.max(0.85,vs))+"px 'Ubuntu', sans-serif"; ctx.textAlign='center';
-  ctx.strokeStyle='rgba(0,0,0,0.55)'; ctx.lineWidth=3;
+  const nameFont = '700 '+Math.round(11*Math.max(0.85,vs))+"px 'Ubuntu', sans-serif";
   const ny = sy - orbitR - bodyD*0.5 - 6;
-  ctx.strokeText(player.name, sx, ny);
-  ctx.fillText(player.name, sx, ny);
+  const tName = cachedStrokedText('pname|'+player.name+'|'+nameFont, player.name, nameFont,
+                                  'rgba(255,255,255,.92)', 'rgba(0,0,0,0.55)', 3, 'alphabetic');
+  ctx.drawImage(tName.cv, sx - tName.cv.width/2, ny - tName.anchorY);
 }
 
 function drawProjectiles(){
